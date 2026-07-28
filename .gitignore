@@ -1,0 +1,20 @@
+# dependencies
+/node_modules
+
+# next.js build output
+/.next/
+/out/
+
+# misc
+.DS_Store
+*.pem
+*.log
+*.tsbuildinfo
+next-env.d.ts
+
+# env files
+.env
+.env.*
+
+# local tooling
+/.claude/

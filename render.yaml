@@ -1,0 +1,8 @@
+services:
+  # Static site — Next.js static export served from ./out (free tier friendly).
+  - type: web
+    name: rishav-portfolio
+    runtime: static
+    buildCommand: npm ci && npm run build
+    staticPublishPath: ./out
+    autoDeploy: true

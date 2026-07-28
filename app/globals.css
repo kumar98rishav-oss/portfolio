@@ -1,0 +1,360 @@
+@import "tailwindcss";
+
+/*
+  ============================================================
+  DESIGN TOKENS
+  Swap the accent trio here to re-skin the whole site.
+  ============================================================
+*/
+:root {
+  /* Base surfaces (dark is default) */
+  --bg: 5 5 6;            /* near-black #050506 */
+  --bg-elevated: 12 12 15;
+  --surface: 255 255 255; /* used with low alpha for glass */
+  --border: 255 255 255;
+  --fg: 237 237 240;
+  --fg-muted: 156 156 168;
+  --fg-faint: 110 110 122;
+
+  /* Accent trio — the "reveal on hover" glow colors */
+  --accent: 34 211 238;     /* cyberpunk cyan  */
+  --accent-2: 167 139 250;  /* deep violet     */
+  --accent-3: 244 114 182;  /* vercel pink     */
+
+  --radius: 20px;
+  --nav-h: 72px;
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "Fira Code", monospace;
+}
+
+/* Light theme overrides (set by next-themes on <html class="light">) */
+.light {
+  --bg: 250 250 252;
+  --bg-elevated: 255 255 255;
+  --surface: 10 10 20;
+  --border: 10 10 25;
+  --fg: 24 24 30;
+  --fg-muted: 90 90 105;
+  --fg-faint: 140 140 155;
+}
+
+@theme inline {
+  --color-bg: rgb(var(--bg));
+  --color-bg-elevated: rgb(var(--bg-elevated));
+  --color-fg: rgb(var(--fg));
+  --color-fg-muted: rgb(var(--fg-muted));
+  --color-fg-faint: rgb(var(--fg-faint));
+  --color-accent: rgb(var(--accent));
+  --color-accent-2: rgb(var(--accent-2));
+  --color-accent-3: rgb(var(--accent-3));
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+}
+
+* {
+  border-color: rgb(var(--border) / 0.08);
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--nav-h) + 24px);
+}
+
+body {
+  background-color: rgb(var(--bg));
+  color: rgb(var(--fg));
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+/* Custom selection */
+::selection {
+  background: rgb(var(--accent) / 0.25);
+  color: rgb(var(--fg));
+}
+
+/* Slim custom scrollbar */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgb(var(--surface) / 0.12);
+  border-radius: 99px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover { background: rgb(var(--surface) / 0.22); background-clip: content-box; }
+
+/*
+  ============================================================
+  REUSABLE UTILITY LAYERS
+  ============================================================
+*/
+@layer utilities {
+  /* Frosted-glass panel */
+  .glass {
+    background: rgb(var(--surface) / 0.04);
+    backdrop-filter: blur(10px) saturate(130%);
+    -webkit-backdrop-filter: blur(10px) saturate(130%);
+    border: 1px solid rgb(var(--border) / 0.08);
+  }
+  .glass-strong {
+    background: rgb(var(--surface) / 0.07);
+    backdrop-filter: blur(20px) saturate(150%);
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
+    border: 1px solid rgb(var(--border) / 0.1);
+  }
+
+  /* 1px gradient border via mask compositing */
+  .gradient-border {
+    position: relative;
+  }
+  .gradient-border::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      130deg,
+      rgb(var(--accent) / 0.6),
+      rgb(var(--accent-2) / 0.35) 40%,
+      transparent 60%,
+      rgb(var(--accent-3) / 0.4)
+    );
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0.6;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+  }
+  .gradient-border:hover::before { opacity: 1; }
+
+  /* Text with animated tri-color gradient */
+  .text-gradient {
+    background: linear-gradient(
+      120deg,
+      rgb(var(--fg)),
+      rgb(var(--accent)) 45%,
+      rgb(var(--accent-2)) 70%,
+      rgb(var(--fg))
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: shimmer-text 8s linear infinite;
+  }
+
+  .accent-glow {
+    box-shadow:
+      0 0 0 1px rgb(var(--accent) / 0.2),
+      0 8px 40px -8px rgb(var(--accent) / 0.4);
+  }
+
+  .mono { font-family: var(--font-mono); }
+
+  /* Faux column masonry */
+  .masonry {
+    column-gap: 1.25rem;
+  }
+  .masonry > * {
+    break-inside: avoid;
+    margin-bottom: 1.25rem;
+  }
+}
+
+/*
+  ============================================================
+  DECORATIVE BACKDROP LAYERS
+  ============================================================
+*/
+/* Fine grid pattern */
+.bg-grid {
+  background-image:
+    linear-gradient(to right, rgb(var(--surface) / 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(var(--surface) / 0.04) 1px, transparent 1px);
+  background-size: 64px 64px;
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 100%);
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 100%);
+}
+
+/* SVG grain overlay */
+.bg-noise::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/*
+  ============================================================
+  KEYFRAMES
+  ============================================================
+*/
+@keyframes shimmer-text {
+  to { background-position: 200% center; }
+}
+
+@keyframes aurora {
+  0%   { transform: translate(-10%, -10%) rotate(0deg) scale(1); }
+  33%  { transform: translate(8%, 6%) rotate(120deg) scale(1.15); }
+  66%  { transform: translate(-6%, 10%) rotate(240deg) scale(0.95); }
+  100% { transform: translate(-10%, -10%) rotate(360deg) scale(1); }
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@keyframes marquee-reverse {
+  from { transform: translateX(-50%); }
+  to   { transform: translateX(0); }
+}
+
+@keyframes shimmer-skeleton {
+  100% { transform: translateX(100%); }
+}
+
+@keyframes caret-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+.animate-marquee { animation: marquee 40s linear infinite; }
+.animate-marquee-reverse { animation: marquee-reverse 40s linear infinite; }
+.marquee-pause:hover .animate-marquee,
+.marquee-pause:hover .animate-marquee-reverse { animation-play-state: paused; }
+
+.caret::after {
+  content: "";
+  display: inline-block;
+  width: 0.6ch;
+  height: 1.05em;
+  margin-left: 2px;
+  translate: 0 0.14em;
+  background: rgb(var(--accent));
+  animation: caret-blink 1s steps(1) infinite;
+}
+
+/* ---- Animated pipeline (AnimatedPipeline.tsx) ---- */
+.pipe-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  --pipe-accent: var(--accent);
+}
+.pipe-line {
+  fill: none;
+  stroke: rgb(var(--pipe-accent) / 0.32);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+.pipe-line.flow {
+  stroke-dasharray: 5 9;
+  animation: pipe-dash 0.7s linear infinite;
+}
+@keyframes pipe-dash {
+  to { stroke-dashoffset: -14; }
+}
+.pipe-arrow {
+  fill: rgb(var(--pipe-accent) / 0.6);
+}
+.pipe-dot {
+  fill: rgb(var(--pipe-accent));
+  filter: drop-shadow(0 0 5px rgb(var(--pipe-accent) / 0.9));
+}
+.pipe-node {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2px 9px;
+  border-radius: 12px;
+  border: 1px solid rgb(var(--border) / 0.14);
+  background: rgb(var(--bg) / 0.5);
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  line-height: 1.12;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: rgb(var(--fg) / 0.72);
+  transition: color 0.3s ease, border-color 0.3s ease;
+}
+.pipe-node.animate {
+  animation: pipe-node-pulse var(--pipe-cycle, 4.5s) ease-in-out infinite;
+}
+@keyframes pipe-node-pulse {
+  0%, 100% {
+    border-color: rgb(var(--border) / 0.14);
+    box-shadow: none;
+    color: rgb(var(--fg) / 0.72);
+  }
+  9% {
+    border-color: rgb(var(--pipe-accent) / 0.85);
+    box-shadow: 0 0 16px -3px rgb(var(--pipe-accent) / 0.75),
+      inset 0 0 14px -8px rgb(var(--pipe-accent) / 0.7);
+    color: rgb(var(--fg));
+  }
+  30% {
+    border-color: rgb(var(--border) / 0.14);
+    box-shadow: none;
+    color: rgb(var(--fg) / 0.72);
+  }
+}
+
+/* Larger base font compensates for the SVG scaling down on small screens */
+@media (max-width: 640px) {
+  .pipe-node {
+    font-size: 15px;
+  }
+}
+
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: rgb(var(--surface) / 0.05);
+}
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(var(--surface) / 0.08),
+    transparent
+  );
+  animation: shimmer-skeleton 1.6s infinite;
+}
+
+/*
+  ============================================================
+  ACCESSIBILITY
+  ============================================================
+*/
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
