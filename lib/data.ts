@@ -67,7 +67,6 @@ export const NAV_LINKS: { id: string; label: string }[] = [
   { id: "experience", label: "Experience" },
   { id: "education", label: "Journey" },
   { id: "certifications", label: "Certs" },
-  { id: "blog", label: "Writing" },
   { id: "contact", label: "Contact" },
 ];
 
@@ -497,49 +496,6 @@ export const GITHUB = {
     { name: "exhibit-builder", description: "Legal-tech PDF exhibit generation system — court-ready packages in seconds.", language: "Python", stars: 0, forks: 0, color: "#3572A5" },
   ],
 };
-
-/* --------------------------------- Blog -------------------------------------- */
-// Starter topics drawn from your real work — write these when ready, or swap.
-export type Post = {
-  id: string;
-  title: string;
-  excerpt: string;
-  date: string;
-  readingTime: string;
-  tag: string;
-  url: string;
-};
-
-export const POSTS: Post[] = [
-  { id: "b1", title: "From Biomedical Science to Power BI: Learning to Build by Building", excerpt: "Why I stopped waiting to 'be a developer' and just shipped my first tool — and how each one taught me the next.", date: "Draft", readingTime: "7 min", tag: "Journey", url: "#" },
-  { id: "b2", title: "Cutting Medical-Record Processing from 6 Minutes to 40 Seconds", excerpt: "The 3-DAG architecture behind MEDNEX: routing every page to the cheapest strategy that still gets the answer right.", date: "Draft", readingTime: "11 min", tag: "AI / ML", url: "#" },
-  { id: "b3", title: "Building a Deterministic DAX Compiler (So the AI Can't Hallucinate)", excerpt: "Why I made DAX Architect a compiler, not a chatbot — intent parser, schema resolver, and measure branching.", date: "Draft", readingTime: "10 min", tag: "DAX", url: "#" },
-  { id: "b4", title: "Capturing Power BI's Real Visuals over the Chrome DevTools Protocol", excerpt: "How BI Visual Design drives Power BI Desktop headlessly to grab pixel-perfect visuals keyed to their PBIR ids.", date: "Draft", readingTime: "9 min", tag: "Power BI", url: "#" },
-];
-
-/* -------------------------------- Gallery ------------------------------------ */
-// Swap `gradient` tiles for real screenshots (add `src`) — your dashboards & tools.
-export type Shot = { id: string; caption: string; height: number; gradient: string; src?: string };
-export const GALLERY: Shot[] = [
-  { id: "g1", caption: "DAX Workbench — live model & auto-DAX", height: 320, gradient: "from-cyan-500/25 to-blue-600/10" },
-  { id: "g2", caption: "Medical-Legal Claims — executive dashboard", height: 240, gradient: "from-amber-500/25 to-orange-600/10" },
-  { id: "g3", caption: "MEDNEX — extraction & confidence scoring", height: 380, gradient: "from-pink-500/25 to-rose-600/10" },
-  { id: "g4", caption: "Hospital BI — 360° operations view", height: 260, gradient: "from-sky-500/25 to-indigo-600/10" },
-  { id: "g5", caption: "DAX Architect — dependency graph", height: 340, gradient: "from-emerald-500/25 to-teal-600/10" },
-  { id: "g6", caption: "BI Visual Design — captured report mirror", height: 280, gradient: "from-violet-500/25 to-fuchsia-600/10" },
-];
-
-/* ------------------------------ Testimonials --------------------------------- */
-// ⚠️ CONFIRM — placeholder quotes. Replace with real recommendations (LinkedIn is a
-// good source) or remove this section from app/page.tsx.
-export type Testimonial = { id: string; quote: string; name: string; role: string };
-export const TESTIMONIALS: Testimonial[] = [
-  { id: "t1", quote: "“Rishav doesn't just build reports — he builds the tools that make the whole team faster.”", name: "[Name]", role: "[Role, Company]" },
-  { id: "t2", quote: "“One of the rare analysts who speaks DAX, data modeling, and real software engineering.”", name: "[Name]", role: "[Role, Company]" },
-  { id: "t3", quote: "“Turned our medical-record review from hours into minutes.”", name: "[Name]", role: "[Role, Company]" },
-  { id: "t4", quote: "“Shipped automation in weeks that others scoped in quarters.”", name: "[Name]", role: "[Role, Company]" },
-  { id: "t5", quote: "“Rigorous about correctness — the verification mindset shows in everything he ships.”", name: "[Name]", role: "[Role, Company]" },
-];
 
 /* --------------------------------- Contact ----------------------------------- */
 export const CONTACT = {

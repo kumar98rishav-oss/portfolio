@@ -8,21 +8,17 @@ import { Projects } from "@/components/sections/Projects";
 import { Timeline } from "@/components/sections/Timeline";
 import { Certifications } from "@/components/sections/Certifications";
 import { GitHubSection } from "@/components/sections/GitHubSection";
-import { Blog } from "@/components/sections/Blog";
-import { Gallery } from "@/components/sections/Gallery";
-import { Testimonials } from "@/components/sections/Testimonials";
 import { Contact } from "@/components/sections/Contact";
 import { EXPERIENCE, EDUCATION } from "@/lib/data";
 
 /**
- * Section flow (14 blocks):
- *  1. Hero            8. Certifications
- *  2. Tech marquee    9. GitHub / Open source
- *  3. About + Skills 10. Blog
- *  4. Metrics        11. Gallery
- *  5. Projects       12. Testimonials
- *  6. Experience     13. Contact
- *  7. Learning       14. Footer
+ * Section flow (11 blocks):
+ *  1. Hero            7. Learning
+ *  2. Tech marquee    8. Certifications
+ *  3. About + Skills  9. GitHub / Open source
+ *  4. Metrics        10. Contact
+ *  5. Projects       11. Footer
+ *  6. Experience
  */
 export default function Home() {
   return (
@@ -52,12 +48,9 @@ export default function Home() {
         />
         {/* 8 */} <Certifications />
         {/* 9 */} <GitHubSection />
-        {/* 10 */} <Blog />
-        {/* 11 */} <Gallery />
-        {/* 12 */} <Testimonials />
-        {/* 13 */} <Contact />
+        {/* 10 */} <Contact />
       </main>
-      {/* 14 */}
+      {/* 11 */}
       <Footer />
     </>
   );
