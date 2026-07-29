@@ -48,7 +48,7 @@ export const PROFILE = {
   location: "Delhi NCR, India", // ⚠️ CONFIRM — résumé says Noida/Delhi NCR; GitHub says Bangalore
   availability: "Open to Power BI Developer roles",
   email: "kumar98rishav@gmail.com",
-  resumeUrl: "/resume.pdf", // ⚠️ drop your PDF into /public/resume.pdf
+  resumeUrl: "/resume.pdf", // lives at public/resume.pdf
   avatarUrl: "", // e.g. "/avatar.jpg" — leave empty for the "RK" monogram fallback
 } as const;
 
@@ -215,7 +215,7 @@ export const PROJECTS: Project[] = [
     architecture: ["PBIR JSON", "Mirror Model", "CDP Capture", "Doctor / Lint", "Atomic Deploy", "Power BI Desktop"],
     gradient: "from-violet-500/30 via-fuchsia-500/10 to-transparent",
     icon: Layers,
-    links: {}, // private repo
+    links: { demo: "https://bi-visual-design-02.onrender.com/" }, // repo is private
     featured: true,
   },
   {

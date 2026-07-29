@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Copy, Check, Send, ArrowUpRight } from "lucide-react";
-import { CONTACT, SOCIALS } from "@/lib/data";
+import { CONTACT, SOCIALS, PROFILE } from "@/lib/data";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
 
@@ -102,7 +102,10 @@ export function Contact() {
       {/* Resume nudge */}
       <div className="mt-6 flex justify-center">
         <a
-          href="#"
+          href={PROFILE.resumeUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          download={`${PROFILE.name.replace(/\s+/g, "_")}_Resume.pdf`}
           className="mono inline-flex items-center gap-1.5 text-sm text-fg-muted transition-colors hover:text-fg"
         >
           Or grab my resume <ArrowUpRight className="h-3.5 w-3.5" />
