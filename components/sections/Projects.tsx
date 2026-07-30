@@ -2,15 +2,20 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Github, ArrowUpRight } from "lucide-react";
-import { PROJECTS, type Project } from "@/lib/data";
+import { X, Github, ArrowUpRight, ChevronDown } from "lucide-react";
+import { PROJECTS, FLAGSHIP_PROJECT_ID, type Project } from "@/lib/data";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { ProjectCard } from "./ProjectCard";
+import { FeaturedProject } from "./FeaturedProject";
 import { Reveal } from "@/components/ui/Reveal";
 import { AnimatedPipeline } from "@/components/ui/AnimatedPipeline";
 
+const FLAGSHIP = PROJECTS.find((p) => p.id === FLAGSHIP_PROJECT_ID) ?? PROJECTS[0];
+const OTHERS = PROJECTS.filter((p) => p.id !== FLAGSHIP.id);
+
 export function Projects() {
   const [selected, setSelected] = useState<Project | null>(null);
+  const [showOthers, setShowOthers] = useState(false);
 
   // Lock scroll + Escape-to-close while the modal is open.
   useEffect(() => {
@@ -29,17 +34,55 @@ export function Projects() {
     <section id="projects" className="mx-auto max-w-6xl scroll-mt-24 px-6 py-24 md:py-32">
       <SectionHeading
         kicker="Selected Work"
-        title="Featured projects"
-        description="Click any project to expand the full case study. Replace these with your own in lib/data.ts."
+        title="Featured project"
+        description="The flagship build. Every diagram below is a live workflow — open any project for the full case study."
       />
 
-      <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2">
-        {PROJECTS.map((p, i) => (
-          <Reveal key={p.id} delay={i * 0.06}>
-            <ProjectCard project={p} onOpen={setSelected} />
-          </Reveal>
-        ))}
-      </div>
+      {/* Flagship */}
+      <Reveal>
+        <div className="mt-12">
+          <FeaturedProject project={FLAGSHIP} onOpen={setSelected} />
+        </div>
+      </Reveal>
+
+      {/* Everything else, collapsed by default */}
+      {OTHERS.length > 0 && (
+        <div className="mt-14">
+          <div className="flex items-center gap-4">
+            <span className="h-px flex-1 bg-white/10" />
+            <button
+              onClick={() => setShowOthers((v) => !v)}
+              aria-expanded={showOthers}
+              aria-controls="other-projects"
+              className="mono inline-flex shrink-0 items-center gap-2 rounded-full border border-white/12 bg-white/[0.03] px-5 py-2.5 text-xs uppercase tracking-[0.14em] text-fg-muted transition-colors hover:bg-white/[0.07] hover:text-fg"
+            >
+              {showOthers ? "Hide" : "Other projects"}
+              <span className="text-accent">({OTHERS.length})</span>
+              <ChevronDown
+                className={`h-4 w-4 transition-transform duration-300 ${showOthers ? "rotate-180" : ""}`}
+              />
+            </button>
+            <span className="h-px flex-1 bg-white/10" />
+          </div>
+
+          <AnimatePresence initial={false}>
+            {showOthers && (
+              <motion.div
+                id="other-projects"
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 8 }}
+                transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2"
+              >
+                {OTHERS.map((p) => (
+                  <ProjectCard key={p.id} project={p} onOpen={setSelected} />
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      )}
 
       {/* Expanded modal */}
       <AnimatePresence>

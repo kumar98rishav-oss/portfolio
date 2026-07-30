@@ -176,6 +176,13 @@ export type Project = {
   featured?: boolean;
 };
 
+/**
+ * The single project highlighted above all others in the Projects section.
+ * Everything else collapses under "Other projects". Change this id to
+ * promote a different project.
+ */
+export const FLAGSHIP_PROJECT_ID = "dax-workbench";
+
 export const PROJECTS: Project[] = [
   {
     id: "dax-workbench",
