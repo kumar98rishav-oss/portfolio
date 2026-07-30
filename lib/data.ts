@@ -44,7 +44,7 @@ export const PROFILE = {
     "Legal-Tech Engineer",
   ],
   tagline:
-    "I turn complex medical, legal & insurance data into decisions — and build the AI-assisted tools that remove the manual work: OCR/NLP pipelines, a browser-based Power BI IDE, and a deterministic DAX compiler.",
+    "I run the medical data layer behind US legal teams — turning case, billing and insurance data into the reporting attorneys decide on — and build the AI-assisted tools that remove the manual work: a Power BI External Tool, a deterministic DAX compiler, and extraction pipelines.",
   location: "Delhi NCR, India", // ⚠️ CONFIRM — résumé says Noida/Delhi NCR; GitHub says Bangalore
   availability: "Open to Power BI Developer roles",
   email: "kumar98rishav@gmail.com",
@@ -84,12 +84,12 @@ export const ABOUT = {
   /** Written as separate paragraphs — this is the most personal block on the
    * page and a single wall of text reads like a job description. */
   intro: [
-    "I trained as a biomedical scientist — a Gold Medalist in my M.Sc — and then ended up somewhere I never planned: inside medico-legal data, where a single case can carry hundreds of pages of provider bills, insurance claims and medical records, and every number has to survive being questioned in a legal setting.",
-    "For a while I did that work the slow way. Then I stopped accepting the manual parts. It is a good era to be curious — with Claude, ChatGPT and Gemini as pair-programmers, I taught myself to design and ship real software, and I pointed all of it at my own workflow: OCR/NLP pipelines that read scanned bills, an exhibit builder that assembles court-ready PDFs, and DAX Workbench, a Power BI External Tool that writes and verifies measures against a live semantic model.",
+    "I trained as a biomedical scientist — a Gold Medalist in my M.Sc — and then ended up somewhere I never planned: running the medical data layer for US legal teams. I own the reporting and the data that attorneys and case managers actually make decisions on: case pipelines, billing and settlement values, insurance claim outcomes, firm and attorney performance. My clinical background is why I can model that data correctly; the job itself is data management, not paperwork.",
+    "For a while I did that work the slow way. Then I stopped accepting the manual parts. It is a good era to be curious — with Claude, ChatGPT and Gemini as pair-programmers, I taught myself to design and ship real software, and I pointed all of it at my own workflow: extraction pipelines that turn scanned provider billing into structured, queryable data, an exhibit builder that assembles court-ready PDFs, and DAX Workbench, a Power BI External Tool that writes and verifies measures against a live semantic model.",
     "Every one of those started as a task that was eating my week. Automating them did not just save hours — it changed what I could take on, and how quickly I could answer a question nobody had asked yet. The science training still shows in how I build: measure it, verify it, do not guess. It is why my tools prove their numbers against the real engine instead of asserting them.",
   ],
   highlights: [
-    "5 years · medico-legal, healthcare & insurance data",
+    "5 years · medical data management for US legal teams",
     "Gold Medalist, M.Sc Biomedical Science",
     "8+ AI-assisted tools shipped to production",
     "Built to automate my own workflow first",
@@ -131,7 +131,7 @@ export const SKILL_GROUPS: SkillGroup[] = [
     title: "AI & Automation",
     icon: BrainCircuit,
     blurb: "AI-assisted development, OCR/NLP pipelines, and DAG-based workflows.",
-    skills: ["AI-Assisted Dev (Claude, ChatGPT)", "LLM Integration", "OCR & NLP", "Prompt Engineering", "DAG Design", "CI/CD"],
+    skills: ["AI-Assisted Dev (Claude, ChatGPT, Gemini)", "LLM Integration", "OCR & NLP", "Prompt Engineering", "DAG Design", "CI/CD"],
     span: "md:col-span-3",
     accent: "accent-3",
   },
@@ -431,7 +431,7 @@ export const EXPERIENCE: TimelineItem[] = [
     org: "Jacoby & Meyers (Bolster Legal)",
     location: "US Medico-Legal Firm · Remote (India)",
     description:
-      "Own end-to-end Power BI for a US medico-legal firm: 14+ dashboards on Azure-hosted Power BI Service (+40% operational visibility), advanced DAX over star-schema models, SQL + Power Query ETL from databases, APIs and FTP, and Azure AD row-level security across 500+ active cases. Built the firm's internal AI-assisted automation suite — OCR/NLP extraction, PDF hyperlinking, and schema-driven code generation — cutting manual document and reporting work by up to 60%.",
+      "Own the medical data layer for a US legal firm — the models and reporting its attorneys and case managers decide on. 14+ dashboards on Azure-hosted Power BI Service (+40% operational visibility) covering case pipelines, billing and settlement value, insurance claim outcomes and firm performance across 500+ active cases; advanced DAX over star-schema models, SQL and Power Query ETL from databases, APIs and FTP, and Azure AD row-level security so each firm sees only its own data. Built the internal AI-assisted automation suite — billing extraction, document assembly and schema-driven code generation — cutting manual reporting work by up to 60%.",
     tags: ["Power BI", "DAX", "Azure", "RLS", "SQL", "Automation"],
   },
   {
