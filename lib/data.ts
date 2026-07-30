@@ -173,6 +173,10 @@ export type Project = {
   icon: LucideIcon;
   links: { demo?: string; github?: string };
   previewImage?: string; // real UI screenshot (README) — shown in the detail view
+  /** Paged interface screenshots. A claim like "verified on the real engine" is
+   * abstract until a visitor can see it happening, so the flagship carries a
+   * gallery rather than one image. */
+  shots?: { src: string; title: string; caption: string }[];
   featured?: boolean;
 };
 
@@ -189,19 +193,51 @@ export const PROJECTS: Project[] = [
     title: "DAX Workbench",
     category: "Power BI External Tool",
     year: "2026",
-    summary: "A browser-based Power BI IDE that auto-generates DAX against your live model.",
+    summary: "A Power BI External Tool that writes, proves and optimises DAX against your live model.",
     description:
-      "The culmination of everything I've built: a Power BI Desktop-class IDE that runs offline in the browser and connects to your live model through a private .NET bridge (TOM / ADOMD / XMLA). It turns plain-English intent into production-grade DAX over a star-schema model, previews every measure against the real Analysis Services engine, ships a deterministic DAX Optimizer with cold-cache benchmarking, imports PBIP/TMDL, and exports a Power BI-ready package. Registered as an External Tool and covered by 80+ automated tests with CI/CD.",
+      "A Power BI External Tool that launches from Desktop's own ribbon and works against the model you already have open, through a private .NET 8 bridge speaking TOM and ADOMD to the embedded Analysis Services engine. It turns plain-English intent into production-grade DAX, shows the real value from Microsoft's engine over the full data before anything is committed, rewrites slow measures and proves the gain by benchmarking both versions cold-cache, analyses VertiPaq storage to show which columns consume the model's memory, maps every dependency so nothing is deleted that a report still uses, and deploys measures and calculated tables straight back. One self-contained executable — nothing to install, and no data leaves the machine.",
     stack: ["React", "TypeScript", "Zustand", "C# / .NET 8", "ADOMD / TOM", "XMLA"],
     metrics: [
-      { label: "Automated tests", value: "80+" },
-      { label: "Visual types", value: "49" },
-      { label: "Bridge endpoints", value: "8" },
+      { label: "Automated tests", value: "107" },
+      { label: "Bridge endpoints", value: "11" },
+      { label: "DAX functions", value: "229" },
     ],
     architecture: ["Power BI Desktop", "AS Engine", ".NET Bridge", "REST + CORS", "React SPA", "DAX / KPI / Optimizer"],
     gradient: "from-cyan-500/30 via-sky-500/10 to-transparent",
     icon: Terminal,
     links: { demo: "https://dax-workbench.onrender.com", github: "https://github.com/kumar98rishav-oss/DAX-Workbench" },
+    shots: [
+      {
+        src: "/shots/dax-editor.png",
+        title: "DAX + live value",
+        caption:
+          "The measure and its real number in one place. The badge reads live · full data — that value came from Microsoft's own engine over every row, not a sample, and it appears before anything is saved to the model.",
+      },
+      {
+        src: "/shots/optimizer.png",
+        title: "Optimizer",
+        caption:
+          "It rewrites a slow measure into the shape the engine executes best, then benchmarks both versions cold-cache and compares their results. When the difference is inside the noise it says so instead of claiming a win.",
+      },
+      {
+        src: "/shots/kpi-board.png",
+        title: "KPI board",
+        caption:
+          "Every measure becomes a live answer without building a single visual. Twelve cards fill from one engine query; text measures and blanks are handled honestly rather than shown as zero.",
+      },
+      {
+        src: "/shots/storage.png",
+        title: "VertiPaq storage",
+        caption:
+          "Column-level size, cardinality and encoding, so you can see what is actually consuming the model's memory — and a ranked list of what is worth fixing, with keys the model needs excluded from the advice.",
+      },
+      {
+        src: "/shots/cleanup.png",
+        title: "Dependency & cleanup",
+        caption:
+          "What references what, across measures, columns and tables. Nothing is called unused without evidence from the report layer, so a measure living on a visual can never be offered for deletion.",
+      },
+    ],
     featured: true,
   },
   {

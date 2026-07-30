@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { ArrowUpRight, Github, Maximize2 } from "lucide-react";
 import type { Project } from "@/lib/data";
 import { AnimatedPipeline } from "@/components/ui/AnimatedPipeline";
+import { SystemArchitecture } from "@/components/ui/SystemArchitecture";
 
 /**
  * The flagship showcase — one project given the full-width treatment:
@@ -32,7 +33,14 @@ export function FeaturedProject({
       >
         <div className="bg-grid absolute inset-0 opacity-25" />
         <div className="absolute inset-0 flex items-center justify-center p-5 sm:p-8">
-          <AnimatedPipeline steps={project.architecture} className="h-full w-full" />
+          {/* The flagship gets a real architecture diagram — the flat stage
+              list undersells a system whose whole point is the verify loop.
+              Everything else keeps the generic pipeline. */}
+          {project.id === "dax-workbench" ? (
+            <SystemArchitecture className="max-h-full max-w-xl overflow-hidden" />
+          ) : (
+            <AnimatedPipeline steps={project.architecture} className="h-full w-full" />
+          )}
         </div>
 
         <span className="mono absolute left-4 top-4 flex items-center gap-1.5 rounded-full border border-accent/40 bg-black/60 px-3 py-1 text-[10px] uppercase tracking-[0.16em] text-accent">

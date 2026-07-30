@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { ShotGallery } from "@/components/ui/ShotGallery";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Github, ArrowUpRight, ChevronDown } from "lucide-react";
 import { PROJECTS, FLAGSHIP_PROJECT_ID, type Project } from "@/lib/data";
@@ -165,23 +166,33 @@ export function Projects() {
                     ))}
                   </div>
 
-                  {/* Real UI preview (from the repo README) */}
-                  {selected.previewImage && (
+                  {/* Interface — a paged gallery when we have real screenshots,
+                      otherwise the single README image. */}
+                  {selected.shots && selected.shots.length > 0 ? (
                     <div className="mt-8">
                       <h4 className="mono text-xs uppercase tracking-[0.2em] text-fg-faint">
-                        Preview
+                        The interface
                       </h4>
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={selected.previewImage}
-                        alt={`${selected.title} interface preview`}
-                        loading="lazy"
-                        onError={(e) => {
-                          (e.currentTarget.parentElement as HTMLElement).style.display = "none";
-                        }}
-                        className="mt-3 w-full rounded-2xl border border-white/10 bg-black/20"
-                      />
+                      <ShotGallery shots={selected.shots} className="mt-3" />
                     </div>
+                  ) : (
+                    selected.previewImage && (
+                      <div className="mt-8">
+                        <h4 className="mono text-xs uppercase tracking-[0.2em] text-fg-faint">
+                          Preview
+                        </h4>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={selected.previewImage}
+                          alt={`${selected.title} interface preview`}
+                          loading="lazy"
+                          onError={(e) => {
+                            (e.currentTarget.parentElement as HTMLElement).style.display = "none";
+                          }}
+                          className="mt-3 w-full rounded-2xl border border-white/10 bg-black/20"
+                        />
+                      </div>
+                    )
                   )}
 
                   {/* Stack */}
