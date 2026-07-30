@@ -164,7 +164,6 @@ export function SystemArchitecture({ className }: { className?: string }) {
       <div className="mono mt-1 flex items-center gap-2 rounded-lg border border-accent/25 bg-accent/[0.06] px-3 py-1.5 text-[9.5px] text-accent/90">
         <span className="text-[11px]">↻</span>
         write → verify on the real engine → deploy
-        <span className="text-fg-faint">· nothing is trusted unverified</span>
       </div>
     </div>
   );
