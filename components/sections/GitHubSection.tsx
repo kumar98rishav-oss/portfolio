@@ -12,7 +12,7 @@ export function GitHubSection() {
       <SectionHeading
         kicker="Open Source"
         title="Building in public"
-        description="A live-looking snapshot — wire it to the GitHub API later, or keep the placeholders."
+        description="Where the tools live — most of what I build ends up here."
       />
 
       {/* Stats + heatmap */}

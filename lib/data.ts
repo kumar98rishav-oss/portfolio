@@ -81,12 +81,18 @@ export const TECH_TICKER: string[] = [
 export const ABOUT = {
   kicker: "About",
   heading: "A biomedical scientist who taught himself to build",
-  intro:
-    "I'm a Senior Data Analyst & Power BI Developer with 4+ years turning complex medical, legal, and insurance data into decisions — SQL and Power Query ETL, star-schema modeling, advanced DAX, and row-level security on Azure-hosted Power BI Service. But I didn't stop at dashboards. Using AI as a pair-programmer, I taught myself to design and ship real software: OCR/NLP document pipelines, a PDF hyperlinking system, and a browser-based Power BI IDE that auto-generates DAX. A Gold Medalist in Biomedical Science, I bring scientific rigor — measure it, verify it, don't guess — to everything I build.",
+  /** Written as separate paragraphs — this is the most personal block on the
+   * page and a single wall of text reads like a job description. */
+  intro: [
+    "I trained as a biomedical scientist — a Gold Medalist in my M.Sc — and then ended up somewhere I never planned: inside medico-legal data, where a single case can carry hundreds of pages of provider bills, insurance claims and medical records, and every number has to survive being questioned in a legal setting.",
+    "For a while I did that work the slow way. Then I stopped accepting the manual parts. It is a good era to be curious — with Claude, ChatGPT and Gemini as pair-programmers, I taught myself to design and ship real software, and I pointed all of it at my own workflow: OCR/NLP pipelines that read scanned bills, an exhibit builder that assembles court-ready PDFs, and DAX Workbench, a Power BI External Tool that writes and verifies measures against a live semantic model.",
+    "Every one of those started as a task that was eating my week. Automating them did not just save hours — it changed what I could take on, and how quickly I could answer a question nobody had asked yet. The science training still shows in how I build: measure it, verify it, do not guess. It is why my tools prove their numbers against the real engine instead of asserting them.",
+  ],
   highlights: [
-    "4+ years · medico-legal, healthcare & insurance data",
+    "5 years · medico-legal, healthcare & insurance data",
     "Gold Medalist, M.Sc Biomedical Science",
     "8+ AI-assisted tools shipped to production",
+    "Built to automate my own workflow first",
   ],
   nowLearning: ["Microsoft Fabric", "Snowflake", "Azure Data Factory", "Power BI ALM"],
 } as const;

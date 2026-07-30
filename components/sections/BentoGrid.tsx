@@ -20,7 +20,7 @@ export function BentoGrid() {
       <SectionHeading
         kicker={ABOUT.kicker}
         title={ABOUT.heading}
-        description="A snapshot of how I work and the toolkit I reach for. Everything here is placeholder — swap it in lib/data.ts."
+        description="How I got here, how I work, and the toolkit I reach for."
       />
 
       {/* Identity band */}
@@ -29,9 +29,13 @@ export function BentoGrid() {
         <Reveal className="md:col-span-4 md:row-span-2">
           <SpotlightCard tilt className="h-full p-8">
             <div className="flex h-full flex-col justify-between gap-6">
-              <p className="text-lg leading-relaxed text-fg-muted sm:text-xl">
-                {ABOUT.intro}
-              </p>
+              <div className="space-y-4">
+                {ABOUT.intro.map((para) => (
+                  <p key={para.slice(0, 24)} className="text-base leading-relaxed text-fg-muted sm:text-lg">
+                    {para}
+                  </p>
+                ))}
+              </div>
               <ul className="flex flex-wrap gap-2">
                 {ABOUT.highlights.map((h) => (
                   <li
