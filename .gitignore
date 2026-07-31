@@ -18,3 +18,9 @@ next-env.d.ts
 
 # local tooling
 /.claude/
+
+# Claude session handoff — LOCAL ONLY.
+# This repo is public; these notes contain personal context, local paths and
+# infrastructure ids. Do not commit them.
+/claude_memory/
+/CLAUDE.md
