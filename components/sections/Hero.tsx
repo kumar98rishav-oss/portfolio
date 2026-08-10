@@ -78,7 +78,7 @@ export function Hero() {
         {/* Terminal role line */}
         <motion.div
           variants={child}
-          className="mono mt-6 flex max-w-full flex-wrap items-center justify-center gap-2 rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-xs text-fg-muted sm:px-4 sm:text-sm"
+          className="glass mono mt-6 flex max-w-full flex-wrap items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs text-fg-muted sm:px-4 sm:text-sm"
         >
           <span className="flex gap-1.5">
             <span className="h-2.5 w-2.5 rounded-full bg-red-400/70" />

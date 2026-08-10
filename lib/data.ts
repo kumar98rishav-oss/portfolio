@@ -44,13 +44,39 @@ export const PROFILE = {
     "Legal-Tech Engineer",
   ],
   tagline:
-    "I run the medical data layer behind US legal teams — turning case, billing and insurance data into the reporting attorneys decide on — and build the AI-assisted tools that remove the manual work: a Power BI External Tool, a deterministic DAX compiler, and extraction pipelines.",
-  location: "Delhi NCR, India", // ⚠️ CONFIRM — résumé says Noida/Delhi NCR; GitHub says Bangalore
-  availability: "Open to Power BI Developer roles",
+    "I run the medical data layer behind US legal teams — turning case, billing and insurance data into the reporting attorneys decide on — and I build the tools that keep it honest: DAX Workbench, my Power BI External Tool for writing, auditing and optimising measures against a live semantic model.",
+  // Profile-snapshot fields (left sidebar), styled after a LinkedIn/Naukri profile header.
+  headline: "Senior Data Analyst · Power BI Developer (PL-300) · AI-Augmented Analytics",
+  currentRole: "Senior Data Analyst & Power BI Developer",
+  company: "Bolster Legal (Jacoby & Meyers)",
+  experience: "4.5 yrs",
+  location: "Mohali, India",
+  availability: "Open to Data Analyst / Power BI roles",
+  phone: "", // kept off the public page by choice; it's in the résumé PDF
   email: "kumar98rishav@gmail.com",
   resumeUrl: "/resume.pdf", // lives at public/resume.pdf
-  avatarUrl: "", // e.g. "/avatar.jpg" — leave empty for the "RK" monogram fallback
+  avatarUrl: "/avatar.jpg", // save your photo to public/avatar.jpg (monogram shows until then)
 } as const;
+
+/** One-paragraph professional summary shown at the top of the main column. */
+export const SUMMARY =
+  "PL-300 certified Senior Data Analyst & Power BI Developer with 4.5+ years owning BI end to end for US legal teams — from requirements with attorneys and case managers to deployed dashboards and automated reporting. A Gold Medalist in Biomedical Science, I bring scientific rigor to messy, high-volume medical, legal and insurance data: today that means turning it into the executive reporting attorneys decide on, and building the developer tools (DAX Workbench, DAX Architect, BI Visual Design) that make BI work faster and safer.";
+
+/** Compact stat chips for the profile sidebar. */
+export const STATS: { value: string; label: string }[] = [
+  { value: "4.5+", label: "Years in analytics" },
+  { value: "14+", label: "BI dashboards shipped" },
+  { value: "PL-300", label: "Certified" },
+];
+
+/** Formal education (degrees) — shown in the sidebar. */
+export const EDUCATION_FORMAL: { degree: string; org: string; period: string }[] = [
+  {
+    degree: "M.Sc Biomedical Science — 🏅 Gold Medalist",
+    org: "Panjab University, Chandigarh",
+    period: "2018 — 2020",
+  },
+];
 
 export const SOCIALS: { label: string; href: string; icon: LucideIcon }[] = [
   { label: "GitHub", href: "https://github.com/kumar98rishav-oss", icon: Github },
@@ -61,13 +87,10 @@ export const SOCIALS: { label: string; href: string; icon: LucideIcon }[] = [
 /* ------------------------------- Navigation ---------------------------------- */
 // `id` must match each <section id="…"> for scrollspy to work.
 export const NAV_LINKS: { id: string; label: string }[] = [
-  { id: "home", label: "Home" },
   { id: "about", label: "About" },
-  { id: "projects", label: "Projects" },
+  { id: "tools", label: "AI Tools" },
+  { id: "work", label: "Projects" },
   { id: "experience", label: "Experience" },
-  { id: "education", label: "Journey" },
-  { id: "certifications", label: "Certs" },
-  { id: "contact", label: "Contact" },
 ];
 
 /* ------------------------------ Marquee ticker -------------------------------- */
@@ -80,19 +103,20 @@ export const TECH_TICKER: string[] = [
 /* ---------------------------- About / Bento grid ----------------------------- */
 export const ABOUT = {
   kicker: "About",
-  heading: "A biomedical scientist who taught himself to build",
+  heading: "I build the reporting — and the tooling that keeps it correct",
   /** Written as separate paragraphs — this is the most personal block on the
    * page and a single wall of text reads like a job description. */
   intro: [
-    "I trained as a biomedical scientist — a Gold Medalist in my M.Sc — and then ended up somewhere I never planned: running the medical data layer for US legal teams. I own the reporting and the data that attorneys and case managers actually make decisions on: case pipelines, billing and settlement values, insurance claim outcomes, firm and attorney performance. My clinical background is why I can model that data correctly; the job itself is data management, not paperwork.",
-    "For a while I did that work the slow way. Then I stopped accepting the manual parts. It is a good era to be curious — with Claude, ChatGPT and Gemini as pair-programmers, I taught myself to design and ship real software, and I pointed all of it at my own workflow: extraction pipelines that turn scanned provider billing into structured, queryable data, an exhibit builder that assembles court-ready PDFs, and DAX Workbench, a Power BI External Tool that writes and verifies measures against a live semantic model.",
-    "Every one of those started as a task that was eating my week. Automating them did not just save hours — it changed what I could take on, and how quickly I could answer a question nobody had asked yet. The science training still shows in how I build: measure it, verify it, do not guess. It is why my tools prove their numbers against the real engine instead of asserting them.",
+    "For the past five years I have built the reporting that US legal teams run on. I own the path from source to decision — CSV extracts, SQL Server and Snowflake feeding modelled Power BI datasets that report on case pipelines, billing and settlement values, claim outcomes and attorney performance — along with the semantic models, DAX and row-level security behind them.",
+    "Working at that volume, the delay was never the analysis. It was everything around it: tracing where a number came from, judging whether a measure was safe to delete, confirming a rewrite was genuinely faster. Each of those meant leaving Power BI, or guessing. That was the part of the week I could not recover, so I designed a tool to remove it — DAX Workbench.",
+    "It is a Power BI External Tool: it launches from the Desktop ribbon and connects to the live semantic model. I write, calculate and format measures in it and preview the result on the real engine before anything is saved. A dependency graph traces any figure back through every measure and column feeding it, so a number can be proven rather than defended. Because it reads the report layout as well as the model, it identifies measures and columns nothing actually uses, shows what a deletion would break, and sequences the removals safely — and it benchmarks a rewrite on the engine rather than asserting it is faster.",
+    "It is built so the data stays where it belongs. Reading the model, running queries, benchmarking and cleanup all execute locally against the machine — none of it leaves. The one optional AI feature transmits structure only: table and column names and existing formulas, around 5 KB, never a row and never a value, and it does not run at all unless a key is configured. It is still in active development — I use it on production work every week, and it improves from what that surfaces.",
   ],
   highlights: [
-    "5 years · medical data management for US legal teams",
+    "5 years · BI and reporting for US legal teams",
+    "DAX Workbench — my Power BI External Tool, used daily",
+    "CSV · SQL Server · Snowflake → Power BI",
     "Gold Medalist, M.Sc Biomedical Science",
-    "8+ AI-assisted tools shipped to production",
-    "Built to automate my own workflow first",
   ],
   nowLearning: ["Microsoft Fabric", "Snowflake", "Azure Data Factory", "Power BI ALM"],
 } as const;
@@ -178,11 +202,19 @@ export type Project = {
   gradient: string;
   icon: LucideIcon;
   links: { demo?: string; github?: string };
+  /** Label for the demo button (defaults to "Live demo"). */
+  demoLabel?: string;
+  /** "tool" (dev tools, shown in AI Tools) or "report" (BI work, shown in Projects). */
+  kind?: "tool" | "report";
+  /** Real screenshots shown directly on a report card. */
+  images?: { src: string; label: string }[];
   previewImage?: string; // real UI screenshot (README) — shown in the detail view
   /** Paged interface screenshots. A claim like "verified on the real engine" is
    * abstract until a visitor can see it happening, so the flagship carries a
    * gallery rather than one image. */
   shots?: { src: string; title: string; caption: string }[];
+  /** Feature bullets — the "what it does" list for tool cards. */
+  whatItDoes?: string[];
   featured?: boolean;
 };
 
@@ -209,6 +241,12 @@ export const PROJECTS: Project[] = [
       { label: "DAX functions", value: "229" },
     ],
     architecture: ["Power BI Desktop", "AS Engine", ".NET Bridge", "REST + CORS", "React SPA", "DAX / KPI / Optimizer"],
+    whatItDoes: [
+      "Turns plain-English intent into production-grade, branched DAX measures",
+      "Previews the real value from Microsoft's engine over the full data before anything is saved",
+      "Rewrites slow measures and proves the gain by benchmarking both versions cold-cache",
+      "Maps every dependency so nothing is deleted that a report still uses; deploys straight back via TOM",
+    ],
     gradient: "from-cyan-500/30 via-sky-500/10 to-transparent",
     icon: Terminal,
     links: { demo: "https://dax-workbench.onrender.com", github: "https://github.com/kumar98rishav-oss/DAX-Workbench" },
@@ -408,6 +446,38 @@ export const PROJECTS: Project[] = [
     gradient: "from-amber-500/30 via-orange-500/10 to-transparent",
     icon: BarChart3,
     links: {},
+    kind: "report",
+    featured: false,
+  },
+  {
+    id: "msp-management-accounts",
+    title: "MSP Management Accounts",
+    category: "Power BI Report",
+    year: "2026",
+    summary: "A board-ready finance dashboard where every number reconciles to the audited accounts.",
+    description:
+      "A Power BI finance model for a Managed Service Provider that unifies billing hours, P&L and the balance sheet into one board-ready board — where every client, service and month ties back to a single audited revenue total (~£40M across 36 months). Where per-account revenue isn't reliable, the audited P&L is split by each account's share of billable value and cost by its share of actual delivery cost, so margins vary realistically. Includes semi-additive balance-sheet measures, a sign-convention P&L, common-size analysis, Row-Level Security and full time intelligence (YoY, MoM, fiscal YTD, rolling 12-month). Built in the source-control-friendly PBIP / TMDL format. Synthetic data only.",
+    stack: ["Power BI", "DAX", "PBIP / TMDL", "Power Query (M)", "RLS", "Star Schema"],
+    metrics: [
+      { label: "Reconciled to", value: "audited P&L" },
+      { label: "Span", value: "~£40M · 36 mo" },
+      { label: "Format", value: "PBIP / TMDL" },
+    ],
+    architecture: ["Billing hours", "Utilisation", "Revenue", "P&L", "Cash", "Balance sheet"],
+    gradient: "from-sky-500/30 via-blue-500/10 to-transparent",
+    icon: BarChart3,
+    links: {
+      demo: "https://kumar98rishav-oss.github.io/powerbi-msp-management-accounts/value-map.html",
+      github: "https://github.com/kumar98rishav-oss/powerbi-msp-management-accounts",
+    },
+    demoLabel: "Open interactive value map",
+    kind: "report",
+    images: [
+      { src: "https://raw.githubusercontent.com/kumar98rishav-oss/powerbi-msp-management-accounts/main/screenshots/01-executive-summary.png", label: "Executive Summary" },
+      { src: "https://raw.githubusercontent.com/kumar98rishav-oss/powerbi-msp-management-accounts/main/screenshots/map-flow.png", label: "Value Flow" },
+      { src: "https://raw.githubusercontent.com/kumar98rishav-oss/powerbi-msp-management-accounts/main/screenshots/map-insight.png", label: "Per-figure insight" },
+      { src: "https://raw.githubusercontent.com/kumar98rishav-oss/powerbi-msp-management-accounts/main/screenshots/map-breakdown.png", label: "Service / Client breakdowns" },
+    ],
     featured: false,
   },
 ];
@@ -420,6 +490,7 @@ export type TimelineItem = {
   org: string;
   location?: string;
   description: string;
+  bullets?: string[];
   tags: string[];
 };
 
@@ -428,10 +499,15 @@ export const EXPERIENCE: TimelineItem[] = [
     id: "exp-1",
     period: "Dec 2022 — Present",
     title: "Senior Data Analyst & Power BI Developer",
-    org: "Jacoby & Meyers (Bolster Legal)",
+    org: "Jacoby & Meyers · Bolster Legal",
     location: "US Medico-Legal Firm · Remote (India)",
-    description:
-      "Own the medical data layer for a US legal firm — the models and reporting its attorneys and case managers decide on. 14+ dashboards on Azure-hosted Power BI Service (+40% operational visibility) covering case pipelines, billing and settlement value, insurance claim outcomes and firm performance across 500+ active cases; advanced DAX over star-schema models, SQL and Power Query ETL from databases, APIs and FTP, and Azure AD row-level security so each firm sees only its own data. Built the internal AI-assisted automation suite — billing extraction, document assembly and schema-driven code generation — cutting manual reporting work by up to 60%.",
+    description: "Own the medical data layer a US legal team decides on — models, reporting and the tooling that keeps it correct.",
+    bullets: [
+      "Built and own 14+ interactive Power BI dashboards on Azure-hosted Power BI Service covering case pipelines, billing and settlement value, insurance-claim outcomes and firm performance — improving operational visibility by ~40%.",
+      "Modelled 500+ active cases as star schemas with advanced DAX (time intelligence, RANKX, dynamic measures) and Azure AD row-level security so each firm sees only its own data.",
+      "Engineered SQL Server + Power Query ETL from databases, APIs and FTP into centralized analytical datasets with scheduled refresh.",
+      "Built the firm's internal AI-assisted automation suite — medical-bill extraction, document assembly and schema-driven code generation — cutting manual reporting and review work by up to 60%.",
+    ],
     tags: ["Power BI", "DAX", "Azure", "RLS", "SQL", "Automation"],
   },
   {
@@ -440,8 +516,12 @@ export const EXPERIENCE: TimelineItem[] = [
     title: "Claims Analyst — Team Lead",
     org: "Amable Consultancy Services Pvt. Ltd",
     location: "Mohali, India",
-    description:
-      "Led a team of 5 analysts processing and validating insurance claims data at 99%+ accuracy and full regulatory compliance. Built reports for claim-volume tracking, TAT analysis, and financial reconciliation, and streamlined data-quality processes to cut error rates by 35%.",
+    description: "Led an insurance-claims analytics team focused on accuracy, compliance and turnaround.",
+    bullets: [
+      "Led a team of 5 analysts processing and validating insurance-claims data at 99%+ accuracy and full regulatory compliance.",
+      "Built reporting for claim-volume tracking, TAT analysis and financial reconciliation using advanced Excel (VLOOKUP, INDEX-MATCH, PivotTables).",
+      "Streamlined data-quality processes, cutting error rates by 35% and improving processing turnaround.",
+    ],
     tags: ["Excel / VBA", "Data Validation", "Team Lead", "Reporting"],
   },
 ];
@@ -517,8 +597,9 @@ export type Certification = {
 };
 
 export const CERTIFICATIONS: Certification[] = [
-  { id: "c1", name: "Power BI Data Analyst (PL-300)", issuer: "Microsoft", year: "Expected Jul 2026", credentialUrl: "#", icon: BarChart3 },
-  { id: "c2", name: "SQL for Data Analysis", issuer: "Coursera / Udemy", year: "", credentialUrl: "#", icon: Database },
+  { id: "c1", name: "Power BI Data Analyst (PL-300)", issuer: "Microsoft", year: "Certified 2026 · 830/1000", credentialUrl: "#", icon: BarChart3 },
+  { id: "c2", name: "Fabric Data Engineer (DP-700)", issuer: "Microsoft", year: "In progress", credentialUrl: "#", icon: Database },
+  { id: "c7", name: "SQL for Data Analysis", issuer: "Coursera / Udemy", year: "", credentialUrl: "#", icon: Terminal },
   { id: "c3", name: "Gold Medalist — M.Sc Biomedical Science", issuer: "Panjab University", year: "2020", credentialUrl: "#", icon: Trophy },
   { id: "c4", name: "Star Performer Award", issuer: "3 Consecutive Years", year: "", credentialUrl: "#", icon: Award },
   { id: "c5", name: "Excellence in Project Delivery", issuer: "Client Recognition", year: "", credentialUrl: "#", icon: Sparkles },

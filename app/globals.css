@@ -7,37 +7,107 @@
   ============================================================
 */
 :root {
-  /* Base surfaces (dark is default) */
-  --bg: 5 5 6;            /* near-black #050506 */
-  --bg-elevated: 12 12 15;
-  --surface: 255 255 255; /* used with low alpha for glass */
+  /* Dark theme = navy-black (matches the reference site's dark mode) */
+  --bg: 9 15 28;              /* #090F1C deep navy-black */
+  --bg-elevated: 15 23 42;
+  --surface: 255 255 255;     /* used with low alpha for fills/glass */
   --border: 255 255 255;
-  --fg: 237 237 240;
-  --fg-muted: 156 156 168;
-  --fg-faint: 110 110 122;
+  --fg: 227 235 249;          /* #E3EBF9 */
+  --fg-muted: 150 165 195;
+  --fg-faint: 108 122 150;
 
-  /* Accent trio — the "reveal on hover" glow colors */
-  --accent: 34 211 238;     /* cyberpunk cyan  */
-  --accent-2: 167 139 250;  /* deep violet     */
-  --accent-3: 244 114 182;  /* vercel pink     */
+  /* Calm professional blue family (brighter on dark) */
+  --accent: 96 165 250;       /* blue-400 */
+  --accent-2: 129 140 248;    /* indigo-400 */
+  --accent-3: 56 189 248;     /* sky-400 */
 
   --radius: 20px;
-  --nav-h: 72px;
+  --nav-h: 64px;
 
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  /* --font-sans (Inter) and --font-display (Poppins) are injected on <html>
+     by next/font in layout.tsx — do NOT redefine them here or they get shadowed. */
   --font-mono: var(--font-geist-mono), ui-monospace, "Fira Code", monospace;
 }
 
-/* Light theme overrides (set by next-themes on <html class="light">) */
+/* ============================================================
+   LIGHT THEME — calm, professional, easy to read (the DEFAULT).
+   Cool paper + deep navy ink + a calm professional blue, matching
+   the reference profile site.
+   ============================================================ */
 .light {
-  --bg: 250 250 252;
-  --bg-elevated: 255 255 255;
-  --surface: 10 10 20;
-  --border: 10 10 25;
-  --fg: 24 24 30;
-  --fg-muted: 90 90 105;
-  --fg-faint: 140 140 155;
+  --bg: 234 241 250;          /* #EAF1FA cool paper */
+  --bg-elevated: 255 255 255; /* white cards */
+  --surface: 20 33 58;        /* navy — used at low alpha for fills */
+  --border: 30 64 132;        /* blue-navy — used at low alpha for hairlines */
+  --fg: 20 33 58;             /* #14213A deep navy ink */
+  --fg-muted: 71 90 122;      /* slate-blue */
+  --fg-faint: 130 146 175;
+
+  /* Calm professional blue */
+  --accent: 37 99 235;        /* blue-600 */
+  --accent-2: 30 74 165;      /* deeper blue (links) */
+  --accent-3: 14 116 144;     /* teal accent, used sparingly */
 }
+
+/* ------------------------------------------------------------------
+   Light-theme compatibility + calm layer.
+   The components use raw white/black Tailwind utilities that assume a
+   dark ground. Scoped to .light and unlayered (so they beat Tailwind's
+   layered utilities), these remap them to the theme tokens — so the
+   SAME markup reads correctly on white, while dark stays byte-identical.
+   ------------------------------------------------------------------ */
+/* Hairline borders → subtle slate */
+.light .border-white\/5  { border-color: rgb(var(--border) / 0.06); }
+.light .border-white\/8  { border-color: rgb(var(--border) / 0.08); }
+.light .border-white\/10 { border-color: rgb(var(--border) / 0.12); }
+.light .border-white\/12 { border-color: rgb(var(--border) / 0.14); }
+.light .border-white\/15 { border-color: rgb(var(--border) / 0.16); }
+.light .border-white\/20 { border-color: rgb(var(--border) / 0.20); }
+.light .border-white\/25 { border-color: rgb(var(--border) / 0.24); }
+
+/* Faint fills → subtle slate on paper */
+.light .bg-white\/\[0\.01\] { background-color: rgb(var(--surface) / 0.02); }
+.light .bg-white\/\[0\.02\] { background-color: rgb(var(--surface) / 0.03); }
+.light .bg-white\/\[0\.03\] { background-color: rgb(var(--surface) / 0.04); }
+.light .bg-white\/\[0\.04\] { background-color: rgb(var(--surface) / 0.05); }
+.light .bg-white\/\[0\.06\] { background-color: rgb(var(--surface) / 0.06); }
+.light .bg-white\/\[0\.08\] { background-color: rgb(var(--surface) / 0.07); }
+.light .bg-white\/10 { background-color: rgb(var(--surface) / 0.08); }
+.light .bg-white\/20 { background-color: rgb(var(--surface) / 0.14); }
+.light .bg-white\/30 { background-color: rgb(var(--surface) / 0.20); }
+
+.light .ring-white\/10 { --tw-ring-color: rgb(var(--border) / 0.12); }
+.light .from-white\/10 { --tw-gradient-from: rgb(var(--surface) / 0.12) var(--tw-gradient-from-position, 0%); }
+
+/* Primary CTAs + monograms: solid white → accent, black text → white */
+.light .bg-white { background-color: rgb(var(--accent)); }
+.light .text-black { color: #ffffff; }
+
+/* Frosted panels read as clean white cards with a soft shadow (not glow) */
+.light .glass {
+  background: rgb(255 255 255 / 0.72);
+  border-color: rgb(var(--border) / 0.1);
+  box-shadow: 0 1px 2px rgb(15 23 42 / 0.04), 0 12px 30px -20px rgb(15 23 42 / 0.25);
+}
+.light .glass-strong {
+  background: rgb(255 255 255 / 0.85);
+  border-color: rgb(var(--border) / 0.12);
+  box-shadow: 0 1px 2px rgb(15 23 42 / 0.05), 0 16px 40px -22px rgb(15 23 42 / 0.3);
+}
+
+/* Profile section cards: crisp white with soft depth */
+.light .profile-main > section {
+  background: #ffffff;
+  border-color: rgb(var(--border) / 0.1);
+  box-shadow: 0 1px 2px rgb(15 23 42 / 0.04), 0 10px 30px -22px rgb(15 23 42 / 0.22);
+}
+
+/* Soften the neon glow devices for a calmer feel */
+.light .gradient-border::before { opacity: 0.4; }
+.light .accent-glow {
+  box-shadow: 0 0 0 1px rgb(var(--accent) / 0.18), 0 10px 40px -12px rgb(var(--accent) / 0.28);
+}
+.light .bg-noise::after { opacity: 0.015; }
 
 @theme inline {
   --color-bg: rgb(var(--bg));
@@ -68,6 +138,44 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
+}
+
+/* Display headings use Poppins (matches the reference site) */
+h1, h2, h3, h4, .font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+}
+
+/* ---- Profile-document building blocks (reference-site style) ---- */
+.card {
+  background-color: rgb(var(--bg-elevated));
+  border: 1px solid rgb(var(--border) / 0.1);
+  border-radius: 1.1rem;
+  box-shadow: 0 1px 2px rgb(var(--fg) / 0.04), 0 12px 30px -24px rgb(var(--fg) / 0.22);
+}
+.card-hover {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.card-hover:hover {
+  transform: translateY(-2px);
+  border-color: rgb(var(--accent) / 0.4);
+  box-shadow: 0 1px 2px rgb(var(--fg) / 0.05), 0 18px 42px -24px rgb(var(--accent) / 0.3);
+}
+.kicker {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgb(var(--accent));
+}
+.chip {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  border-radius: 7px;
+  padding: 3px 9px;
+  border: 1px solid rgb(var(--border) / 0.14);
+  background: rgb(var(--surface) / 0.04);
+  color: rgb(var(--fg-muted));
 }
 
 /* Custom selection */
@@ -311,6 +419,48 @@ body {
   .pipe-node {
     font-size: 15px;
   }
+}
+
+/* ------------------------------------------------------------------
+   Profile-document layout (LinkedIn / Naukri style)
+   Reshape each top-level <section> in the main column into a titled
+   card and strip the full-page width/padding the sections shipped with.
+   Descendant specificity (0,1,1) beats the sections' single-class
+   Tailwind utilities (max-w-*, mx-auto, px-*, py-*) with no !important.
+   ------------------------------------------------------------------ */
+.profile-main > section {
+  max-width: none;
+  margin-inline: 0;
+  padding: 1.5rem 1.25rem;
+  border: 1px solid rgb(var(--border) / 0.1);
+  border-radius: 1.5rem;
+  background: rgb(var(--surface) / 0.03);
+  scroll-margin-top: 84px;
+}
+@media (min-width: 1024px) {
+  .profile-main > section {
+    padding: 2rem 2.25rem;
+    scroll-margin-top: 96px;
+  }
+}
+/* Section titles are hero-sized by default — shrink them to card-header size */
+.profile-main > section h2 {
+  font-size: 1.6rem;
+  line-height: 1.15;
+}
+@media (min-width: 1024px) {
+  .profile-main > section h2 {
+    font-size: 1.95rem;
+  }
+}
+/* Sections lose their own huge top margins now that the card provides rhythm */
+.profile-main > section > :first-child {
+  margin-top: 0;
+}
+/* Tighten the first content block that follows a SectionHeading inside a card */
+.profile-main > section > .mt-12,
+.profile-main > section > .mt-16 {
+  margin-top: 1.75rem;
 }
 
 /*

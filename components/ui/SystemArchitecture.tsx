@@ -106,13 +106,13 @@ export function SystemArchitecture({ className }: { className?: string }) {
           <div key={lane.id}>
             <div
               className={cn(
-                "rounded-xl border bg-black/40 px-3 py-2 backdrop-blur-sm transition-colors duration-500",
+                "rounded-xl border bg-[rgb(var(--bg)/0.72)] px-3 py-2 backdrop-blur-sm transition-colors duration-500",
                 tone.ring,
               )}
             >
               <div className="flex flex-wrap items-baseline gap-x-2">
                 <span className={cn("h-1.5 w-1.5 shrink-0 rounded-full", tone.dot)} />
-                <span className="text-[13px] font-semibold text-white/90">{lane.title}</span>
+                <span className="text-[13px] font-semibold text-fg">{lane.title}</span>
                 <span className="mono text-[9px] uppercase tracking-[0.14em] text-fg-faint">
                   {lane.subtitle}
                 </span>
@@ -121,7 +121,7 @@ export function SystemArchitecture({ className }: { className?: string }) {
                 {lane.items.map((it) => (
                   <span
                     key={it}
-                    className="mono rounded border border-white/10 bg-white/[0.03] px-1.5 py-0.5 text-[9.5px] text-white/60"
+                    className="mono rounded border border-white/10 bg-white/[0.03] px-1.5 py-0.5 text-[9.5px] text-fg-muted"
                   >
                     {it}
                   </span>
