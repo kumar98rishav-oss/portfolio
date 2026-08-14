@@ -60,7 +60,7 @@ export const PROFILE = {
 
 /** One-paragraph professional summary shown at the top of the main column. */
 export const SUMMARY =
-  "PL-300 certified Senior Data Analyst & Power BI Developer with 4.5+ years owning BI end to end for US legal teams — from requirements with attorneys and case managers to deployed dashboards and automated reporting. A Gold Medalist in Biomedical Science, I bring scientific rigor to messy, high-volume medical, legal and insurance data: today that means turning it into the executive reporting attorneys decide on, and building the developer tools (DAX Workbench, DAX Architect, BI Visual Design) that make BI work faster and safer.";
+  "PL-300 certified Senior Data Analyst & Power BI Developer with 4.5+ years owning BI end to end for US legal teams — from requirements with attorneys and case managers to deployed dashboards and automated reporting. A Gold Medalist in Biomedical Engineering, I bring scientific rigor to messy, high-volume medical, legal and insurance data: today that means turning it into the executive reporting attorneys decide on, and building the developer tools (DAX Workbench, DAX Architect, BI Visual Design) that make BI work faster and safer.";
 
 /** Compact stat chips for the profile sidebar. */
 export const STATS: { value: string; label: string }[] = [
@@ -72,7 +72,7 @@ export const STATS: { value: string; label: string }[] = [
 /** Formal education (degrees) — shown in the sidebar. */
 export const EDUCATION_FORMAL: { degree: string; org: string; period: string }[] = [
   {
-    degree: "M.Sc Biomedical Science — 🏅 Gold Medalist",
+    degree: "M.Sc Biomedical Engineering — 🏅 Gold Medalist",
     org: "Panjab University, Chandigarh",
     period: "2018 — 2020",
   },
@@ -116,7 +116,7 @@ export const ABOUT = {
     "5 years · BI and reporting for US legal teams",
     "DAX Workbench — my Power BI External Tool, used daily",
     "CSV · SQL Server · Snowflake → Power BI",
-    "Gold Medalist, M.Sc Biomedical Science",
+    "Gold Medalist, M.Sc Biomedical Engineering",
   ],
   nowLearning: ["Microsoft Fabric", "Snowflake", "Azure Data Factory", "Power BI ALM"],
 } as const;
@@ -229,23 +229,24 @@ export const PROJECTS: Project[] = [
   {
     id: "dax-workbench",
     title: "DAX Workbench",
-    category: "Power BI External Tool",
+    category: "Power BI External Tool · AI Delivery Platform",
     year: "2026",
-    summary: "A Power BI External Tool that writes, proves and optimises DAX against your live model.",
+    summary: "A Power BI External Tool that writes, proves and optimises DAX against your live model — and now runs a governed, verified AI delivery pipeline end to end.",
     description:
-      "A Power BI External Tool that launches from Desktop's own ribbon and works against the model you already have open, through a private .NET 8 bridge speaking TOM and ADOMD to the embedded Analysis Services engine. It turns plain-English intent into production-grade DAX, shows the real value from Microsoft's engine over the full data before anything is committed, rewrites slow measures and proves the gain by benchmarking both versions cold-cache, analyses VertiPaq storage to show which columns consume the model's memory, maps every dependency so nothing is deleted that a report still uses, and deploys measures and calculated tables straight back. One self-contained executable — nothing to install, and no data leaves the machine.",
-    stack: ["React", "TypeScript", "Zustand", "C# / .NET 8", "ADOMD / TOM", "XMLA"],
+      "A Power BI External Tool that launches from Desktop's own ribbon and works against the model you already have open, through a private .NET 8 bridge speaking TOM and ADOMD to the embedded Analysis Services engine. It turns plain-English intent into production-grade DAX, shows the real value from Microsoft's engine over the full data before anything is committed, rewrites slow measures and proves the gain by benchmarking both versions cold-cache, analyses VertiPaq storage, and maps every dependency so nothing is deleted that a report still uses. Around that tooling it now runs a full AI delivery platform: an 11-stage governed pipeline (the cockpit) that a Claude agent drives over a 19-tool MCP server — profile → star-schema model as TMDL → engine-validated DAX → report as PBIR → Git — behind human breakpoints and sign-offs, a folder-based registry of Claude Skills and pipeline templates, and verifying gates where the host re-computes the reconciliation baselines on the live engine before any stage goes green. The agent can drive, but it cannot open its own gates. One self-contained executable — nothing to install, and no data leaves the machine.",
+    stack: ["React", "TypeScript", "Zustand", "C# / .NET 8", "ADOMD / TOM", "MCP", "Claude Skills"],
     metrics: [
+      { label: "MCP tools", value: "19" },
+      { label: "Pipeline stages", value: "11" },
       { label: "Automated tests", value: "107" },
-      { label: "Bridge endpoints", value: "11" },
-      { label: "DAX functions", value: "229" },
     ],
-    architecture: ["Power BI Desktop", "AS Engine", ".NET Bridge", "REST + CORS", "React SPA", "DAX / KPI / Optimizer"],
+    architecture: ["Claude Agent · MCP", "Pipeline Cockpit", ".NET Bridge", "AS Engine", "Verifying Gates", "Git PBIP"],
     whatItDoes: [
-      "Turns plain-English intent into production-grade, branched DAX measures",
-      "Previews the real value from Microsoft's engine over the full data before anything is saved",
-      "Rewrites slow measures and proves the gain by benchmarking both versions cold-cache",
-      "Maps every dependency so nothing is deleted that a report still uses; deploys straight back via TOM",
+      "Turns plain-English intent into production-grade DAX, validated against the live schema so invented columns are impossible",
+      "Runs an 11-stage governed AI delivery pipeline: a Claude agent builds model + report as code behind human breakpoints and sign-offs",
+      "Verifying gates re-compute reconciliation baselines on the live engine — green means verified, never claimed",
+      "Reusable Claude Skills + pipeline templates: every lesson from one delivery is inherited by the next",
+      "Rewrites slow measures and proves the gain cold-cache; maps every dependency before anything is deleted",
     ],
     gradient: "from-cyan-500/30 via-sky-500/10 to-transparent",
     icon: Terminal,
@@ -450,6 +451,38 @@ export const PROJECTS: Project[] = [
     featured: false,
   },
   {
+    id: "ai-servicesdelivery",
+    title: "AI Services Delivery Analytics",
+    category: "Power BI Report · built by DAX Workbench",
+    year: "2026",
+    summary: "A four-page delivery-intelligence report designed and produced end to end by my DAX Workbench pipeline — finished by hand.",
+    description:
+      "A professional-services dashboard (utilization, margin, collections, project economics) whose entire build ran through my DAX Workbench delivery pipeline: a Claude agent profiled the raw CSVs, designed the star schema, authored the semantic model as TMDL through the Power BI modeling MCP, wrote 37 measures that were each validated on the live engine, and generated the report as PBIR code — with me holding approval gates at every consequential step and applying the final visual polish by hand. Every headline number was re-computed on the engine by the pipeline's verifying gates and reconciles with the source files exactly (Revenue $62,870,822, to the penny; the AR aging buckets sum precisely to Outstanding). Ships with dynamic multi-role row-level security (Admin / Region / Practice, deny-by-default) added later as a governed change request, a Client-360 drill-through, and documentation generated from the model itself — the whole project lives in Git as PBIP.",
+    stack: ["Power BI", "PBIP / TMDL", "PBIR", "DAX", "Claude + MCP", "Dynamic RLS", "Git"],
+    metrics: [
+      { label: "Measures engine-validated", value: "37/37" },
+      { label: "Reconciliation", value: "to the penny" },
+      { label: "Visuals authored as code", value: "~50" },
+    ],
+    architecture: ["5 CSVs", "Profile → Baselines", "TMDL Model", "Verified DAX", "PBIR Report", "Git PBIP"],
+    gradient: "from-emerald-500/30 via-teal-500/10 to-transparent",
+    icon: BarChart3,
+    links: {
+      demo: "https://daxworkbench-guide.surge.sh/valuemap.html",
+      github: "https://github.com/kumar98rishav-oss/AI-ServicesDelivery-Dashboard",
+    },
+    demoLabel: "Open interactive value map",
+    kind: "report",
+    images: [
+      { src: "https://raw.githubusercontent.com/kumar98rishav-oss/AI-ServicesDelivery-Dashboard/main/screenshots/01-executive-command-center.png", label: "Executive Command Center" },
+      { src: "https://raw.githubusercontent.com/kumar98rishav-oss/AI-ServicesDelivery-Dashboard/main/screenshots/02-delivery-utilization.png", label: "Delivery & Utilization" },
+      { src: "https://raw.githubusercontent.com/kumar98rishav-oss/AI-ServicesDelivery-Dashboard/main/screenshots/03-client-project-profitability.png", label: "Client & Project Profitability" },
+      { src: "https://raw.githubusercontent.com/kumar98rishav-oss/AI-ServicesDelivery-Dashboard/main/screenshots/04-financial-health.png", label: "Financial Health · AR aging" },
+      { src: "https://raw.githubusercontent.com/kumar98rishav-oss/AI-ServicesDelivery-Dashboard/main/screenshots/05-client-360-drillthrough.png", label: "Client 360 drill-through" },
+    ],
+    featured: false,
+  },
+  {
     id: "msp-management-accounts",
     title: "MSP Management Accounts",
     category: "Power BI Report",
@@ -533,7 +566,7 @@ export const EDUCATION: TimelineItem[] = [
   {
     id: "edu-0",
     period: "2018 — 2020",
-    title: "M.Sc Biomedical Science — 🏅 Gold Medalist",
+    title: "M.Sc Biomedical Engineering — 🏅 Gold Medalist",
     org: "Panjab University, Chandigarh",
     description:
       "Where the rigor started — stem cell & tissue engineering, the scientific method, and a habit of chasing correctness and measuring everything. The code came later; the discipline came first.",
@@ -600,7 +633,7 @@ export const CERTIFICATIONS: Certification[] = [
   { id: "c1", name: "Power BI Data Analyst (PL-300)", issuer: "Microsoft", year: "Certified 2026 · 830/1000", credentialUrl: "#", icon: BarChart3 },
   { id: "c2", name: "Fabric Data Engineer (DP-700)", issuer: "Microsoft", year: "In progress", credentialUrl: "#", icon: Database },
   { id: "c7", name: "SQL for Data Analysis", issuer: "Coursera / Udemy", year: "", credentialUrl: "#", icon: Terminal },
-  { id: "c3", name: "Gold Medalist — M.Sc Biomedical Science", issuer: "Panjab University", year: "2020", credentialUrl: "#", icon: Trophy },
+  { id: "c3", name: "Gold Medalist — M.Sc Biomedical Engineering", issuer: "Panjab University", year: "2020", credentialUrl: "#", icon: Trophy },
   { id: "c4", name: "Star Performer Award", issuer: "3 Consecutive Years", year: "", credentialUrl: "#", icon: Award },
   { id: "c5", name: "Excellence in Project Delivery", issuer: "Client Recognition", year: "", credentialUrl: "#", icon: Sparkles },
   { id: "c6", name: "Process Improvement Champion", issuer: "60% efficiency gain", year: "", credentialUrl: "#", icon: Gauge },
