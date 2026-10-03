@@ -4,8 +4,8 @@ import { ArrowUpRight, Github } from "lucide-react";
 import { PROJECTS } from "@/lib/data";
 import { Reveal } from "@/components/ui/Reveal";
 
-// Show the MSP dashboard first, then the medical-legal one.
-const REPORT_ORDER = ["msp-management-accounts", "medlegal-analytics"];
+// Supply chain control tower first, then MSP, then medical-legal.
+const REPORT_ORDER = ["scm-control-tower", "ai-servicesdelivery", "msp-management-accounts", "medlegal-analytics"];
 const REPORTS = PROJECTS.filter((p) => p.kind === "report").sort(
   (a, b) => REPORT_ORDER.indexOf(a.id) - REPORT_ORDER.indexOf(b.id)
 );

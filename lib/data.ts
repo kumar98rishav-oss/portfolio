@@ -9,6 +9,7 @@
 import type { LucideIcon } from "lucide-react";
 import {
   BarChart3,
+  Truck,
   Database,
   BrainCircuit,
   Cloud,
@@ -446,6 +447,27 @@ export const PROJECTS: Project[] = [
     architecture: ["SQL Server", "Power Query ETL", "Star Schema + Bridge", "40+ DAX", "6 Report Pages", "RLS + Service"],
     gradient: "from-amber-500/30 via-orange-500/10 to-transparent",
     icon: BarChart3,
+    links: {},
+    kind: "report",
+    featured: false,
+  },
+  {
+    id: "scm-control-tower",
+    title: "Supply Chain Control Tower",
+    category: "Power BI Report",
+    year: "2026",
+    summary: "A five-page supply chain dashboard tying sales, shipments, inventory and supplier risk to profit.",
+    description:
+      "A Power BI model and report for supply chain performance, built on a star schema of four fact tables (sales, purchases, shipments, inventory) and five dimensions. 140+ DAX measures cover OTIF and fill rate, inbound on-time delivery, inventory turns and days-in-inventory, stock-out and excess/dead stock, purchase price variance, freight cost, and supplier concentration. A risk layer links supplier risk tiers to the revenue they expose, so a late or defective supplier shows up as money at stake. Five pages: Executive Control Tower, Operations & Supplier Risk, Supplier Scorecard, Warehouse Snapshot and a Supply Chain P&L with a dynamic line selector. Built in the source-control-friendly PBIP / TMDL format. Synthetic data only.",
+    stack: ["Power BI", "DAX", "PBIP / TMDL", "Power Query (M)", "Star Schema", "Time Intelligence"],
+    metrics: [
+      { label: "DAX measures", value: "140+" },
+      { label: "Report pages", value: "5" },
+      { label: "Fact tables", value: "4" },
+    ],
+    architecture: ["Sales", "Shipments", "Inventory", "Purchases", "Supplier risk", "Supply chain P&L"],
+    gradient: "from-teal-500/30 via-emerald-500/10 to-transparent",
+    icon: Truck,
     links: {},
     kind: "report",
     featured: false,
