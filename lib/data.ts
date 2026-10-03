@@ -470,6 +470,11 @@ export const PROJECTS: Project[] = [
     icon: Truck,
     links: {},
     kind: "report",
+    images: [
+      { src: "/shots/scm/01-executive-control-tower.png", label: "Executive Control Tower" },
+      { src: "/shots/scm/02-operations-supplier-risk.png", label: "Operations & Supplier Risk" },
+      { src: "/shots/scm/03-supply-chain-pnl.png", label: "Supply Chain P&L" },
+    ],
     featured: false,
   },
   {
