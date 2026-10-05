@@ -468,7 +468,9 @@ export const PROJECTS: Project[] = [
     architecture: ["Sales", "Shipments", "Inventory", "Purchases", "Supplier risk", "Supply chain P&L"],
     gradient: "from-teal-500/30 via-emerald-500/10 to-transparent",
     icon: Truck,
-    links: {},
+    links: {
+      github: "https://github.com/kumar98rishav-oss/Supply_Chain_Dashboard",
+    },
     kind: "report",
     images: [
       { src: "/shots/scm/01-executive-control-tower.png", label: "Executive Control Tower" },
