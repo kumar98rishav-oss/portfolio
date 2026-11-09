@@ -1,0 +1,924 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Eight interactive maps of how a Power BI project (PBIP, TMDL, PBIR) is stored, built from a real sample project.">
+<title>Power BI Internals Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: a field guide. Fixed header with the eight maps as tabs; each map = a finding, a live diagram, and a detail panel that explains whatever you click.
+   Colour is meaning: violet = report (PBIR), teal = semantic model (TMDL), amber = the step you are on. */
+:root {
+  --bg: #F4F5F8; --surface: #FFFFFF; --sunk: #EEF0F4; --ink: #14171D; --muted: #5A6170; --line: #D9DDE4; --line-strong: #B9C0CB;
+  --report: #5B3FD9; --model: #0B7C74; --focus: #C27A00; --ok: #2F8A3E; --warn: #B86E00; --bad: #C23A2A;
+  --code-bg: #F7F8FA; --kw: #5B3FD9; --prop: #0B7C74; --str: #9A4B00; --cm: #7A8190;
+  --sans: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif; --mono: "IBM Plex Mono", Consolas, "Courier New", monospace;
+  --r: 10px;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0E1014; --surface: #161A20; --sunk: #1C2129; --ink: #E7EAEF; --muted: #98A0AD; --line: #2A3039; --line-strong: #3C4450;
+  --report: #A592FF; --model: #45C6B9; --focus: #F2B544; --ok: #63C474; --warn: #F2B544; --bad: #FF7A66;
+  --code-bg: #12161B; --kw: #B6A6FF; --prop: #5CD3C6; --str: #F0B36A; --cm: #7C8594; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0E1014; --surface: #161A20; --sunk: #1C2129; --ink: #E7EAEF; --muted: #98A0AD; --line: #2A3039; --line-strong: #3C4450;
+  --report: #A592FF; --model: #45C6B9; --focus: #F2B544; --ok: #63C474; --warn: #F2B544; --bad: #FF7A66;
+  --code-bg: #12161B; --kw: #B6A6FF; --prop: #5CD3C6; --str: #F0B36A; --cm: #7C8594; color-scheme: dark }
+
+* { box-sizing: border-box }
+body { background: var(--bg); color: var(--ink); font: 15px/1.55 var(--sans); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--surface) }
+.wrap { max-width: 1240px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)) }
+header.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--surface); border-bottom: 1px solid var(--line) }
+.brand { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; padding-block: 14px 6px }
+.brand b { font-size: 17px; letter-spacing: -.01em }
+.brand span { color: var(--muted); font-size: 13px }
+.legend { margin-left: auto; display: flex; gap: 14px; font-size: 12px; color: var(--muted) }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px }
+nav.tabs { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; padding-bottom: 0 }
+nav.tabs::-webkit-scrollbar { display: none }
+nav.tabs a { flex: none; text-decoration: none; color: var(--muted); font-size: 13.5px; font-weight: 500; padding: 9px 12px 11px; border-bottom: 2px solid transparent; white-space: nowrap }
+nav.tabs a small { font-family: var(--mono); font-size: 11px; margin-right: 6px; opacity: .8 }
+nav.tabs a:hover { color: var(--ink) }
+nav.tabs a[aria-current="page"] { color: var(--ink); border-bottom-color: var(--focus) }
+nav.tabs a:focus-visible, button:focus-visible, .node:focus-visible, .ftree li:focus-visible, select:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px }
+
+main { padding-block: 28px 56px }
+.view[hidden] { display: none }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted) }
+h1 { font-size: clamp(24px, 3.2vw, 34px); line-height: 1.15; letter-spacing: -.02em; margin: 6px 0 10px; text-wrap: balance; max-width: 26ch }
+.lede { color: var(--muted); max-width: 70ch; margin: 0 0 22px }
+h3 { font-size: 15px; margin: 0 0 8px }
+
+.stage { display: grid; grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr); gap: 20px; align-items: start }
+@media (max-width: 900px) { .stage { grid-template-columns: 1fr } }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r) }
+.diagram { padding: 14px; min-width: 0 }
+.diagram svg { width: 100%; height: auto; display: block }
+.scroll-x { overflow-x: auto }
+.panel { padding: 18px 18px 20px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 104px); min-width: 0 }
+@media (max-width: 900px) { .panel { position: static } }
+.panel h2 { font-size: 18px; margin: 4px 0 6px; letter-spacing: -.01em; overflow-wrap: anywhere }
+.panel .path { font-family: var(--mono); font-size: 12px; color: var(--muted); overflow-wrap: anywhere; margin-bottom: 10px }
+.panel p { margin: 0 0 10px }
+.panel .hint { color: var(--muted); font-size: 13.5px }
+.badges { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 12px }
+.badge { font-size: 12px; font-weight: 500; padding: 2px 9px; border-radius: 99px; border: 1px solid currentColor; white-space: nowrap }
+.b-report { color: var(--report) } .b-model { color: var(--model) } .b-ok { color: var(--ok) } .b-warn { color: var(--warn) } .b-bad { color: var(--bad) } .b-quiet { color: var(--muted) }
+
+pre.code { font: 12.5px/1.6 var(--mono); background: var(--code-bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; margin: 8px 0 0; overflow-x: auto; tab-size: 4; white-space: pre }
+.k { color: var(--kw); font-weight: 500 } .p { color: var(--prop) } .s { color: var(--str) } .c { color: var(--cm) }
+.add { background: color-mix(in srgb, var(--ok) 16%, transparent); display: inline-block; min-width: 100% }
+code { font-family: var(--mono); font-size: .92em; background: var(--sunk); padding: 1px 5px; border-radius: 4px }
+
+/* SVG */
+svg text { font-family: var(--sans) }
+.t-name { fill: var(--ink); font-size: 13px; font-weight: 600 }
+.t-sub { fill: var(--muted); font-size: 11.5px }
+.t-mono { font-family: var(--mono) !important; }
+.t-group { font-size: 12px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase }
+.grp-report rect.box { fill: color-mix(in srgb, var(--report) 6%, transparent); stroke: color-mix(in srgb, var(--report) 45%, transparent) }
+.grp-model rect.box { fill: color-mix(in srgb, var(--model) 6%, transparent); stroke: color-mix(in srgb, var(--model) 45%, transparent) }
+.grp-report .t-group { fill: var(--report) } .grp-model .t-group { fill: var(--model) }
+.node { cursor: pointer; outline: none }
+.node rect, .node circle, .node polygon { fill: var(--surface); stroke: var(--line-strong); stroke-width: 1.25; transition: stroke .2s, fill .2s }
+.node.report rect { stroke: color-mix(in srgb, var(--report) 60%, var(--line-strong)) }
+.node.model rect { stroke: color-mix(in srgb, var(--model) 60%, var(--line-strong)) }
+.node:hover rect, .node:hover circle { stroke: var(--ink) }
+.node.sel rect, .node.sel circle, .node.sel polygon { stroke: var(--focus); stroke-width: 2.5; fill: color-mix(in srgb, var(--focus) 12%, var(--surface)) }
+.node.lit rect, .node.lit circle { stroke: var(--focus); stroke-width: 2 }
+.node.dim { opacity: .42 }
+.node.broken rect { stroke: var(--bad); stroke-width: 2.5; fill: color-mix(in srgb, var(--bad) 10%, var(--surface)); stroke-dasharray: 6 4 }
+.edge { fill: none; stroke: var(--line-strong); stroke-width: 1.4; transition: stroke .2s, opacity .2s }
+.edge.lit { stroke: var(--focus); stroke-width: 2.4 }
+.edge.dim { opacity: .25 }
+.edge.dash { stroke-dasharray: 5 5 }
+.edge.bad { stroke: var(--bad); stroke-width: 2.2; stroke-dasharray: 6 4 }
+.edge-label { fill: var(--muted); font-size: 11.5px }
+.edge-label.lit { fill: var(--focus); font-weight: 600 }
+@keyframes flow { to { stroke-dashoffset: -20 } }
+.edge.lit.flow { stroke-dasharray: 8 6; animation: flow 1s linear infinite }
+@media (prefers-reduced-motion: reduce) { .edge.lit.flow { animation: none; stroke-dasharray: none } * { transition: none !important } }
+
+/* Controls */
+.controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 12px }
+button, select { font: inherit; font-size: 13.5px; color: var(--ink); background: var(--surface); border: 1px solid var(--line-strong); border-radius: 8px; padding: 6px 12px; cursor: pointer }
+button:hover { border-color: var(--ink) }
+button.primary { background: var(--ink); color: var(--surface); border-color: var(--ink); font-weight: 600 }
+button[aria-pressed="true"] { background: color-mix(in srgb, var(--focus) 18%, var(--surface)); border-color: var(--focus) }
+.stepper { font-family: var(--mono); font-size: 12.5px; color: var(--muted); min-width: 64px }
+.dots { display: flex; gap: 5px; flex-wrap: wrap }
+.dots span { width: 9px; height: 9px; border-radius: 50%; background: var(--line-strong) }
+.dots span.on { background: var(--focus) }
+.step-num { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--focus); color: #14171D; font-weight: 700; font-size: 13px; margin-right: 8px }
+
+/* Sub-tabs */
+.subtabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px }
+
+/* Tables */
+.tbl-wrap { overflow-x: auto; margin-top: 20px }
+table { border-collapse: collapse; width: 100%; font-size: 13.5px; background: var(--surface) }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top }
+th { font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; background: var(--sunk) }
+td.hl, th.hl { background: color-mix(in srgb, var(--focus) 12%, var(--surface)) }
+
+/* Folder tree */
+.filters { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px }
+.ftree { list-style: none; margin: 0; padding: 0; font: 13px/1.4 var(--mono) }
+.ftree li { display: flex; align-items: center; gap: 10px; padding: 5px 8px; border-radius: 6px; cursor: pointer; min-width: 0 }
+.ftree li:hover { background: var(--sunk) }
+.ftree li.sel { background: color-mix(in srgb, var(--focus) 14%, var(--surface)); outline: 1px solid var(--focus) }
+.ftree li.folder { cursor: default; color: var(--muted); font-weight: 500 }
+.ftree li.folder.report { color: var(--report) } .ftree li.folder.model { color: var(--model) }
+.ftree li.faded { opacity: .28 }
+.ftree .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0 }
+.ftree .dot { flex: none; width: 9px; height: 9px; border-radius: 50% }
+.ftree .tag { margin-left: auto; flex: none; font: 11px var(--sans); color: var(--muted) }
+.d-free { background: var(--ok) } .d-careful { background: var(--warn) } .d-never { background: var(--bad) } .d-none { background: transparent }
+
+/* Grids */
+.grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); margin-top: 20px }
+.tile { padding: 14px 16px }
+.tile .eyebrow { margin-bottom: 4px }
+.tile p { margin: 6px 0 0; color: var(--muted); font-size: 13.5px }
+.rule-ex { font-family: var(--mono); font-size: 12.5px; margin-top: 8px; background: var(--code-bg); border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; overflow-x: auto; white-space: pre }
+.note { margin-top: 16px; padding: 12px 14px; border-radius: 8px; background: color-mix(in srgb, var(--focus) 10%, var(--surface)); border: 1px solid color-mix(in srgb, var(--focus) 40%, transparent); font-size: 14px }
+.note b { color: var(--ink) }
+.prompt { font-size: 13px; background: var(--code-bg); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; margin-top: 8px; color: var(--ink) }
+.copy { margin-top: 8px; font-size: 12.5px; padding: 4px 10px }
+.rel-form { display: grid; gap: 10px; margin: 6px 0 12px }
+.rel-form label { display: grid; gap: 4px; font-size: 13px; color: var(--muted) }
+footer { color: var(--muted); font-size: 12.5px; padding-block: 0 32px }
+footer a { color: inherit }
+</style>
+<style>body{margin:0;-webkit-text-size-adjust:100%}[hidden]{display:none!important}img{max-width:100%}</style>
+</head>
+<body>
+
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand">
+      <b>Power BI Internals Map</b><span>Session 01 · PBIP, TMDL and PBIR · built from the real CoffeeSales project</span>
+      <div class="legend" aria-hidden="true"><span><i style="background:var(--report)"></i>Report · PBIR</span><span><i style="background:var(--model)"></i>Model · TMDL</span><span><i style="background:var(--focus)"></i>You are here</span></div>
+    </div>
+    <nav class="tabs" aria-label="Maps">
+      <a href="#overview" data-v="overview"><small>00</small>The whole map</a>
+      <a href="#formats" data-v="formats"><small>01</small>Formats</a>
+      <a href="#folder" data-v="folder"><small>02</small>Project folder</a>
+      <a href="#tmdl" data-v="tmdl"><small>03</small>TMDL</a>
+      <a href="#relationships" data-v="relationships"><small>04</small>Relationships</a>
+      <a href="#report" data-v="report"><small>05</small>Report · PBIR</a>
+      <a href="#ailoop" data-v="ailoop"><small>06</small>AI without MCP</a>
+      <a href="#mcp" data-v="mcp"><small>07</small>MCP</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- 00 OVERVIEW -->
+<section class="view" id="v-overview">
+  <div class="eyebrow">Map 00 · How a number reaches the page</div>
+  <h1>A visual finds its numbers by name, through two folders</h1>
+  <p class="lede">Press <b>Trace a number</b> to follow the Gross Margin % bar chart from the file you double-click down to the CSV the data comes from. Click any box to see what that file holds.</p>
+  <div class="stage">
+    <div class="card diagram">
+      <div class="scroll-x"><svg id="ov-svg" viewBox="0 0 760 560" role="img" aria-label="PBIP project map: report folder and semantic model folder"></svg></div>
+      <div class="controls">
+        <button class="primary" id="ov-play">Trace a number</button>
+        <button id="ov-prev" aria-label="Previous step">Back</button>
+        <button id="ov-next" aria-label="Next step">Next</button>
+        <span class="stepper" id="ov-count"></span>
+        <div class="dots" id="ov-dots" aria-hidden="true"></div>
+      </div>
+    </div>
+    <aside class="card panel" id="ov-panel" aria-live="polite"></aside>
+  </div>
+</section>
+
+<!-- 01 FORMATS -->
+<section class="view" id="v-formats" hidden>
+  <div class="eyebrow">Map 01 · File formats</div>
+  <h1>PBIX and PBIP hold the same report; PBIP makes it readable</h1>
+  <p class="lede">Save as converts both ways. Inside a PBIP, the report is stored as PBIR and the semantic model as TMDL. Click a part to see its status and what it replaced.</p>
+  <div class="stage">
+    <div class="card diagram"><div class="scroll-x"><svg id="fm-svg" viewBox="0 0 760 380" role="img" aria-label="PBIX saved as a PBIP project folder containing PBIR and TMDL"></svg></div></div>
+    <aside class="card panel" id="fm-panel" aria-live="polite"></aside>
+  </div>
+  <div class="tbl-wrap card">
+    <table id="fm-table">
+      <thead><tr><th></th><th data-c="pbix">PBIX</th><th data-c="pbip">PBIP</th><th data-c="pbir">PBIR</th><th data-c="tmdl">TMDL</th></tr></thead>
+      <tbody>
+        <tr><th>What it is</th><td data-c="pbix">One file holding model, data and report</td><td data-c="pbip">A project folder: a .pbip file plus a .Report and a .SemanticModel folder</td><td data-c="pbir">How the report is stored: one JSON file per page and per visual</td><td data-c="tmdl">How the model is stored: one text file per table</td></tr>
+        <tr><th>Human-readable</th><td data-c="pbix">No</td><td data-c="pbip">Yes, as folders of text files</td><td data-c="pbir">Yes, JSON</td><td data-c="tmdl">Yes, indented text</td></tr>
+        <tr><th>Diff and merge in Git</th><td data-c="pbix">No</td><td data-c="pbip">Yes</td><td data-c="pbir">Yes, per visual</td><td data-c="tmdl">Yes, per table</td></tr>
+        <tr><th>Edit outside Desktop</th><td data-c="pbix">No</td><td data-c="pbip">Yes, with care</td><td data-c="pbir">Yes, schema-validated</td><td data-c="tmdl">Yes, in VS Code or TMDL view</td></tr>
+        <tr><th>Status, Sept 2026</th><td data-c="pbix">Stable</td><td data-c="pbip">Save as → Power BI project</td><td data-c="pbir">GA and the default report format</td><td data-c="tmdl">TMDL view in Desktop is GA (web is preview)</td></tr>
+        <tr><th>Older alternative</th><td data-c="pbix">—</td><td data-c="pbip">—</td><td data-c="pbir">PBIR-Legacy: one report.json</td><td data-c="tmdl">TMSL: one model.bim</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note"><b>Your reports are already changing.</b> Since September 2026, saving a PBIR-Legacy report in Desktop converts it to PBIR with no prompt. Desktop keeps a backup for 30 days under <code>TempSaves\Backups</code>; the Power BI service keeps a PBIR-Legacy backup for 28 days.</div>
+</section>
+
+<!-- 02 FOLDER -->
+<section class="view" id="v-folder" hidden>
+  <div class="eyebrow">Map 02 · PBIP folder architecture</div>
+  <h1>Two items joined by one relative path</h1>
+  <p class="lede">The real CoffeeSales tree as Desktop saved it. The dot shows whether a file is safe to edit outside Desktop. Use the filters to answer "what goes into Git?" and "what can I touch?"</p>
+  <div class="stage">
+    <div class="card diagram">
+      <div class="filters" role="group" aria-label="Filter files">
+        <button data-f="all" aria-pressed="true">All files</button>
+        <button data-f="free" aria-pressed="false">Edit freely</button>
+        <button data-f="careful" aria-pressed="false">Edit with care</button>
+        <button data-f="never" aria-pressed="false">Leave to Desktop</button>
+        <button data-f="nogit" aria-pressed="false">Never committed</button>
+      </div>
+      <ul class="ftree" id="ftree"></ul>
+    </div>
+    <aside class="card panel" id="fd-panel" aria-live="polite"></aside>
+  </div>
+  <div class="note"><b>Not supported for external editing (Microsoft):</b> the legacy single <code>report.json</code>, <code>mobileState.json</code>, <code>semanticModelDiagramLayout.json</code> and <code>diagramLayout.json</code>. Save every file as <b>UTF-8 without BOM</b> and keep paths under Windows' 260-character limit.</div>
+</section>
+
+<!-- 03 TMDL -->
+<section class="view" id="v-tmdl" hidden>
+  <div class="eyebrow">Map 03 · The semantic model in TMDL</div>
+  <h1>The model is indented text, one file per table</h1>
+  <p class="lede">Click any line of the file to see what it means. Switch to <b>Measure lineage</b> to see how the ten real CoffeeSales measures build on each other and which visuals use them.</p>
+  <div class="subtabs" role="group" aria-label="TMDL views">
+    <button data-t="table" aria-pressed="true">Fact_Sales.tmdl</button>
+    <button data-t="measure" aria-pressed="false">A measure, line by line</button>
+    <button data-t="lineage" aria-pressed="false">Measure lineage</button>
+  </div>
+  <div class="stage">
+    <div class="card diagram" id="tm-main"></div>
+    <aside class="card panel" id="tm-panel" aria-live="polite"></aside>
+  </div>
+  <h3 style="margin-top:28px">TMDL in nine rules</h3>
+  <div class="grid" id="tm-rules" style="margin-top:8px"></div>
+</section>
+
+<!-- 04 RELATIONSHIPS -->
+<section class="view" id="v-relationships" hidden>
+  <div class="eyebrow">Map 04 · Relationships</div>
+  <h1>A relationship is three lines until you leave the defaults</h1>
+  <p class="lede">This is the CoffeeSales star schema from <code>relationships.tmdl</code>. Pick a relationship, change it the way you would in Manage relationships, and watch which lines Desktop would add to the file.</p>
+  <div class="stage">
+    <div class="card diagram"><div class="scroll-x"><svg id="rl-svg" viewBox="0 0 760 420" role="img" aria-label="CoffeeSales star schema"></svg></div></div>
+    <aside class="card panel" id="rl-panel" aria-live="polite"></aside>
+  </div>
+  <div class="note"><b>Illustrative, then proven live.</b> None of the 193 TMDL files in the sample projects changes these defaults, so the added lines follow the Tabular Object Model property names. Prove each one in class: commit, change it in Desktop, save, run <code>git diff relationships.tmdl</code>.</div>
+</section>
+
+<!-- 05 REPORT -->
+<section class="view" id="v-report" hidden>
+  <div class="eyebrow">Map 05 · The report folder and PBIR</div>
+  <h1>The report holds positions and names, never calculations</h1>
+  <p class="lede">The real pages of CoffeeSales, each visual drawn at the position stored in its <code>visual.json</code>. Click a visual to see its fields and the DAX each one points to in the model. Then try the rename.</p>
+  <div class="subtabs" role="group" aria-label="Pages" id="rp-pages"></div>
+  <div class="stage">
+    <div class="card diagram">
+      <div class="scroll-x"><svg id="rp-svg" viewBox="0 0 1280 720" role="img" aria-label="Report page wireframe"></svg></div>
+      <div class="controls">
+        <button id="rp-rename" aria-pressed="false">Rename 'Gross Margin %' to 'GM %' in TMDL only</button>
+      </div>
+    </div>
+    <aside class="card panel" id="rp-panel" aria-live="polite"></aside>
+  </div>
+</section>
+
+<!-- 06 AI LOOP -->
+<section class="view" id="v-ailoop" hidden>
+  <div class="eyebrow">Map 06 · AI without MCP</div>
+  <h1>Without MCP, you are the integration</h1>
+  <p class="lede">Exercise 4 adds <code>Revenue YTD</code> with a chat assistant. Step through the loop: every box is something you do by hand. Module 7 shows which of them a tool can do.</p>
+  <div class="stage">
+    <div class="card diagram">
+      <div class="scroll-x"><svg id="ai-svg" viewBox="0 0 760 460" role="img" aria-label="The seven-step copy-paste loop"></svg></div>
+      <div class="controls">
+        <button class="primary" id="ai-play">Walk the loop</button>
+        <button id="ai-prev">Back</button><button id="ai-next">Next</button>
+        <span class="stepper" id="ai-count"></span>
+      </div>
+    </div>
+    <aside class="card panel" id="ai-panel" aria-live="polite"></aside>
+  </div>
+  <h3 style="margin-top:28px">Four rules before anyone pastes anything</h3>
+  <div class="grid" style="margin-top:8px">
+    <div class="card tile"><div class="eyebrow">Rule 1</div><b>Training model only</b><p>Model files carry server names, file paths and RLS logic. Never paste a client's model into a public AI tool.</p></div>
+    <div class="card tile"><div class="eyebrow">Rule 2</div><b>Commit before any edit</b><p>Every change can then be reviewed with <code>git diff</code> and undone.</p></div>
+    <div class="card tile"><div class="eyebrow">Rule 3</div><b>AI output is a draft</b><p>Every claim it makes gets checked against Desktop.</p></div>
+    <div class="card tile"><div class="eyebrow">Rule 4</div><b>Paste back cleanly</b><p>Tabs, straight quotes, UTF-8 without BOM. The <code>â€”</code> text in the sample is what a wrong encoding does.</p></div>
+  </div>
+  <h3 style="margin-top:28px">The four exercises</h3>
+  <div class="grid" id="ai-ex" style="margin-top:8px"></div>
+</section>
+
+<!-- 07 MCP -->
+<section class="view" id="v-mcp" hidden>
+  <div class="eyebrow">Map 07 · Why MCP</div>
+  <h1>MCP lets the AI do the steps you did by hand, with your approval</h1>
+  <p class="lede">The same task as Exercise 4, through an AI client and an MCP server. Step through the messages, then switch on <b>read-only</b> to see what a safe first connection allows.</p>
+  <div class="stage">
+    <div class="card diagram">
+      <div class="scroll-x"><svg id="mc-svg" viewBox="0 0 760 600" role="img" aria-label="MCP message sequence"></svg></div>
+      <div class="controls">
+        <button class="primary" id="mc-play">Play the conversation</button>
+        <button id="mc-prev">Back</button><button id="mc-next">Next</button>
+        <span class="stepper" id="mc-count"></span>
+        <button id="mc-ro" aria-pressed="false">Read-only mode</button>
+      </div>
+    </div>
+    <aside class="card panel" id="mc-panel" aria-live="polite"></aside>
+  </div>
+  <div class="tbl-wrap card">
+    <table>
+      <thead><tr><th></th><th>Copy-paste (Module 6)</th><th>AI client + MCP server</th></tr></thead>
+      <tbody>
+        <tr><th>Finding context</th><td>You choose which file to copy</td><td>The client asks the server for the model's tables and measures</td></tr>
+        <tr><th>Staying current</th><td>Your pasted copy goes stale</td><td>Reads the model as it is now</td></tr>
+        <tr><th>Checking the result</th><td>You compare a visual by eye</td><td>The server runs a DAX query and returns the number</td></tr>
+        <tr><th>Writing the change</th><td>You paste into the file and reload</td><td>A tool call you approve, or blocked in read-only mode</td></tr>
+        <tr><th>Steps for this task</th><td>Seven</td><td>One request, plus approvals</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <h3 style="margin-top:28px">Three different kinds of automation</h3>
+  <div class="grid" style="margin-top:8px">
+    <div class="card tile"><div class="eyebrow">1 · Files</div><b>Editing TMDL and PBIR on disk</b><p>An AI client with file access does this with no MCP server at all. It is Module 6, automated, and it stays under Git.</p></div>
+    <div class="card tile"><div class="eyebrow">2 · Live model</div><b>The model open in Desktop or Fabric</b><p>The Power BI Authoring MCP server works through the Analysis Services engine. Register it read-only for a first session.</p></div>
+    <div class="card tile"><div class="eyebrow">3 · Report</div><b>Pages and visuals</b><p>Separate report tooling and the PBIR files. The modeling server does not change visuals.</p></div>
+  </div>
+  <div class="note"><b>Carry this into Session 2:</b> a measure written to the live model in Desktop lands outside Desktop's project state and can surface as "Something's wrong with one or more fields". Changes belong in the files, under Git. That is why this session came first.</div>
+</section>
+</main>
+
+<footer class="wrap">Sources: Microsoft Learn (Power BI Desktop projects, report and semantic model folders, TMDL overview, TMDL view) and modelcontextprotocol.io. Every file, field and measure shown comes from the CoffeeSales sample project.</footer>
+
+<script>
+const COFFEE = {"pages":[{"id":"p1cmd000000000000001","name":"Sales Command Center","w":1280,"h":720,"visuals":[{"name":"chProd","type":"clusteredBarChart","x":20,"y":439,"w":1240,"h":269,"wells":{"Category":[{"kind":"Column","entity":"Dim_Product","prop":"ProductName"}],"Y":[{"kind":"Measure","entity":"_Measures","prop":"Gross Margin %"}]},"title":"Gross Margin % by Product (loss-makers first)","filters":0},{"name":"chStore","type":"clusteredBarChart","x":656,"y":178,"w":604,"h":250,"wells":{"Category":[{"kind":"Column","entity":"Dim_Store","prop":"StoreName"}],"Y":[{"kind":"Measure","entity":"_Measures","prop":"Revenue"}]},"title":"Revenue by Store","filters":0},{"name":"chTrend","type":"lineChart","x":20,"y":178,"w":620,"h":250,"wells":{"Category":[{"kind":"HierarchyLevel","entity":null,"prop":null},{"kind":"HierarchyLevel","entity":null,"prop":null}],"Y":[{"kind":"Measure","entity":"_Measures","prop":"Revenue"}]},"title":"Revenue Trend by Year-Qtr (2024–2025)","filters":1},{"name":"hdr_p1cmd000000000000001","type":"textbox","x":20,"y":10,"w":640,"h":40,"wells":{},"title":null,"filters":0},{"name":"kGM","type":"cardVisual","x":262,"y":73,"w":232,"h":92,"wells":{"Data":[{"kind":"Measure","entity":"_Measures","prop":"Gross Margin %"}]},"title":null,"filters":0},{"name":"kQty","type":"cardVisual","x":504,"y":74,"w":232,"h":92,"wells":{"Data":[{"kind":"Measure","entity":"_Measures","prop":"Quantity"}]},"title":null,"filters":0},{"name":"kRev","type":"cardVisual","x":20,"y":72,"w":232,"h":92,"wells":{"Data":[{"kind":"Measure","entity":"_Measures","prop":"Revenue"}]},"title":null,"filters":0},{"name":"kYoY","type":"cardVisual","x":744,"y":75,"w":232,"h":92,"wells":{"Data":[{"kind":"Measure","entity":"_Measures","prop":"Revenue YoY %"}]},"title":null,"filters":0},{"name":"sl_ct_p1cmd000000000000001","type":"slicer","x":1072,"y":8,"w":176,"h":64,"wells":{"Values":[{"kind":"Column","entity":"Dim_Product","prop":"Category"}]},"title":null,"filters":0},{"name":"sl_rg_p1cmd000000000000001","type":"slicer","x":888,"y":8,"w":176,"h":64,"wells":{"Values":[{"kind":"Column","entity":"Dim_Store","prop":"Region"}]},"title":null,"filters":0},{"name":"sl_yr_p1cmd000000000000001","type":"slicer","x":703,"y":8,"w":176,"h":64,"wells":{"Values":[{"kind":"Column","entity":"Dim_Date","prop":"Year"}]},"title":null,"filters":0}],"interactions":0},{"id":"cStore360000000000001","name":"Store 360","w":1280,"h":720,"visuals":[{"name":"back_cStore360000000000001","type":"actionButton","x":8,"y":10,"w":44,"h":36,"wells":{},"title":null,"filters":0},{"name":"kGM","type":"cardVisual","x":262,"y":66,"w":232,"h":92,"wells":{"Data":[{"kind":"Measure","entity":"_Measures","prop":"Gross Margin %"}]},"title":null,"filters":0},{"name":"kQty","type":"cardVisual","x":504,"y":66,"w":232,"h":92,"wells":{"Data":[{"kind":"Measure","entity":"_Measures","prop":"Quantity"}]},"title":null,"filters":0},{"name":"kRev","type":"cardVisual","x":20,"y":66,"w":232,"h":92,"wells":{"Data":[{"kind":"Measure","entity":"_Measures","prop":"Revenue"}]},"title":null,"filters":0},{"name":"kYoY","type":"cardVisual","x":746,"y":66,"w":232,"h":92,"wells":{"Data":[{"kind":"Measure","entity":"_Measures","prop":"Revenue YoY %"}]},"title":null,"filters":0},{"name":"s360title","type":"cardVisual","x":66,"y":10,"w":370,"h":56,"wells":{"Data":[{"kind":"Measure","entity":"_Measures","prop":"Selected Store Title"}]},"title":null,"filters":0},{"name":"sMatrix","type":"pivotTable","x":648,"y":170,"w":620,"h":518,"wells":{"Rows":[{"kind":"Column","entity":"Dim_Product","prop":"ProductName"}],"Values":[{"kind":"Measure","entity":"_Measures","prop":"Revenue"},{"kind":"Measure","entity":"_Measures","prop":"Cost"},{"kind":"Measure","entity":"_Measures","prop":"Gross Margin %"},{"kind":"Measure","entity":"_Measures","prop":"Revenue PY"},{"kind":"Measure","entity":"_Measures","prop":"Revenue YoY %"}]},"title":"Product Detail","filters":0},{"name":"sTop","type":"clusteredBarChart","x":20,"y":435,"w":604,"h":254,"wells":{"Category":[{"kind":"Column","entity":"Dim_Product","prop":"ProductName"}],"Y":[{"kind":"Measure","entity":"_Measures","prop":"Revenue"}]},"title":"Top Products by Revenue","filters":0},{"name":"sTrend","type":"lineChart","x":20,"y":170,"w":620,"h":254,"wells":{"Y":[{"kind":"Measure","entity":"_Measures","prop":"Revenue"}],"Category":[{"kind":"Column","entity":"Dim_Date","prop":"YearMonth"}]},"title":"Revenue Trend by Month","filters":0}],"interactions":0},{"id":"tTip0000000000000001","name":"Mini Profile","w":320,"h":240,"visuals":[{"name":"ttGM","type":"cardVisual","x":164,"y":8,"w":148,"h":60,"wells":{"Data":[{"kind":"Measure","entity":"_Measures","prop":"Gross Margin %"}]},"title":null,"filters":0},{"name":"ttRev","type":"cardVisual","x":8,"y":8,"w":152,"h":60,"wells":{"Data":[{"kind":"Measure","entity":"_Measures","prop":"Revenue"}]},"title":null,"filters":0},{"name":"ttTrend","type":"lineChart","x":9,"y":75,"w":304,"h":165,"wells":{"Category":[{"kind":"Column","entity":"Dim_Date","prop":"YearMonth"}],"Y":[{"kind":"Measure","entity":"_Measures","prop":"Revenue"}]},"title":"Revenue trend","filters":0}],"interactions":0}],"measures":[{"table":"_Measures","name":"Revenue","dax":"SUM ( Fact_Sales[Revenue] )","format":"\\$#,##0","folder":"01 Core"},{"table":"_Measures","name":"Cost","dax":"SUM ( Fact_Sales[Cost] )","format":"\\$#,##0","folder":"01 Core"},{"table":"_Measures","name":"Gross Margin","dax":"[Revenue] - [Cost]","format":"\\$#,##0","folder":"01 Core"},{"table":"_Measures","name":"Gross Margin %","dax":"DIVIDE ( [Gross Margin], [Revenue] )","format":"0.0%","folder":"01 Core"},{"table":"_Measures","name":"Quantity","dax":"SUM ( Fact_Sales[Qty] )","format":"#,##0","folder":"01 Core"},{"table":"_Measures","name":"Avg Revenue per Store","dax":"DIVIDE ( [Revenue], DISTINCTCOUNT ( Dim_Store[StoreID] ) )","format":"\\$#,##0","folder":"01 Core"},{"table":"_Measures","name":"Revenue PY","dax":"CALCULATE ( [Revenue], DATEADD ( Dim_Date[Date], -1, YEAR ) )","format":"\\$#,##0","folder":"02 Time Intelligence"},{"table":"_Measures","name":"Revenue YoY %","dax":"DIVIDE ( [Revenue] - [Revenue PY], [Revenue PY] )","format":"0.0%","folder":"02 Time Intelligence"},{"table":"_Measures","name":"Store Rank","dax":"RANKX ( ALL ( Dim_Store[StoreName] ), [Revenue],, DESC, DENSE )","format":"#,##0","folder":"03 Ranking"},{"table":"_Measures","name":"Selected Store Title","dax":"\"Store 360 — \" & SELECTEDVALUE ( Dim_Store[StoreName], \"All Stores\" )","format":null,"folder":null}],"tables":{"Dim_Date":["Date","Year","MonthNo","Month","YearMonth","MonthIndex","MonthYear","QuarterNo","Quarter","YearQuarter"],"Dim_Product":["ProductID","ProductName","Category","UnitPrice","UnitCost"],"Dim_Store":["StoreID","StoreName","City","Region"],"Fact_Sales":["SaleID","Date","StoreID","ProductID","Qty","Revenue","Cost"],"_Measures":["m"]}};
+const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const NS = 'http://www.w3.org/2000/svg';
+
+/* ---------- tiny highlighters ---------- */
+function hlTmdl(src) {
+  return src.split('\n').map(l => {
+    let h = esc(l);
+    if (/^\s*\/\/\//.test(l)) return h.replace(/^(\s*)(.*)$/, '$1<span class="c">$2</span>');
+    h = h.replace(/"([^"]*)"/g, '\u0001$1\u0002');
+    h = h.replace(/^(\t*)(table|column|measure|partition|relationship|hierarchy|level|annotation|ref table|role|expression|calculationItem)\b/, '$1<span class="k">$2</span>');
+    h = h.replace(/^(\t+)(\w+)(:)/, '$1<span class="p">$2</span>$3');
+    h = h.replace(/\u0001([^\u0002]*)\u0002/g, '<span class="s">"$1"</span>');
+    return h;
+  }).join('\n');
+}
+function hlJson(src) {
+  return esc(src).replace(/"([^"]+)"(\s*:)/g, '<span class="p">"$1"</span>$2').replace(/:\s*"([^"]*)"/g, ': <span class="s">"$1"</span>');
+}
+
+/* ---------- svg helpers ---------- */
+function node(id, x, y, w, h, name, sub, cls = '', mono = false) {
+  return `<g class="node ${cls}" data-id="${id}" tabindex="0" role="button" aria-label="${esc(name)}">
+    <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="8"/>
+    <text class="t-name${mono ? ' t-mono' : ''}" x="${x + 12}" y="${y + (sub ? 24 : h / 2 + 4.5)}">${esc(name)}</text>
+    ${sub ? `<text class="t-sub" x="${x + 12}" y="${y + 42}">${esc(sub)}</text>` : ''}</g>`;
+}
+const defs = id => `<defs><marker id="${id}-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--line-strong)"/></marker><marker id="${id}-af" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--focus)"/></marker><marker id="${id}-ab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--bad)"/></marker></defs>`;
+const edge = (id, d, mk, extra = '') => `<path class="edge ${extra}" data-e="${id}" d="${d}" marker-end="url(#${mk}-a)"/>`;
+function litEdges(svg, ids, mk) {
+  $$('.edge', svg).forEach(e => {
+    const on = ids.includes(e.dataset.e);
+    e.classList.toggle('lit', on); e.classList.toggle('flow', on);
+    e.classList.toggle('dim', ids.length > 0 && !on);
+    if (e.getAttribute('marker-end')) e.setAttribute('marker-end', `url(#${mk}-${on ? 'af' : 'a'})`);
+  });
+}
+function bindNodes(svg, fn) {
+  $$('.node', svg).forEach(n => {
+    n.addEventListener('click', () => fn(n.dataset.id));
+    n.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fn(n.dataset.id); } });
+  });
+}
+function selNode(svg, id) { $$('.node', svg).forEach(n => n.classList.toggle('sel', n.dataset.id === id)); }
+const badges = list => `<div class="badges">${list.map(([c, t]) => `<span class="badge ${c}">${esc(t)}</span>`).join('')}</div>`;
+
+/* ======================================================================
+   00 OVERVIEW
+   ====================================================================== */
+const OV = {
+  pbip:     { name: 'CoffeeSales.pbip', path: 'CoffeeSales.pbip', b: [['b-quiet', 'Project entry point'], ['b-ok', 'In Git']], body: '<p>The file you double-click. It points Desktop at the report folder; the report then points at its model.</p>' },
+  pbir:     { name: 'definition.pbir', path: 'CoffeeSales.Report/definition.pbir', b: [['b-report', 'Report'], ['b-warn', 'Edit with care']], body: '<p>The <b>one line</b> that connects report to model. <code>byPath</code> must be relative; <code>byConnection</code> would point at a Fabric workspace model instead, opened read-only.</p>', code: ['json', '{\n  "version": "4.0",\n  "datasetReference": {\n    "byPath": {\n      "path": "../CoffeeSales.SemanticModel"\n    }\n  }\n}'] },
+  reportjs: { name: 'report.json', path: 'CoffeeSales.Report/definition/report.json', b: [['b-report', 'Report'], ['b-warn', 'Schema-validated']], body: '<p>Report-level settings: the base theme <code>CY26SU05</code>, the custom theme <code>Nexus.json</code>, and report-level filters. No data, no DAX.</p>' },
+  page:     { name: 'page.json', path: 'CoffeeSales.Report/definition/pages/p1cmd000000000000001/page.json', b: [['b-report', 'Report'], ['b-warn', 'Edit with care']], body: '<p>One page: <b>Sales Command Center</b>, 1280 × 720, <code>FitToPage</code>. Page filters live in <code>filterConfig</code>; edited interactions in <code>visualInteractions</code>. Page order is in <code>pages.json</code>.</p>' },
+  visual:   { name: 'visual.json', path: '…/pages/p1cmd000000000000001/visuals/chProd/visual.json', b: [['b-report', 'Report'], ['b-warn', 'Schema-validated']], body: '<p>One visual: a clustered bar chart. It stores <b>names only</b>: the table (<code>Entity</code>) and the field (<code>Property</code>) for each well.</p>', code: ['json', '"Category": { … "Entity": "Dim_Product",\n              "Property": "ProductName" },\n"Y":        { "Measure": {\n              "Entity": "_Measures",\n              "Property": "Gross Margin %" } }'] },
+  modeltm:  { name: 'model.tmdl', path: 'CoffeeSales.SemanticModel/definition/model.tmdl', b: [['b-model', 'Model'], ['b-warn', 'Edit with care']], body: '<p>Model properties (<code>culture: en-US</code>) and one <code>ref table</code> line per table, which sets the table order.</p>' },
+  rel:      { name: 'relationships.tmdl', path: 'CoffeeSales.SemanticModel/definition/relationships.tmdl', b: [['b-model', 'Model'], ['b-ok', 'Edit freely']], body: '<p>Every relationship. The Product axis of the chart filters sales through <code>Fact_Sales.ProductID → Dim_Product.ProductID</code>.</p>', code: ['tmdl', 'relationship Rel_Sales_Product\n\tfromColumn: Fact_Sales.ProductID\n\ttoColumn: Dim_Product.ProductID'] },
+  measures: { name: '_Measures.tmdl', path: 'CoffeeSales.SemanticModel/definition/tables/_Measures.tmdl', b: [['b-model', 'Model'], ['b-ok', 'Edit freely']], body: '<p>Where the DAX actually lives. <code>Gross Margin %</code> is built from two other measures, which are built from columns.</p>', code: ['tmdl', "\tmeasure 'Gross Margin' = [Revenue] - [Cost]\n\t\tformatString: \\$#,##0\n\tmeasure 'Gross Margin %' = DIVIDE ( [Gross Margin], [Revenue] )\n\t\tformatString: 0.0%"] },
+  fact:     { name: 'Fact_Sales.tmdl', path: 'CoffeeSales.SemanticModel/definition/tables/Fact_Sales.tmdl', b: [['b-model', 'Model'], ['b-ok', 'Edit freely']], body: '<p>Seven imported columns (<code>sourceColumn:</code>) and a partition: the Power Query that loads the CSV, <code>mode: import</code>.</p>', code: ['tmdl', '\tmeasure Revenue = SUM ( Fact_Sales[Revenue] )   ← in _Measures\n\tcolumn Revenue\n\t\tdataType: double\n\t\tsourceColumn: Revenue\n\tpartition Fact_Sales = m\n\t\tmode: import'] },
+  csv:      { name: 'data/Fact_Sales.csv', path: 'E:/…/Demo_CoffeeSales/data/Fact_Sales.csv', b: [['b-quiet', 'Outside the project'], ['b-bad', 'Stale path']], body: '<p>The data source. The partition still reads <code>…/POWER BI/Demo_CoffeeSales/data/</code>, but the project moved under <code>…/Dasboards/</code>, so a refresh fails. A good first question for the class: <i>why would this project fail to refresh on my machine?</i></p><p class="hint">After a refresh, the imported data sits in <code>.pbi/cache.abf</code>, which Git ignores.</p>' }
+};
+const OV_STEPS = [
+  { n: ['pbip'], e: [], t: 'Desktop opens <b>CoffeeSales.pbip</b>. It names the report folder; nothing here contains data or DAX.' },
+  { n: ['pbir'], e: ['e-open'], t: 'The report reads <b>definition.pbir</b>: <code>byPath: ../CoffeeSales.SemanticModel</code>. That relative path is the whole connection to the model.' },
+  { n: ['pbir', 'modeltm'], e: ['e-bypath'], t: 'Desktop loads the <b>semantic model</b> folder: <code>model.tmdl</code> lists the tables, one <code>.tmdl</code> file each.' },
+  { n: ['page'], e: ['e-page'], t: 'The page <b>Sales Command Center</b> (1280 × 720) lists its visuals as folders.' },
+  { n: ['visual'], e: ['e-visual'], t: 'The bar chart <b>chProd</b> asks for <code>_Measures</code> / <code>Gross Margin %</code> on the Y axis and <code>Dim_Product</code> / <code>ProductName</code> as categories. Names only.' },
+  { n: ['measures'], e: ['e-name'], t: 'The name is resolved in <b>_Measures.tmdl</b>: <code>DIVIDE ( [Gross Margin], [Revenue] )</code>. Rename it here alone and the chart breaks.' },
+  { n: ['fact'], e: ['e-fact'], t: '<code>[Revenue]</code> and <code>[Cost]</code> are <code>SUM</code>s over <b>Fact_Sales</b> columns, imported with <code>sourceColumn:</code>.' },
+  { n: ['rel', 'fact'], e: ['e-rel'], t: 'Each product bar filters sales through <b>relationships.tmdl</b>: <code>Fact_Sales.ProductID → Dim_Product.ProductID</code>.' },
+  { n: ['csv'], e: ['e-csv'], t: 'The rows come from <b>Fact_Sales.csv</b> through the partition\'s Power Query. That path is stale in the sample, so a refresh fails.' }
+];
+function buildOverview() {
+  const svg = $('#ov-svg');
+  svg.innerHTML = defs('ov') + `
+  <g class="grp-report"><rect class="box" x="16" y="96" width="340" height="372" rx="10" stroke-width="1.25"/><text class="t-group" x="32" y="122">CoffeeSales.Report · PBIR</text></g>
+  <g class="grp-model"><rect class="box" x="404" y="96" width="340" height="372" rx="10" stroke-width="1.25"/><text class="t-group" x="420" y="122">CoffeeSales.SemanticModel · TMDL</text></g>
+  ${edge('e-open', 'M380 64 V80 H186 V136', 'ov')}
+  ${edge('e-open2', 'M380 80 H574 V136', 'ov', 'dash')}
+  ${edge('e-bypath', 'M336 166 H420', 'ov')}
+  ${edge('e-page', 'M186 284 V292', 'ov')}
+  ${edge('e-visual', 'M186 356 V372', 'ov')}
+  ${edge('e-name', 'M336 404 H380 V324 H420', 'ov')}
+  ${edge('e-fact', 'M574 356 V372', 'ov')}
+  ${edge('e-rel', 'M728 244 H736 V404 H728', 'ov')}
+  ${edge('e-csv', 'M574 436 V496', 'ov')}
+  <text class="edge-label" x="392" y="156" text-anchor="middle">byPath</text>
+  <text class="edge-label" x="384" y="438" text-anchor="middle">by name</text>
+  ${node('pbip', 280, 16, 200, 48, 'CoffeeSales.pbip', '', '', true)}
+  ${node('pbir', 36, 136, 300, 60, 'definition.pbir', 'byPath → ../CoffeeSales.SemanticModel', 'report', true)}
+  ${node('reportjs', 36, 212, 300, 60, 'report.json', 'theme and report settings', 'report', true)}
+  ${node('page', 36, 292, 300, 60, 'page.json', 'Sales Command Center · 1280 × 720', 'report', true)}
+  ${node('visual', 36, 372, 300, 64, 'visual.json  (chProd)', 'Entity + Property: names only', 'report', true)}
+  ${node('modeltm', 424, 136, 300, 60, 'model.tmdl', 'ref table … · culture: en-US', 'model', true)}
+  ${node('rel', 424, 212, 300, 60, 'relationships.tmdl', '3 relationships, all defaults', 'model', true)}
+  ${node('measures', 424, 292, 300, 60, 'tables/_Measures.tmdl', '10 measures · the DAX lives here', 'model', true)}
+  ${node('fact', 424, 372, 300, 64, 'tables/Fact_Sales.tmdl', '7 columns + an import partition', 'model', true)}
+  ${node('csv', 444, 496, 260, 48, 'data/Fact_Sales.csv', '', 'ext', true)}`;
+  const csvRect = $('[data-id="csv"] rect', svg); csvRect.setAttribute('stroke-dasharray', '5 4');
+  let step = -1;
+  const dots = $('#ov-dots'); dots.innerHTML = OV_STEPS.map(() => '<span></span>').join('');
+  function showNode(id, stepText) {
+    const d = OV[id];
+    $('#ov-panel').innerHTML = (stepText ? `<div class="eyebrow">Step ${step + 1} of ${OV_STEPS.length}</div><p style="margin-top:8px">${stepText}</p><hr style="border:0;border-top:1px solid var(--line);margin:14px 0">` : '<div class="eyebrow">File</div>') +
+      `<h2>${esc(d.name)}</h2><div class="path">${esc(d.path)}</div>${badges(d.b)}${d.body}` +
+      (d.code ? `<pre class="code">${d.code[0] === 'json' ? hlJson(d.code[1]) : hlTmdl(d.code[1])}</pre>` : '');
+  }
+  function go(i) {
+    step = Math.max(0, Math.min(OV_STEPS.length - 1, i));
+    const s = OV_STEPS[step];
+    $$('.node', svg).forEach(n => { n.classList.toggle('sel', n.dataset.id === s.n.at(-1)); n.classList.toggle('lit', s.n.includes(n.dataset.id)); n.classList.toggle('dim', !s.n.includes(n.dataset.id)); });
+    litEdges(svg, s.e, 'ov');
+    $$('span', dots).forEach((d, k) => d.classList.toggle('on', k <= step));
+    $('#ov-count').textContent = `${step + 1} / ${OV_STEPS.length}`;
+    showNode(s.n.at(-1), s.t);
+  }
+  function free(id) {
+    step = -1; $$('.node', svg).forEach(n => n.classList.remove('lit', 'dim')); litEdges(svg, [], 'ov'); selNode(svg, id);
+    $$('span', dots).forEach(d => d.classList.remove('on')); $('#ov-count').textContent = ''; showNode(id);
+  }
+  bindNodes(svg, free);
+  let timer = null;
+  $('#ov-play').onclick = () => {
+    clearInterval(timer); go(0);
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduce) timer = setInterval(() => { if (step >= OV_STEPS.length - 1) clearInterval(timer); else go(step + 1); }, 3200);
+  };
+  $('#ov-next').onclick = () => { clearInterval(timer); go(step + 1); };
+  $('#ov-prev').onclick = () => { clearInterval(timer); go(step - 1); };
+  if (location.search.includes('still')) free('visual'); else go(4);
+}
+
+/* ======================================================================
+   01 FORMATS
+   ====================================================================== */
+const FM = {
+  pbix: { name: 'PBIX', col: 'pbix', b: [['b-quiet', 'Stable'], ['b-bad', 'Binary']], body: '<p>One zipped file holding the model, the data and the report. Rename it to <code>.zip</code> and you get a binary container, not something you can read or diff.</p><p><b>Ask the room:</b> two developers change different measures in the same PBIX. What happens when you merge? You cannot; one overwrites the other.</p>' },
+  pbip: { name: 'PBIP project', col: 'pbip', b: [['b-ok', 'Text files'], ['b-ok', 'Git-friendly']], body: '<p>The same report saved as a folder: a <code>.pbip</code> file, a <code>.Report</code> folder and a <code>.SemanticModel</code> folder. <b>File → Save as → Power BI project</b>.</p><p>It does not contain the data, apart from a local <code>cache.abf</code> that Git ignores.</p>' },
+  pbir: { name: 'PBIR', col: 'pbir', b: [['b-report', 'Report format'], ['b-ok', 'GA · default']], body: '<p>How the report is stored inside <code>.Report</code>: one JSON file per page and per visual, each with a <code>$schema</code> line that VS Code validates.</p><p>Since September 2026 it is the default. Saving a PBIR-Legacy report converts it silently.</p>' },
+  tmdl: { name: 'TMDL', col: 'tmdl', b: [['b-model', 'Model format'], ['b-ok', 'TMDL view GA in Desktop']], body: '<p>How the semantic model is stored inside <code>.SemanticModel</code>: indented text, one file per table. TMDL view in Desktop is GA; on the web it is preview.</p>' },
+  legacyr: { name: 'PBIR-Legacy · report.json', col: 'pbir', b: [['b-bad', 'Not supported for external editing']], body: '<p>The older single-file report format. Desktop now converts it to PBIR when you save, keeping a 30-day backup under <code>TempSaves\\Backups</code>.</p>' },
+  legacym: { name: 'TMSL · model.bim', col: 'tmdl', b: [['b-quiet', 'Older alternative']], body: '<p>The whole model as one large JSON file. If your project saved <code>model.bim</code> instead of a <code>definition/</code> folder, check Desktop\'s TMDL save option on your build.</p>' },
+  cache: { name: '.pbi/cache.abf', col: 'pbip', b: [['b-bad', 'Never committed']], body: '<p>A local copy of the imported data. Not required: without it the project opens with the full model and no data until you refresh.</p>' }
+};
+function buildFormats() {
+  const svg = $('#fm-svg');
+  svg.innerHTML = defs('fm') + `
+  ${node('pbix', 24, 120, 180, 120, 'Sales.pbix', 'model + data + report', '', true)}
+  <text class="t-sub" x="34" y="200">one binary file</text>
+  ${edge('fm-save', 'M204 180 H286', 'fm')}
+  <text class="edge-label" x="245" y="168" text-anchor="middle">Save as</text>
+  <text class="edge-label" x="245" y="200" text-anchor="middle">PBIP</text>
+  <g class="node" data-id="pbip" tabindex="0" role="button" aria-label="PBIP project folder"><rect x="292" y="24" width="448" height="332" rx="10"/><text class="t-name t-mono" x="308" y="50">Sales.pbip  +  two folders</text></g>
+  <g class="grp-report"><rect class="box" x="308" y="66" width="200" height="270" rx="8" stroke-width="1.25"/><text class="t-group" x="320" y="88">.Report</text></g>
+  <g class="grp-model"><rect class="box" x="524" y="66" width="200" height="270" rx="8" stroke-width="1.25"/><text class="t-group" x="536" y="88">.SemanticModel</text></g>
+  ${node('pbir', 320, 102, 176, 64, 'PBIR', 'JSON per page + visual', 'report')}
+  ${node('legacyr', 320, 186, 176, 56, 'report.json', 'PBIR-Legacy', 'report', true)}
+  ${node('tmdl', 536, 102, 176, 64, 'TMDL', 'text file per table', 'model')}
+  ${node('legacym', 536, 186, 176, 56, 'model.bim', 'TMSL (older)', 'model', true)}
+  ${node('cache', 536, 262, 176, 56, '.pbi/cache.abf', 'local data, not in Git', '', true)}
+  ${edge('fm-conv', 'M408 186 V170', 'fm')}
+  <text class="edge-label" x="416" y="180">converts on save</text>`;
+  ['legacyr', 'legacym', 'cache'].forEach(id => $(`[data-id="${id}"] rect`, svg).setAttribute('stroke-dasharray', '5 4'));
+  function show(id) {
+    selNode(svg, id); const d = FM[id];
+    $('#fm-panel').innerHTML = `<div class="eyebrow">Format</div><h2>${esc(d.name)}</h2>${badges(d.b)}${d.body}`;
+    $$('#fm-table [data-c]').forEach(c => c.classList.toggle('hl', c.dataset.c === d.col));
+  }
+  bindNodes(svg, show); show('pbip');
+}
+
+/* ======================================================================
+   02 FOLDER
+   ====================================================================== */
+const FILES = [
+  { n: 'CoffeeSales.pbip', d: 0, e: 'careful', g: 1, what: 'Points Desktop at the report folder. Open this to open the project. You rarely edit it.' },
+  { n: '.gitignore', d: 0, e: 'free', g: 1, what: 'Created by Desktop. Excludes localSettings.json and cache.abf by default.' },
+  { n: 'CoffeeSales.Report/', d: 0, f: 'report' },
+  { n: '.pbi/localSettings.json', d: 1, e: 'never', g: 0, what: 'One person\'s machine-specific state. Committing it causes conflicts on every save.' },
+  { n: '.platform', d: 1, e: 'careful', g: 1, what: 'Fabric Git metadata: item type, display name and logical ID. Never change the logical ID.' },
+  { n: 'definition.pbir', d: 1, e: 'careful', g: 1, what: 'The model this report uses. byPath (relative only) opens the model for editing; byConnection points at a Fabric workspace model and opens it read-only.', code: ['json', '"datasetReference": {\n  "byPath": { "path": "../CoffeeSales.SemanticModel" }\n}'] },
+  { n: 'definition/', d: 1, f: 'report' },
+  { n: 'report.json', d: 2, e: 'careful', g: 1, what: 'Theme, report settings and report-level filters. Schema-validated. In CoffeeSales: base theme CY26SU05, custom theme Nexus.json.' },
+  { n: 'version.json', d: 2, e: 'never', g: 1, what: 'The PBIR format version. Leave it.' },
+  { n: 'pages/', d: 2, f: 'report' },
+  { n: 'pages.json', d: 3, e: 'careful', g: 1, what: 'Page order and the page that opens first.', code: ['json', '"pageOrder": [\n  "p1cmd000000000000001",\n  "cStore360000000000001",\n  "tTip0000000000000001"\n],\n"activePageName": "p1cmd000000000000001"'] },
+  { n: 'p1cmd000000000000001/', d: 3, f: 'report' },
+  { n: 'page.json', d: 4, e: 'careful', g: 1, what: 'One page: display name, size, page filters (filterConfig) and edited visual interactions (visualInteractions). Here: "Sales Command Center", 1280 × 720.' },
+  { n: 'visuals/', d: 4, f: 'report' },
+  { n: 'chProd/visual.json', d: 5, e: 'careful', g: 1, what: 'One visual: type, position, fields, formatting and filters. Schema-validated. See Map 05 for every visual on this page.' },
+  { n: 'StaticResources/', d: 1, e: 'free', g: 1, what: 'Theme JSON and images. Themes are made to be edited.' },
+  { n: 'CoffeeSales.SemanticModel/', d: 0, f: 'model' },
+  { n: '.pbi/cache.abf', d: 1, e: 'never', g: 0, what: 'Local copy of the imported data. Not required: delete it and the project opens with the full model definition and no data until you refresh.' },
+  { n: '.pbi/editorSettings.json', d: 1, e: 'never', g: 1, what: 'Desktop\'s editor settings for this model. Leave it to Desktop.' },
+  { n: '.pbi/localSettings.json', d: 1, e: 'never', g: 0, what: 'Machine-specific state for the model. Never committed.' },
+  { n: '.platform', d: 1, e: 'careful', g: 1, what: 'Fabric Git metadata for the model item. Never change the logical ID.' },
+  { n: 'definition.pbism', d: 1, e: 'never', g: 1, what: 'Format version of the semantic model item. Leave it.' },
+  { n: 'definition/', d: 1, f: 'model' },
+  { n: 'database.tmdl', d: 2, e: 'never', g: 1, what: 'Compatibility level of the model. Do not edit.' },
+  { n: 'model.tmdl', d: 2, e: 'careful', g: 1, what: 'Model properties (culture, discourageImplicitMeasures) and one ref table line per table, which sets the table order.' },
+  { n: 'relationships.tmdl', d: 2, e: 'free', g: 1, what: 'Every relationship in the model. See Map 04.', code: ['tmdl', 'relationship Rel_Sales_Date\n\tfromColumn: Fact_Sales.Date\n\ttoColumn: Dim_Date.Date'] },
+  { n: 'cultures/en-US.tmdl', d: 2, e: 'never', g: 1, what: 'Generated Q&A linguistic metadata. Large; leave it.' },
+  { n: 'tables/', d: 2, f: 'model' },
+  { n: '_Measures.tmdl', d: 3, e: 'free', g: 1, what: 'A hidden table that only holds measures: all ten CoffeeSales measures live here. A convention, not a rule.' },
+  { n: 'Dim_Date.tmdl', d: 3, e: 'free', g: 1, what: 'The date table: Date, Year, Month, Quarter and their sort columns.' },
+  { n: 'Dim_Product.tmdl', d: 3, e: 'free', g: 1, what: 'Products: ProductID, ProductName, Category, UnitPrice, UnitCost.' },
+  { n: 'Dim_Store.tmdl', d: 3, e: 'free', g: 1, what: 'Stores: StoreID, StoreName, City, Region.' },
+  { n: 'Fact_Sales.tmdl', d: 3, e: 'free', g: 1, what: 'The sales rows: seven imported columns and the partition that loads Fact_Sales.csv. See Map 03.' }
+];
+const EDIT = { free: ['b-ok', 'Edit freely'], careful: ['b-warn', 'Edit with care'], never: ['b-bad', 'Leave to Desktop'] };
+function buildFolder() {
+  const ul = $('#ftree'); let section = '';
+  ul.innerHTML = FILES.map((f, i) => {
+    if (f.d === 0 && f.f) section = f.f;
+    const pad = `padding-left:${8 + f.d * 18}px`;
+    if (f.f) return `<li class="folder ${f.f}" style="${pad}"><span class="dot d-none"></span><span class="nm">${esc(f.n)}</span></li>`;
+    return `<li data-i="${i}" tabindex="0" role="button" style="${pad}" data-e="${f.e}" data-g="${f.g}" data-s="${section}"><span class="dot d-${f.e}"></span><span class="nm">${esc(f.n)}</span><span class="tag">${f.g ? '' : 'not in Git'}</span></li>`;
+  }).join('');
+  function show(i) {
+    const f = FILES[i]; $$('#ftree li').forEach(li => li.classList.toggle('sel', li.dataset.i == i));
+    const kind = $(`#ftree li[data-i="${i}"]`).dataset.s;
+    $('#fd-panel').innerHTML = `<div class="eyebrow">${kind === 'report' ? 'Report item' : kind === 'model' ? 'Semantic model item' : 'Project root'}</div><h2>${esc(f.n)}</h2>${badges([EDIT[f.e], f.g ? ['b-ok', 'Committed to Git'] : ['b-bad', 'Never committed']])}<p>${esc(f.what)}</p>` + (f.code ? `<pre class="code">${f.code[0] === 'json' ? hlJson(f.code[1]) : hlTmdl(f.code[1])}</pre>` : '');
+  }
+  $$('#ftree li[data-i]').forEach(li => { li.onclick = () => show(+li.dataset.i); li.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); show(+li.dataset.i); } }; });
+  $$('#v-folder .filters button').forEach(b => b.onclick = () => {
+    $$('#v-folder .filters button').forEach(x => x.setAttribute('aria-pressed', x === b));
+    const f = b.dataset.f;
+    $$('#ftree li[data-i]').forEach(li => li.classList.toggle('faded', !(f === 'all' || (f === 'nogit' ? li.dataset.g === '0' : li.dataset.e === f))));
+  });
+  show(FILES.findIndex(f => f.n === 'definition.pbir'));
+}
+
+/* ======================================================================
+   03 TMDL
+   ====================================================================== */
+const TM_TABLE = [
+  ['table Fact_Sales', 'Declares the table. Everything indented under it belongs to it.'],
+  ['\tlineageTag: 53059dd1-c673-4a73-97d9-fb0f1c5c8117', 'A stable identity that survives renames. Never copy one onto a new object: two objects would share an identity.'],
+  ['', ''],
+  ['\tcolumn Date', 'A column of Fact_Sales: one tab in. Its properties sit one tab further in.'],
+  ['\t\tdataType: dateTime', 'Types seen in these projects: string, int64, double, dateTime.'],
+  ['\t\tisHidden', 'A boolean written as just its name means true. The column is hidden from report authors.'],
+  ['\t\tformatString: Long Date', 'Display format. ":" is used for every property that is not the object\'s expression.'],
+  ['\t\tsummarizeBy: none', 'Stops Power BI auto-summing the column in visuals.'],
+  ['\t\tsourceColumn: Date', 'sourceColumn means imported: loaded from the query\'s Date column. A calculated column would use "=" and DAX instead.'],
+  ['', ''],
+  ['\t\tannotation UnderlyingDateTimeDataType = Date', 'Metadata Desktop keeps for itself. Leave annotations alone.'],
+  ['', ''],
+  ['\tcolumn Revenue', 'The column that [Revenue] sums. The measure itself lives in _Measures.tmdl.'],
+  ['\t\tdataType: double', 'A decimal number.'],
+  ['\t\tisHidden', 'Hidden, so report authors use the measure instead of the raw column.'],
+  ['\t\tsummarizeBy: none', 'No implicit SUM: the model forces people to use the measure.'],
+  ['\t\tsourceColumn: Revenue', 'Imported from the CSV\'s Revenue column.'],
+  ['', ''],
+  ['\tpartition Fact_Sales = m', 'Where the data comes from. "= m" means the source below is Power Query (M).'],
+  ['\t\tmode: import', 'Import mode: data is loaded into memory (and the local cache.abf).'],
+  ['\t\tsource =', 'A multi-line expression sits one level deeper than its property.'],
+  ['\t\t\t\tlet', 'The Power Query script, exactly as in the Advanced Editor.'],
+  ['\t\t\t\t    Source = Csv.Document(File.Contents(".../data/Fact_Sales.csv"), …),', 'The stale path. The project moved, the partition did not: a refresh fails on this line.'],
+  ['\t\t\t\t    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),', 'First row becomes column names.'],
+  ['\t\t\t\t    Typed = Table.TransformColumnTypes(Promoted, …)', 'Column types are set in M as well as in TMDL dataType.'],
+  ['\t\t\t\tin', ''],
+  ['\t\t\t\t    Typed', 'The step the partition loads.']
+];
+const TM_MEASURE = [
+  ["\tmeasure 'Revenue PY' = CALCULATE ( [Revenue], DATEADD ( Dim_Date[Date], -1, YEAR ) )", "<b>measure 'Revenue PY' =</b> the name, in single quotes because it has a space; the DAX follows the <code>=</code>.<br><br><b>CALCULATE ( [Revenue], … )</b> evaluates the existing [Revenue] measure under a changed filter.<br><br><b>DATEADD ( Dim_Date[Date], -1, YEAR )</b> replaces the dates in the current filter with the same dates one year earlier. It needs a proper date table related to the fact table."],
+  ['\t\tformatString: \\$#,##0', 'The backslash escapes $, so it prints literally: $12,345.'],
+  ['\t\tdisplayFolder: 02 Time Intelligence', 'Only organises the Fields pane. It changes no result.'],
+  ['\t\tlineageTag: 56606359-9f66-4cda-beba-6d6afccb2d62', 'Identity that survives renames inside Desktop. When you ask an AI for a new measure, ask it to leave this line out.']
+];
+const TM_RULES = [
+  ['Indentation is structure', 'One tab per level. Breaking it is a parse error.', 'table Fact_Sales\n\tcolumn Revenue'],
+  ['"=" for the expression', "An object's default or expression property.", 'measure Revenue = SUM ( … )'],
+  ['":" for everything else', 'Every other property.', 'formatString: #,##0'],
+  ['A bare boolean is true', 'Write just the name.', 'isHidden'],
+  ['Quote awkward names', 'Spaces, dots, = or : need single quotes; double an inner quote.', "measure 'Gross Margin %' = …"],
+  ['/// is a description', 'Directly above the object, no blank line.', '/// Services Delivery Analytics'],
+  ['ref points and orders', 'Refers to another object and sets order.', 'ref table Fact_Sales'],
+  ['Deeper means multi-line', 'Expressions sit one level deeper; triple backticks keep whitespace.', 'source =\n\t\tlet …'],
+  ['Defaults are not written', 'Observed in the real files: a default property is simply absent.', '(no cardinality line)']
+];
+function codeLines(lines, panelFn) {
+  return `<pre class="code" style="margin:0">${lines.map((l, i) => `<span class="ln" data-l="${i}" style="display:block;cursor:${l[1] ? 'pointer' : 'default'};border-radius:4px;padding:0 4px">${hlTmdl(l[0]) || ' '}</span>`).join('')}</pre>`;
+}
+function bindLines(root, lines, panel, title) {
+  const pick = i => {
+    $$('.ln', root).forEach(s => s.style.background = s.dataset.l == i ? 'color-mix(in srgb, var(--focus) 18%, transparent)' : '');
+    $(panel).innerHTML = `<div class="eyebrow">${title}</div><pre class="code">${hlTmdl(lines[i][0].replace(/^\t+/, ''))}</pre><p style="margin-top:12px">${lines[i][1]}</p><p class="hint">Click any other line.</p>`;
+  };
+  $$('.ln', root).forEach(s => { if (lines[s.dataset.l][1]) s.onclick = () => pick(+s.dataset.l); });
+  return pick;
+}
+const LIN = {
+  cols: [['c-rev', 'Fact_Sales[Revenue]'], ['c-cost', 'Fact_Sales[Cost]'], ['c-qty', 'Fact_Sales[Qty]'], ['c-date', 'Dim_Date[Date]'], ['c-sid', 'Dim_Store[StoreID]'], ['c-sname', 'Dim_Store[StoreName]']],
+  m1: ['Revenue', 'Cost', 'Quantity', 'Selected Store Title'],
+  m2: ['Gross Margin', 'Revenue PY', 'Avg Revenue per Store', 'Store Rank'],
+  m3: ['Gross Margin %', 'Revenue YoY %'],
+  deps: { 'Revenue': ['c-rev'], 'Cost': ['c-cost'], 'Quantity': ['c-qty'], 'Selected Store Title': ['c-sname'], 'Gross Margin': ['Revenue', 'Cost'], 'Revenue PY': ['Revenue', 'c-date'], 'Avg Revenue per Store': ['Revenue', 'c-sid'], 'Store Rank': ['c-sname', 'Revenue'], 'Gross Margin %': ['Gross Margin', 'Revenue'], 'Revenue YoY %': ['Revenue', 'Revenue PY'] }
+};
+const mid = s => 'm-' + s.replace(/[^a-z0-9]/gi, '');
+function buildLineage(host) {
+  const pos = {}; const W = 166, H = 36, xs = [12, 204, 396, 588];
+  LIN.cols.forEach(([id], i) => pos[id] = { x: xs[0], y: 40 + i * 56 });
+  [LIN.m1, LIN.m2, LIN.m3].forEach((col, c) => { const off = (6 - col.length) * 28; col.forEach((m, i) => pos[mid(m)] = { x: xs[c + 1], y: 40 + off + i * 56 }); });
+  let edges = '';
+  Object.entries(LIN.deps).forEach(([m, ds]) => ds.forEach(d => {
+    const a = pos[d.startsWith('c-') ? d : mid(d)], b = pos[mid(m)];
+    const x1 = a.x + W, y1 = a.y + H / 2, x2 = b.x, y2 = b.y + H / 2, cx = (x1 + x2) / 2;
+    edges += `<path class="edge" data-e="${mid(m)}|${d.startsWith('c-') ? d : mid(d)}" d="M${x1} ${y1} C${cx} ${y1} ${cx} ${y2} ${x2 - 2} ${y2}" marker-end="url(#ln-a)"/>`;
+  }));
+  const box = (id, label, cls, mono) => { const p = pos[id]; return `<g class="node ${cls}" data-id="${id}" tabindex="0" role="button" aria-label="${esc(label)}"><rect x="${p.x}" y="${p.y}" width="${W}" height="${H}" rx="8"/><text class="t-name${mono ? ' t-mono' : ''}" style="font-size:${mono ? 11.5 : 12.5}px" x="${p.x + 10}" y="${p.y + 22}">${esc(label)}</text></g>`; };
+  host.innerHTML = `<div class="scroll-x"><svg id="ln-svg" viewBox="0 0 760 392" role="img" aria-label="Measure lineage">${defs('ln')}
+    <text class="t-sub t-group" x="12" y="24">Columns</text><text class="t-sub t-group" x="204" y="24">Measures on columns</text><text class="t-sub t-group" x="396" y="24">On measures</text><text class="t-sub t-group" x="588" y="24">On those</text>
+    ${edges}${LIN.cols.map(([id, l]) => box(id, l, 'model', true)).join('')}${[...LIN.m1, ...LIN.m2, ...LIN.m3].map(m => box(mid(m), m, '')).join('')}</svg></div>`;
+  const svg = $('#ln-svg', host);
+  const up = (k, acc = new Set()) => { acc.add(k); const name = Object.keys(LIN.deps).find(n => mid(n) === k); (name ? LIN.deps[name] : []).forEach(d => up(d.startsWith('c-') ? d : mid(d), acc)); return acc; };
+  const usedBy = m => { const out = []; COFFEE.pages.forEach(p => p.visuals.forEach(v => Object.values(v.wells).flat().forEach(f => { if (f.kind === 'Measure' && f.prop === m) out.push(`${p.name} › ${v.title || v.name}`); }))); return [...new Set(out)]; };
+  function pick(id) {
+    const set = up(id);
+    $$('.node', svg).forEach(n => { n.classList.toggle('sel', n.dataset.id === id); n.classList.toggle('lit', set.has(n.dataset.id) && n.dataset.id !== id); n.classList.toggle('dim', !set.has(n.dataset.id)); });
+    $$('.edge', svg).forEach(e => { const [a, b] = e.dataset.e.split('|'); const on = set.has(a) && set.has(b); e.classList.toggle('lit', on); e.classList.toggle('dim', !on); e.setAttribute('marker-end', `url(#ln-${on ? 'af' : 'a'})`); });
+    const name = Object.keys(LIN.deps).find(n => mid(n) === id);
+    if (!name) { const c = LIN.cols.find(c => c[0] === id); $('#tm-panel').innerHTML = `<div class="eyebrow">Column</div><h2 class="t-mono">${esc(c[1])}</h2>${badges([['b-model', 'Imported column']])}<p>Click a measure to see everything it depends on.</p>`; return; }
+    const m = COFFEE.measures.find(x => x.name === name); const vis = usedBy(name);
+    $('#tm-panel').innerHTML = `<div class="eyebrow">Measure · ${esc(m.folder || 'no display folder')}</div><h2>${esc(name)}</h2>${badges([['b-model', '_Measures.tmdl'], ['b-quiet', 'format ' + (m.format || 'none')]])}<pre class="code">${hlTmdl(`measure ${/[^A-Za-z0-9_]/.test(name) ? `'${name}'` : name} = ${m.dax}`)}</pre>
+      <h3 style="margin-top:14px">Used by ${vis.length} visual${vis.length === 1 ? '' : 's'}</h3>${vis.length ? `<ul style="margin:0;padding-left:18px;font-size:13.5px">${vis.map(v => `<li>${esc(v)}</li>`).join('')}</ul>` : '<p class="hint">No visual uses it directly; other measures do.</p>'}
+      <p class="hint" style="margin-top:12px">Highlighted: every measure and column it depends on. Rename any of them in TMDL alone and this breaks.</p>`;
+  }
+  bindNodes(svg, pick); pick(mid('Gross Margin %'));
+}
+function buildTmdl() {
+  $('#tm-rules').innerHTML = TM_RULES.map(([t, d, ex], i) => `<div class="card tile"><div class="eyebrow">Rule ${i + 1}</div><b>${esc(t)}</b><p>${esc(d)}</p><div class="rule-ex">${hlTmdl(ex)}</div></div>`).join('');
+  const show = t => {
+    $$('#v-tmdl .subtabs button').forEach(b => b.setAttribute('aria-pressed', b.dataset.t === t));
+    const host = $('#tm-main');
+    if (t === 'table') { host.innerHTML = codeLines(TM_TABLE); bindLines(host, TM_TABLE, '#tm-panel', 'Fact_Sales.tmdl · line')(8); }
+    if (t === 'measure') { host.innerHTML = codeLines(TM_MEASURE) + `<p class="hint" style="margin:14px 4px 0">From <code>_Measures.tmdl</code>. CoffeeSales keeps every measure in this hidden table, but a measure can belong to any table; its home only decides where it appears in the Fields pane.</p>`; bindLines(host, TM_MEASURE, '#tm-panel', "Revenue PY · line")(0); }
+    if (t === 'lineage') buildLineage(host);
+  };
+  $$('#v-tmdl .subtabs button').forEach(b => b.onclick = () => show(b.dataset.t));
+  show('table');
+}
+
+/* ======================================================================
+   04 RELATIONSHIPS
+   ====================================================================== */
+const RL = {
+  tables: { Fact_Sales: { x: 290, y: 150, cols: ['SaleID', 'Date', 'StoreID', 'ProductID', 'Qty', 'Revenue', 'Cost'] }, Dim_Date: { x: 24, y: 40, cols: ['Date', 'Year', 'Month', 'Quarter', '…'] }, Dim_Product: { x: 556, y: 40, cols: ['ProductID', 'ProductName', 'Category', '…'] }, Dim_Store: { x: 556, y: 250, cols: ['StoreID', 'StoreName', 'City', 'Region'] } },
+  rels: [
+    { id: 'Rel_Sales_Date', from: 'Fact_Sales.Date', to: 'Dim_Date.Date', d: 'M290 196 H244 V100 H204', lx: 247, ly: 148 },
+    { id: 'Rel_Sales_Product', from: 'Fact_Sales.ProductID', to: 'Dim_Product.ProductID', d: 'M470 196 H516 V100 H556', lx: 474, ly: 148 },
+    { id: 'Rel_Sales_Store', from: 'Fact_Sales.StoreID', to: 'Dim_Store.StoreID', d: 'M470 260 H516 V310 H556', lx: 474, ly: 296 }
+  ]
+};
+const relState = {}; RL.rels.forEach(r => relState[r.id] = { card: 'm1', dir: 'single', active: true });
+function buildRel() {
+  const svg = $('#rl-svg');
+  const tbl = (name, t) => { const h = 40 + t.cols.length * 20; return `<g class="node model" data-id="t-${name}" tabindex="-1"><rect x="${t.x}" y="${t.y}" width="180" height="${h}" rx="8"/><text class="t-name t-mono" x="${t.x + 12}" y="${t.y + 24}">${name}</text>${t.cols.map((c, i) => `<text class="t-sub t-mono" x="${t.x + 12}" y="${t.y + 48 + i * 20}">${esc(c)}</text>`).join('')}</g>`; };
+  svg.innerHTML = defs('rl') + RL.rels.map(r => `<g class="relg" data-r="${r.id}" style="cursor:pointer" tabindex="0" role="button" aria-label="${r.id}"><path d="${r.d}" fill="none" stroke="transparent" stroke-width="16"/><path class="edge" data-e="${r.id}" d="${r.d}"/><text class="edge-label" data-lbl="${r.id}" x="${r.lx}" y="${r.ly}"></text></g>`).join('') + Object.entries(RL.tables).map(([n, t]) => tbl(n, t)).join('') +
+    `<text class="t-sub" x="24" y="404">Click a line to select a relationship. The arrowhead shows which way filters flow.</text>`;
+  let cur = 'Rel_Sales_Product';
+  function lines(r) {
+    const s = relState[r.id], add = [];
+    if (!s.active) add.push('isActive: false');
+    if (s.card === '11') add.push('fromCardinality: one');
+    if (s.card === 'mm') add.push('toCardinality: many');
+    if (s.dir === 'both') add.push('crossFilteringBehavior: bothDirections');
+    return add;
+  }
+  function draw() {
+    RL.rels.forEach(r => {
+      const s = relState[r.id], e = $(`.edge[data-e="${r.id}"]`, svg), lbl = $(`[data-lbl="${r.id}"]`, svg);
+      const sel = r.id === cur;
+      e.classList.toggle('lit', sel); e.classList.toggle('dash', !s.active);
+      const mk = sel ? 'af' : 'a';
+      e.setAttribute('marker-start', `url(#rl-${mk})`);
+      if (s.dir === 'both') e.setAttribute('marker-end', `url(#rl-${mk})`); else e.removeAttribute('marker-end');
+      const fromSide = s.card === '11' ? '1' : '*', toSide = s.card === 'mm' ? '*' : '1';
+      lbl.textContent = `${fromSide} : ${toSide}`; lbl.classList.toggle('lit', sel);
+    });
+    const r = RL.rels.find(x => x.id === cur), s = relState[cur], add = lines(r);
+    const tm = [`relationship ${r.id}`, ...add.map(a => '\t' + a), `\tfromColumn: ${r.from}`, `\ttoColumn: ${r.to}`];
+    const html = tm.map(l => add.includes(l.trim()) ? `<span class="add">+ ${hlTmdl(l)}</span>` : '  ' + hlTmdl(l)).join('\n');
+    $('#rl-panel').innerHTML = `<div class="eyebrow">relationships.tmdl</div><h2 class="t-mono">${r.id}</h2>${badges([['b-model', 'from = many side: ' + r.from.split('.')[0]], ['b-model', 'to = one side: ' + r.to.split('.')[0]]])}
+      <div class="rel-form">
+        <label for="rl-card">Cardinality<select id="rl-card"><option value="m1">Many to one (*:1) · default</option><option value="11">One to one (1:1)</option><option value="mm">Many to many (*:*)</option></select></label>
+        <label for="rl-dir">Cross-filter direction<select id="rl-dir"><option value="single">Single · default</option><option value="both">Both</option></select></label>
+        <label style="display:flex;align-items:center;gap:8px;color:var(--ink)"><input type="checkbox" id="rl-act" ${s.active ? 'checked' : ''}> Active relationship</label>
+      </div>
+      <pre class="code">${html}</pre>
+      <p class="hint" style="margin-top:10px">${add.length ? `${add.length} line${add.length > 1 ? 's' : ''} added. That is all <code>git diff</code> would show.` : 'All defaults: nothing beyond the two columns is written.'}${!s.active ? ' An inactive relationship is used inside a measure with <code>USERELATIONSHIP</code>.' : ''}</p>
+      <button id="rl-reset">Reset all to defaults</button>`;
+    $('#rl-card').value = s.card; $('#rl-dir').value = s.dir;
+    $('#rl-card').onchange = e => { s.card = e.target.value; draw(); };
+    $('#rl-dir').onchange = e => { s.dir = e.target.value; draw(); };
+    $('#rl-act').onchange = e => { s.active = e.target.checked; draw(); };
+    $('#rl-reset').onclick = () => { Object.values(relState).forEach(v => Object.assign(v, { card: 'm1', dir: 'single', active: true })); draw(); };
+  }
+  $$('.relg', svg).forEach(g => { g.onclick = () => { cur = g.dataset.r; draw(); }; g.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); cur = g.dataset.r; draw(); } }; });
+  draw();
+}
+
+/* ======================================================================
+   05 REPORT
+   ====================================================================== */
+const VT = { cardVisual: 'Card', clusteredBarChart: 'Bar chart', lineChart: 'Line chart', slicer: 'Slicer', textbox: 'Text box', pivotTable: 'Matrix', actionButton: 'Button' };
+function buildReport() {
+  let page = 0, sel = null, renamed = false;
+  $('#rp-pages').innerHTML = COFFEE.pages.map((p, i) => `<button data-p="${i}" aria-pressed="${i === 0}">${esc(p.name)}</button>`).join('');
+  const svg = $('#rp-svg');
+  const measure = n => COFFEE.measures.find(m => m.name === n);
+  const fieldsOf = v => Object.entries(v.wells).flatMap(([w, fs]) => fs.map(f => ({ w, ...f })));
+  const broken = v => renamed && fieldsOf(v).some(f => f.kind === 'Measure' && f.prop === 'Gross Margin %');
+  function draw() {
+    const p = COFFEE.pages[page];
+    svg.setAttribute('viewBox', `0 0 ${p.w} ${p.h}`);
+    const k = p.w / 720;
+    svg.innerHTML = `<rect x="0" y="0" width="${p.w}" height="${p.h}" rx="${8 * k}" fill="var(--sunk)" stroke="var(--line)"/>` + p.visuals.map(v => {
+      const label = VT[v.type] || v.type, t = v.title || (v.wells.Data ? v.wells.Data[0].prop : v.wells.Values ? v.wells.Values[0].prop : '');
+      const f1 = 12.5 * k, f2 = 11 * k;
+      return `<g class="node report${broken(v) ? ' broken' : ''}${sel === v.name ? ' sel' : ''}" data-id="${v.name}" tabindex="0" role="button" aria-label="${esc(label + ' ' + t)}"><rect x="${v.x}" y="${v.y}" width="${v.w}" height="${v.h}" rx="6"/>
+        <text class="t-name" style="font-size:${f1}px" x="${v.x + 10}" y="${v.y + f1 + 8}">${esc(label)}${broken(v) ? '  ⚠ broken' : ''}</text>
+        ${t && v.h > 44 ? `<text class="t-sub" style="font-size:${f2}px" x="${v.x + 10}" y="${v.y + f1 + f2 + 16}">${esc(t.length > v.w / (f2 * 0.55) ? t.slice(0, Math.floor(v.w / (f2 * 0.55)) - 1) + '…' : t)}</text>` : ''}</g>`;
+    }).join('');
+    bindNodes(svg, id => { sel = id; draw(); });
+    show();
+  }
+  function show() {
+    const p = COFFEE.pages[page], v = p.visuals.find(x => x.name === sel);
+    if (!v) { $('#rp-panel').innerHTML = `<div class="eyebrow">Page · page.json</div><h2>${esc(p.name)}</h2>${badges([['b-report', p.w + ' × ' + p.h], ['b-quiet', p.visuals.length + ' visuals']])}<p>Each box is one <code>visuals/&lt;id&gt;/visual.json</code> file, drawn at its stored position. Click one.</p>`; return; }
+    const fields = fieldsOf(v);
+    const rows = fields.map(f => {
+      if (f.kind === 'HierarchyLevel') return `<tr><td>${esc(f.w)}</td><td colspan="2">Date hierarchy level (Year, Quarter)</td></tr>`;
+      const m = f.kind === 'Measure' ? measure(f.prop) : null, gone = renamed && f.prop === 'Gross Margin %';
+      return `<tr><td>${esc(f.w)}</td><td><span class="t-mono" style="font-family:var(--mono);font-size:12.5px">${esc(f.entity)} / ${esc(f.prop)}</span><br><span class="hint">${f.kind === 'Measure' ? 'Measure' : 'Column'}</span></td><td>${gone ? '<b style="color:var(--bad)">Not found in the model</b>' : m ? `<code>${esc(m.dax)}</code>` : '<span class="hint">column, no DAX</span>'}</td></tr>`;
+    }).join('');
+    $('#rp-panel').innerHTML = `<div class="eyebrow">visual.json · ${esc(v.name)}</div><h2>${esc(v.title || VT[v.type] || v.type)}</h2>${badges([['b-report', v.type], ['b-quiet', `x ${v.x} · y ${v.y} · ${v.w} × ${v.h}`]].concat(v.filters ? [['b-quiet', v.filters + ' visual filter']] : []).concat(broken(v) ? [['b-bad', 'Broken by the rename']] : []))}
+      ${fields.length ? `<div class="tbl-wrap" style="margin-top:4px"><table><thead><tr><th>Well</th><th>Entity / Property</th><th>DAX in the model</th></tr></thead><tbody>${rows}</tbody></table></div>` : '<p>No data fields: a decorative or navigation element.</p>'}
+      <p class="hint" style="margin-top:12px">${broken(v) ? 'The visual still asks for <code>_Measures / Gross Margin %</code>. The file now calls it <code>GM %</code>, so Desktop cannot find it. Rename inside Desktop, which updates every visual, or undo with <code>git checkout</code>.' : 'The third column is not in this file. It is looked up in <code>_Measures.tmdl</code> by table and name.'}</p>`;
+  }
+  $$('#rp-pages button').forEach(b => b.onclick = () => { page = +b.dataset.p; sel = null; $$('#rp-pages button').forEach(x => x.setAttribute('aria-pressed', x === b)); draw(); });
+  $('#rp-rename').onclick = e => { renamed = !renamed; e.currentTarget.setAttribute('aria-pressed', renamed); e.currentTarget.textContent = renamed ? 'Undo the rename (git checkout)' : "Rename 'Gross Margin %' to 'GM %' in TMDL only"; draw(); };
+  sel = 'chProd'; draw();
+}
+
+/* ======================================================================
+   06 AI LOOP
+   ====================================================================== */
+const AI_STEPS = [
+  ['Commit', 'git commit', 'Commit the project first, so the change can be reviewed and undone.'],
+  ['Copy context', 'measures + prompt', 'Choose which file to copy: the measures it needs, not the whole model. You decide what the AI sees.'],
+  ['Ask the AI', 'TMDL out, no lineageTag', "Ask for <code>Revenue YTD</code> as TMDL: one tab before <code>measure</code>, two before each property, straight quotes, no lineageTag."],
+  ['Check the names', '[Revenue], Dim_Date[Date]', 'Before pasting, confirm every table, column and measure it names exists in your TMDL.'],
+  ['Paste into the file', 'tabs · UTF-8, no BOM', 'Paste below the existing measures in <code>_Measures.tmdl</code>. Tabs, not spaces. Save as UTF-8 without BOM.'],
+  ['Apply in Desktop', 'Apply external changes', 'Apply external changes, or close and reopen. Desktop names the file and line of any error.'],
+  ['Validate and diff', 'December = full year', 'Put Revenue YTD in a table by month: December must equal the year\'s total. Then <code>git diff</code>, and commit or discard.']
+];
+function buildAi() {
+  const svg = $('#ai-svg'), cx = 380, cy = 228, R = 172;
+  const pts = AI_STEPS.map((_, i) => { const a = -Math.PI / 2 + i * 2 * Math.PI / AI_STEPS.length; return [cx + R * Math.cos(a) * 1.25, cy + R * Math.sin(a)]; });
+  let arcs = '';
+  pts.forEach((p, i) => { const q = pts[(i + 1) % pts.length]; const mx = (p[0] + q[0]) / 2, my = (p[1] + q[1]) / 2; const ox = (mx - cx) * 0.18, oy = (my - cy) * 0.18; arcs += `<path class="edge" data-e="a${i}" d="M${p[0]} ${p[1]} Q${mx + ox} ${my + oy} ${q[0]} ${q[1]}" marker-end="url(#ai-a)"/>`; });
+  svg.innerHTML = defs('ai') + arcs + `<text class="t-name" x="${cx}" y="${cy - 4}" text-anchor="middle" style="font-size:15px">You are the integration</text><text class="t-sub" x="${cx}" y="${cy + 16}" text-anchor="middle">7 manual steps for one measure</text>` +
+    AI_STEPS.map((s, i) => { const [x, y] = pts[i]; return `<g class="node" data-id="${i}" tabindex="0" role="button" aria-label="${esc(s[0])}"><rect x="${x - 82}" y="${y - 26}" width="164" height="52" rx="26"/><text class="t-name" x="${x}" y="${y - 3}" text-anchor="middle">${i + 1}. ${esc(s[0])}</text><text class="t-sub" x="${x}" y="${y + 14}" text-anchor="middle">${esc(s[1])}</text></g>`; }).join('');
+  let step = 0, timer = null;
+  function go(i) {
+    step = (i + AI_STEPS.length) % AI_STEPS.length;
+    $$('.node', svg).forEach(n => { n.classList.toggle('sel', +n.dataset.id === step); n.classList.toggle('lit', +n.dataset.id < step); });
+    litEdges(svg, step > 0 ? [`a${step - 1}`] : [], 'ai');
+    $('#ai-count').textContent = `${step + 1} / ${AI_STEPS.length}`;
+    const s = AI_STEPS[step];
+    $('#ai-panel').innerHTML = `<div class="eyebrow">Exercise 4 · step ${step + 1} of 7</div><h2><span class="step-num">${step + 1}</span>${esc(s[0])}</h2><p>${s[2]}</p>` +
+      (step === 2 ? `<pre class="code">${hlTmdl("\tmeasure 'Revenue YTD' = TOTALYTD ( [Revenue], Dim_Date[Date] )\n\t\tformatString: \\$#,##0\n\t\tdisplayFolder: 02 Time Intelligence")}</pre><p class="hint" style="margin-top:8px">The expected answer.</p>` : '') +
+      `<p class="hint">In Module 7, steps 2, 4, 6 and 7 become tool calls.</p>`;
+  }
+  bindNodes(svg, id => { clearInterval(timer); go(+id); });
+  $('#ai-play').onclick = () => { clearInterval(timer); go(0); if (!matchMedia('(prefers-reduced-motion: reduce)').matches) timer = setInterval(() => { if (step >= AI_STEPS.length - 1) clearInterval(timer); else go(step + 1); }, 2800); };
+  $('#ai-next').onclick = () => { clearInterval(timer); go(step + 1); };
+  $('#ai-prev').onclick = () => { clearInterval(timer); go(step - 1); };
+  go(0);
+  const EX = [
+    ['Exercise 1', 'Explain a measure', 'Turn DAX someone else wrote into business language, and catch its edge cases.', "These are Power BI measures in TMDL format. For `Revenue YoY %`: (1) explain in one sentence what a business user would read it as; (2) explain the DAX step by step, including how it depends on the other two measures; (3) list the situations where it returns blank or a misleading value; (4) say what the formatString line does. Do not assume any table or column that is not shown.", 'Card filtered to the first year: it should be blank.'],
+    ['Exercise 2', 'Explain the model', 'Understand a model\'s design from relationships.tmdl alone.', "This is a Power BI `relationships.tmdl` file. `fromColumn` is the many side and `toColumn` the one side unless stated otherwise; properties left at their default are not written. (1) Identify the fact and dimension tables. (2) Draw the model as an indented text diagram. (3) Explain each `isActive: false` relationship and how a measure would use it. (4) Flag anything unusual a model reviewer should question.", 'Model view in Desktop, including the dotted inactive lines.'],
+    ['Exercise 3', 'Read a visual', 'Know what a visual shows without opening the report.', "This is a Power BI PBIR `visual.json` file. Identify: the visual type; every field used, whether it is a column or a measure, its table, and which well it sits in; the sort; any formatting set; any filters. Then write a one-line description suitable for report documentation. Only report what is in the JSON; say \"not specified\" for anything that is not.", 'Compare with the page in Desktop. Watch for invented titles or colours.'],
+    ['Exercise 4', 'Generate and apply', 'Write a new measure with AI and add it safely.', "Write a Power BI measure called `Revenue YTD` that returns year-to-date revenue using the existing `[Revenue]` measure and the `Dim_Date[Date]` column. Return it as TMDL that I can paste into a table file: one tab before `measure`, two tabs before each property, `formatString: \\$#,##0`, `displayFolder: 02 Time Intelligence`. Do not include a lineageTag. Use straight quotes only.", 'December equals the full-year total; git diff shows only the new measure.']
+  ];
+  $('#ai-ex').innerHTML = EX.map((e, i) => `<div class="card tile"><div class="eyebrow">${e[0]}</div><b>${esc(e[1])}</b><p>${esc(e[2])}</p><div class="prompt" id="pr-${i}">${esc(e[3])}</div><button class="copy" data-i="${i}">Copy prompt</button><p><b style="color:var(--ink)">Validate:</b> ${esc(e[4])}</p></div>`).join('');
+  $$('#ai-ex .copy').forEach(b => b.onclick = async () => {
+    const t = EX[+b.dataset.i][3];
+    try { await navigator.clipboard.writeText(t); b.textContent = 'Copied'; }
+    catch { const r = document.createRange(); r.selectNodeContents($('#pr-' + b.dataset.i)); const s = getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = 'Selected, press Ctrl+C'; }
+    setTimeout(() => b.textContent = 'Copy prompt', 2200);
+  });
+}
+
+/* ======================================================================
+   07 MCP
+   ====================================================================== */
+const LANES = [['you', 'You', 76], ['host', 'Host', 228], ['client', 'MCP client', 380], ['server', 'MCP server', 532], ['model', 'Semantic model', 684]];
+const LSUB = { you: 'the developer', host: 'Claude Code in VS Code', client: 'one per server', server: 'Power BI modeling', model: 'Desktop or Fabric' };
+const MSGS = [
+  ['client', 'server', 'connect · initialize', 'The host starts the server as a local process (standard input/output) or connects over HTTP. They exchange JSON-RPC messages.'],
+  ['server', 'client', 'here are my tools', 'The server lists its tools (actions), resources (data) and prompts. Different servers offer different tools.'],
+  ['you', 'host', '"Add Revenue YTD, check December"', 'You ask in plain language. No file copying.'],
+  ['client', 'server', 'tool: list tables and measures', 'The model decides a tool would help. The host asks you to approve the call, then the client sends it.'],
+  ['server', 'model', 'read metadata', 'The server reads the model as it is now, through the Analysis Services engine. No stale pasted copy.'],
+  ['server', 'client', 'Revenue, Dim_Date[Date] exist', 'The result goes back into the conversation. Names are checked against the real model.'],
+  ['client', 'server', 'tool: create measure', 'A write. The host asks for your approval first.', 'write'],
+  ['server', 'model', 'write Revenue YTD', 'The server changes the live model. Note for Session 2: write the change to the files, under Git, too.', 'write'],
+  ['client', 'server', 'tool: run DAX query', 'Validation: the server runs a DAX query for Revenue YTD by month.'],
+  ['server', 'host', 'December = full-year total', 'The actual number comes back, instead of you comparing a visual by eye.']
+];
+function buildMcp() {
+  const svg = $('#mc-svg'), x = id => LANES.find(l => l[0] === id)[2], top = 96, gap = 46;
+  let ro = false, step = -1, timer = null;
+  function draw() {
+    let h = `${defs('mc')}` + LANES.map(([id, n, lx]) => `<g><rect x="${lx - 68}" y="16" width="136" height="54" rx="8" fill="var(--surface)" stroke="${id === 'server' || id === 'model' ? 'color-mix(in srgb, var(--model) 60%, var(--line-strong))' : 'var(--line-strong)'}"/><text class="t-name" x="${lx}" y="38" text-anchor="middle">${n}</text><text class="t-sub" x="${lx}" y="56" text-anchor="middle" style="font-size:10.5px">${LSUB[id]}</text><line x1="${lx}" y1="70" x2="${lx}" y2="${top + MSGS.length * gap + 4}" stroke="var(--line)" stroke-dasharray="3 4"/></g>`).join('');
+    MSGS.forEach((m, i) => {
+      const y = top + i * gap + 16, x1 = x(m[0]), x2 = x(m[1]), dir = x2 > x1 ? 1 : -1;
+      const blocked = ro && m[4] === 'write', hidden = ro && m[4] === 'write' && m[1] === 'model';
+      const cls = i === step ? 'lit flow' : (step >= 0 && i > step ? 'dim' : '');
+      if (hidden) { h += `<text class="t-sub" x="${(x1 + x2) / 2}" y="${y - 6}" text-anchor="middle" opacity=".5">never sent</text>`; return; }
+      const end = blocked ? (x1 + x2) / 2 : x2 - dir * 6;
+      h += `<path class="edge ${blocked ? 'bad' : cls}" d="M${x1 + dir * 4} ${y} H${end}" marker-end="url(#mc-${blocked ? 'ab' : i === step ? 'af' : 'a'})"/>`;
+      h += `<text class="edge-label ${i === step ? 'lit' : ''}" x="${(x1 + x2) / 2}" y="${y - 7}" text-anchor="middle">${i + 1}. ${esc(blocked ? 'create measure: refused' : m[2])}</text>`;
+      if (blocked) h += `<text x="${end + 8}" y="${y + 5}" fill="var(--bad)" font-weight="700" font-size="16">×</text>`;
+    });
+    svg.setAttribute('viewBox', `0 0 760 ${top + MSGS.length * gap + 16}`); svg.innerHTML = h;
+    $('#mc-count').textContent = step >= 0 ? `${step + 1} / ${MSGS.length}` : '';
+    const m = MSGS[Math.max(step, 0)], blocked = ro && m[4] === 'write';
+    $('#mc-panel').innerHTML = step < 0 ? `<div class="eyebrow">The concepts</div><h2>Host, client, server, tools</h2>
+      <p><b>Host</b>: the app you use (Claude Code in VS Code, Claude Desktop). <b>Client</b>: its connection to one server. <b>Server</b>: a program exposing capabilities. <b>Tools</b>: actions the model can ask to run. <b>Resources</b>: data it can read. <b>Prompts</b>: reusable instructions the server offers.</p>
+      <p class="hint">Press <b>Play the conversation</b>.</p>` :
+      `<div class="eyebrow">Message ${step + 1} of ${MSGS.length} · ${esc(LANES.find(l => l[0] === m[0])[1])} → ${esc(LANES.find(l => l[0] === m[1])[1])}</div><h2>${esc(blocked ? 'Refused in read-only mode' : m[2])}</h2>${m[4] === 'write' ? badges([ro ? ['b-bad', 'Blocked: read-only'] : ['b-warn', 'Write · needs your approval']]) : badges([['b-ok', 'Read']])}<p>${blocked ? 'Registered read-only, the server offers no write tools, so the change cannot happen. Write access becomes a decision, not a default.' : m[3]}</p>`;
+  }
+  function go(i) { step = Math.max(0, Math.min(MSGS.length - 1, i)); draw(); }
+  $('#mc-play').onclick = () => { clearInterval(timer); go(0); if (!matchMedia('(prefers-reduced-motion: reduce)').matches) timer = setInterval(() => { if (step >= MSGS.length - 1) clearInterval(timer); else go(step + 1); }, 2400); };
+  $('#mc-next').onclick = () => { clearInterval(timer); go(step + 1); };
+  $('#mc-prev').onclick = () => { clearInterval(timer); go(step - 1); };
+  $('#mc-ro').onclick = e => { ro = !ro; e.currentTarget.setAttribute('aria-pressed', ro); draw(); };
+  draw();
+}
+
+/* ---------- routing ---------- */
+const VIEWS = ['overview', 'formats', 'folder', 'tmdl', 'relationships', 'report', 'ailoop', 'mcp'];
+const built = {}; const BUILD = { overview: buildOverview, formats: buildFormats, folder: buildFolder, tmdl: buildTmdl, relationships: buildRel, report: buildReport, ailoop: buildAi, mcp: buildMcp };
+function route() {
+  let v = location.hash.slice(1); if (!VIEWS.includes(v)) v = 'overview';
+  VIEWS.forEach(x => $('#v-' + x).hidden = x !== v);
+  $$('nav.tabs a').forEach(a => { if (a.dataset.v === v) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
+  if (!built[v]) { BUILD[v](); built[v] = true; }
+  try { localStorage.setItem('pbi-map-view', v); } catch {}
+}
+$$('nav.tabs a').forEach(a => a.addEventListener('click', e => { e.preventDefault(); history.replaceState(null, '', '#' + a.dataset.v); route(); window.scrollTo({ top: 0 }); a.scrollIntoView({ block: 'nearest', inline: 'nearest' }); }));
+addEventListener('hashchange', route);
+route();
+</script>
+
+</body>
+</html>
