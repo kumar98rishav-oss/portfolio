@@ -161,7 +161,7 @@ footer a { color: inherit }
 <header class="top">
   <div class="wrap">
     <div class="brand">
-      <b>Power BI Internals Map</b><span>Session 01 · PBIP, TMDL and PBIR · built from the real CoffeeSales project</span>
+      <b>Power BI Internals Map</b><span>Session 01 · PBIP, TMDL and PBIR · built from the Meridian Medical Supply training project</span>
       <div class="legend" aria-hidden="true"><span><i style="background:var(--report)"></i>Report · PBIR</span><span><i style="background:var(--model)"></i>Model · TMDL</span><span><i style="background:var(--focus)"></i>You are here</span></div>
     </div>
     <nav class="tabs" aria-label="Maps">
@@ -228,7 +228,7 @@ footer a { color: inherit }
 <section class="view" id="v-folder" hidden>
   <div class="eyebrow">Map 02 · PBIP folder architecture</div>
   <h1>Two items joined by one relative path</h1>
-  <p class="lede">The real CoffeeSales tree as Desktop saved it. The dot shows whether a file is safe to edit outside Desktop. Use the filters to answer "what goes into Git?" and "what can I touch?"</p>
+  <p class="lede">The real MeridianSupplyChain tree as Desktop saved it. The dot shows whether a file is safe to edit outside Desktop. Use the filters to answer "what goes into Git?" and "what can I touch?"</p>
   <div class="stage">
     <div class="card diagram">
       <div class="filters" role="group" aria-label="Filter files">
@@ -249,7 +249,7 @@ footer a { color: inherit }
 <section class="view" id="v-tmdl" hidden>
   <div class="eyebrow">Map 03 · The semantic model in TMDL</div>
   <h1>The model is indented text, one file per table</h1>
-  <p class="lede">Click any line of the file to see what it means. Switch to <b>Measure lineage</b> to see how the ten real CoffeeSales measures build on each other and which visuals use them.</p>
+  <p class="lede">Click any line of the file to see what it means. Switch to <b>Measure lineage</b> to see how the Meridian sales measures build on each other and which visuals use them.</p>
   <div class="subtabs" role="group" aria-label="TMDL views">
     <button data-t="table" aria-pressed="true">Fact_Sales.tmdl</button>
     <button data-t="measure" aria-pressed="false">A measure, line by line</button>
@@ -267,19 +267,19 @@ footer a { color: inherit }
 <section class="view" id="v-relationships" hidden>
   <div class="eyebrow">Map 04 · Relationships</div>
   <h1>A relationship is three lines until you leave the defaults</h1>
-  <p class="lede">This is the CoffeeSales star schema from <code>relationships.tmdl</code>. Pick a relationship, change it the way you would in Manage relationships, and watch which lines Desktop would add to the file.</p>
+  <p class="lede">This is the Meridian sales star, plus the snowflake to Dim_Supplier, from <code>relationships.tmdl</code>. Pick a relationship, change it the way you would in Manage relationships, and watch which lines Desktop would add to the file.</p>
   <div class="stage">
-    <div class="card diagram"><div class="scroll-x"><svg id="rl-svg" viewBox="0 0 760 420" role="img" aria-label="CoffeeSales star schema"></svg></div></div>
+    <div class="card diagram"><div class="scroll-x"><svg id="rl-svg" viewBox="0 0 760 476" role="img" aria-label="Meridian sales star schema"></svg></div></div>
     <aside class="card panel" id="rl-panel" aria-live="polite"></aside>
   </div>
-  <div class="note"><b>Illustrative, then proven live.</b> None of the 193 TMDL files in the sample projects changes these defaults, so the added lines follow the Tabular Object Model property names. Prove each one in class: commit, change it in Desktop, save, run <code>git diff relationships.tmdl</code>.</div>
+  <div class="note"><b>Illustrative, then proven live.</b> Apart from isActive, no sample file changes these defaults, so the added lines follow the Tabular Object Model property names. Prove each one in class: commit, change it in Desktop, save, run <code>git diff relationships.tmdl</code>.</div>
 </section>
 
 <!-- 05 REPORT -->
 <section class="view" id="v-report" hidden>
   <div class="eyebrow">Map 05 · The report folder and PBIR</div>
   <h1>The report holds positions and names, never calculations</h1>
-  <p class="lede">The real pages of CoffeeSales, each visual drawn at the position stored in its <code>visual.json</code>. Click a visual to see its fields and the DAX each one points to in the model. Then try the rename.</p>
+  <p class="lede">The three real pages of the Meridian report, each visual drawn at the position stored in its <code>visual.json</code>. Click a visual to see its fields and the DAX each one points to in the model. Then try the rename.</p>
   <div class="subtabs" role="group" aria-label="Pages" id="rp-pages"></div>
   <div class="stage">
     <div class="card diagram">
@@ -296,7 +296,7 @@ footer a { color: inherit }
 <section class="view" id="v-ailoop" hidden>
   <div class="eyebrow">Map 06 · AI without MCP</div>
   <h1>Without MCP, you are the integration</h1>
-  <p class="lede">Exercise 4 adds <code>Revenue YTD</code> with a chat assistant. Step through the loop: every box is something you do by hand. Module 7 shows which of them a tool can do.</p>
+  <p class="lede">Exercise 4 adds <code>Revenue QTD</code> with a chat assistant. Step through the loop: every box is something you do by hand. Module 7 shows which of them a tool can do.</p>
   <div class="stage">
     <div class="card diagram">
       <div class="scroll-x"><svg id="ai-svg" viewBox="0 0 760 460" role="img" aria-label="The seven-step copy-paste loop"></svg></div>
@@ -358,10 +358,10 @@ footer a { color: inherit }
 </section>
 </main>
 
-<footer class="wrap">Sources: Microsoft Learn (Power BI Desktop projects, report and semantic model folders, TMDL overview, TMDL view) and modelcontextprotocol.io. Every file, field and measure shown comes from the CoffeeSales sample project.</footer>
+<footer class="wrap">Sources: Microsoft Learn (Power BI Desktop projects, report and semantic model folders, TMDL overview, TMDL view) and modelcontextprotocol.io. Every file, field and measure shown comes from the Meridian Medical Supply training project.</footer>
 
 <script>
-const COFFEE = {"pages":[{"id":"p1cmd000000000000001","name":"Sales Command Center","w":1280,"h":720,"visuals":[{"name":"chProd","type":"clusteredBarChart","x":20,"y":439,"w":1240,"h":269,"wells":{"Category":[{"kind":"Column","entity":"Dim_Product","prop":"ProductName"}],"Y":[{"kind":"Measure","entity":"_Measures","prop":"Gross Margin %"}]},"title":"Gross Margin % by Product (loss-makers first)","filters":0},{"name":"chStore","type":"clusteredBarChart","x":656,"y":178,"w":604,"h":250,"wells":{"Category":[{"kind":"Column","entity":"Dim_Store","prop":"StoreName"}],"Y":[{"kind":"Measure","entity":"_Measures","prop":"Revenue"}]},"title":"Revenue by Store","filters":0},{"name":"chTrend","type":"lineChart","x":20,"y":178,"w":620,"h":250,"wells":{"Category":[{"kind":"HierarchyLevel","entity":null,"prop":null},{"kind":"HierarchyLevel","entity":null,"prop":null}],"Y":[{"kind":"Measure","entity":"_Measures","prop":"Revenue"}]},"title":"Revenue Trend by Year-Qtr (2024–2025)","filters":1},{"name":"hdr_p1cmd000000000000001","type":"textbox","x":20,"y":10,"w":640,"h":40,"wells":{},"title":null,"filters":0},{"name":"kGM","type":"cardVisual","x":262,"y":73,"w":232,"h":92,"wells":{"Data":[{"kind":"Measure","entity":"_Measures","prop":"Gross Margin %"}]},"title":null,"filters":0},{"name":"kQty","type":"cardVisual","x":504,"y":74,"w":232,"h":92,"wells":{"Data":[{"kind":"Measure","entity":"_Measures","prop":"Quantity"}]},"title":null,"filters":0},{"name":"kRev","type":"cardVisual","x":20,"y":72,"w":232,"h":92,"wells":{"Data":[{"kind":"Measure","entity":"_Measures","prop":"Revenue"}]},"title":null,"filters":0},{"name":"kYoY","type":"cardVisual","x":744,"y":75,"w":232,"h":92,"wells":{"Data":[{"kind":"Measure","entity":"_Measures","prop":"Revenue YoY %"}]},"title":null,"filters":0},{"name":"sl_ct_p1cmd000000000000001","type":"slicer","x":1072,"y":8,"w":176,"h":64,"wells":{"Values":[{"kind":"Column","entity":"Dim_Product","prop":"Category"}]},"title":null,"filters":0},{"name":"sl_rg_p1cmd000000000000001","type":"slicer","x":888,"y":8,"w":176,"h":64,"wells":{"Values":[{"kind":"Column","entity":"Dim_Store","prop":"Region"}]},"title":null,"filters":0},{"name":"sl_yr_p1cmd000000000000001","type":"slicer","x":703,"y":8,"w":176,"h":64,"wells":{"Values":[{"kind":"Column","entity":"Dim_Date","prop":"Year"}]},"title":null,"filters":0}],"interactions":0},{"id":"cStore360000000000001","name":"Store 360","w":1280,"h":720,"visuals":[{"name":"back_cStore360000000000001","type":"actionButton","x":8,"y":10,"w":44,"h":36,"wells":{},"title":null,"filters":0},{"name":"kGM","type":"cardVisual","x":262,"y":66,"w":232,"h":92,"wells":{"Data":[{"kind":"Measure","entity":"_Measures","prop":"Gross Margin %"}]},"title":null,"filters":0},{"name":"kQty","type":"cardVisual","x":504,"y":66,"w":232,"h":92,"wells":{"Data":[{"kind":"Measure","entity":"_Measures","prop":"Quantity"}]},"title":null,"filters":0},{"name":"kRev","type":"cardVisual","x":20,"y":66,"w":232,"h":92,"wells":{"Data":[{"kind":"Measure","entity":"_Measures","prop":"Revenue"}]},"title":null,"filters":0},{"name":"kYoY","type":"cardVisual","x":746,"y":66,"w":232,"h":92,"wells":{"Data":[{"kind":"Measure","entity":"_Measures","prop":"Revenue YoY %"}]},"title":null,"filters":0},{"name":"s360title","type":"cardVisual","x":66,"y":10,"w":370,"h":56,"wells":{"Data":[{"kind":"Measure","entity":"_Measures","prop":"Selected Store Title"}]},"title":null,"filters":0},{"name":"sMatrix","type":"pivotTable","x":648,"y":170,"w":620,"h":518,"wells":{"Rows":[{"kind":"Column","entity":"Dim_Product","prop":"ProductName"}],"Values":[{"kind":"Measure","entity":"_Measures","prop":"Revenue"},{"kind":"Measure","entity":"_Measures","prop":"Cost"},{"kind":"Measure","entity":"_Measures","prop":"Gross Margin %"},{"kind":"Measure","entity":"_Measures","prop":"Revenue PY"},{"kind":"Measure","entity":"_Measures","prop":"Revenue YoY %"}]},"title":"Product Detail","filters":0},{"name":"sTop","type":"clusteredBarChart","x":20,"y":435,"w":604,"h":254,"wells":{"Category":[{"kind":"Column","entity":"Dim_Product","prop":"ProductName"}],"Y":[{"kind":"Measure","entity":"_Measures","prop":"Revenue"}]},"title":"Top Products by Revenue","filters":0},{"name":"sTrend","type":"lineChart","x":20,"y":170,"w":620,"h":254,"wells":{"Y":[{"kind":"Measure","entity":"_Measures","prop":"Revenue"}],"Category":[{"kind":"Column","entity":"Dim_Date","prop":"YearMonth"}]},"title":"Revenue Trend by Month","filters":0}],"interactions":0},{"id":"tTip0000000000000001","name":"Mini Profile","w":320,"h":240,"visuals":[{"name":"ttGM","type":"cardVisual","x":164,"y":8,"w":148,"h":60,"wells":{"Data":[{"kind":"Measure","entity":"_Measures","prop":"Gross Margin %"}]},"title":null,"filters":0},{"name":"ttRev","type":"cardVisual","x":8,"y":8,"w":152,"h":60,"wells":{"Data":[{"kind":"Measure","entity":"_Measures","prop":"Revenue"}]},"title":null,"filters":0},{"name":"ttTrend","type":"lineChart","x":9,"y":75,"w":304,"h":165,"wells":{"Category":[{"kind":"Column","entity":"Dim_Date","prop":"YearMonth"}],"Y":[{"kind":"Measure","entity":"_Measures","prop":"Revenue"}]},"title":"Revenue trend","filters":0}],"interactions":0}],"measures":[{"table":"_Measures","name":"Revenue","dax":"SUM ( Fact_Sales[Revenue] )","format":"\\$#,##0","folder":"01 Core"},{"table":"_Measures","name":"Cost","dax":"SUM ( Fact_Sales[Cost] )","format":"\\$#,##0","folder":"01 Core"},{"table":"_Measures","name":"Gross Margin","dax":"[Revenue] - [Cost]","format":"\\$#,##0","folder":"01 Core"},{"table":"_Measures","name":"Gross Margin %","dax":"DIVIDE ( [Gross Margin], [Revenue] )","format":"0.0%","folder":"01 Core"},{"table":"_Measures","name":"Quantity","dax":"SUM ( Fact_Sales[Qty] )","format":"#,##0","folder":"01 Core"},{"table":"_Measures","name":"Avg Revenue per Store","dax":"DIVIDE ( [Revenue], DISTINCTCOUNT ( Dim_Store[StoreID] ) )","format":"\\$#,##0","folder":"01 Core"},{"table":"_Measures","name":"Revenue PY","dax":"CALCULATE ( [Revenue], DATEADD ( Dim_Date[Date], -1, YEAR ) )","format":"\\$#,##0","folder":"02 Time Intelligence"},{"table":"_Measures","name":"Revenue YoY %","dax":"DIVIDE ( [Revenue] - [Revenue PY], [Revenue PY] )","format":"0.0%","folder":"02 Time Intelligence"},{"table":"_Measures","name":"Store Rank","dax":"RANKX ( ALL ( Dim_Store[StoreName] ), [Revenue],, DESC, DENSE )","format":"#,##0","folder":"03 Ranking"},{"table":"_Measures","name":"Selected Store Title","dax":"\"Store 360 — \" & SELECTEDVALUE ( Dim_Store[StoreName], \"All Stores\" )","format":null,"folder":null}],"tables":{"Dim_Date":["Date","Year","MonthNo","Month","YearMonth","MonthIndex","MonthYear","QuarterNo","Quarter","YearQuarter"],"Dim_Product":["ProductID","ProductName","Category","UnitPrice","UnitCost"],"Dim_Store":["StoreID","StoreName","City","Region"],"Fact_Sales":["SaleID","Date","StoreID","ProductID","Qty","Revenue","Cost"],"_Measures":["m"]}};
+const COFFEE = {"pages":[{"id":"ExecutiveOverview","name":"Executive Overview","w":1280,"h":720,"visuals":[{"name":"kpis","type":"cardVisual","x":24,"y":96,"w":1232,"h":112,"wells":{"Data":[{"kind":"Measure","entity":"_Measures","prop":"Revenue"},{"kind":"Measure","entity":"_Measures","prop":"Gross Margin %"},{"kind":"Measure","entity":"_Measures","prop":"Revenue YoY %"},{"kind":"Measure","entity":"_Measures","prop":"On-Time Delivery %"}]},"title":null,"filters":0},{"name":"marginProduct","type":"clusteredBarChart","x":24,"y":472,"w":728,"h":232,"wells":{"Category":[{"kind":"Column","entity":"Dim_Product","prop":"ProductName"}],"Y":[{"kind":"Measure","entity":"_Measures","prop":"Gross Margin %"}]},"title":"Gross margin % by product, lowest first","filters":0},{"name":"otdCarrier","type":"clusteredBarChart","x":768,"y":472,"w":488,"h":232,"wells":{"Category":[{"kind":"Column","entity":"Dim_Carrier","prop":"CarrierName"}],"Y":[{"kind":"Measure","entity":"_Measures","prop":"On-Time Delivery %"}]},"title":"On-time delivery % by carrier","filters":0},{"name":"revCategory","type":"clusteredBarChart","x":768,"y":224,"w":488,"h":232,"wells":{"Category":[{"kind":"Column","entity":"Dim_Product","prop":"Category"}],"Y":[{"kind":"Measure","entity":"_Measures","prop":"Revenue"}]},"title":"Revenue by category","filters":0},{"name":"revTrend","type":"lineChart","x":24,"y":224,"w":728,"h":232,"wells":{"Category":[{"kind":"Column","entity":"Dim_Date","prop":"MonthYear"}],"Y":[{"kind":"Measure","entity":"_Measures","prop":"Revenue"},{"kind":"Measure","entity":"_Measures","prop":"Revenue PY"}]},"title":"Revenue by month, this year and last","filters":0},{"name":"slCategory","type":"slicer","x":1072,"y":8,"w":184,"h":80,"wells":{"Values":[{"kind":"Column","entity":"Dim_Product","prop":"Category"}]},"title":null,"filters":0},{"name":"slRegion","type":"slicer","x":888,"y":8,"w":184,"h":80,"wells":{"Values":[{"kind":"Column","entity":"Dim_Warehouse","prop":"Region"}]},"title":null,"filters":0},{"name":"slYear","type":"slicer","x":704,"y":8,"w":184,"h":80,"wells":{"Values":[{"kind":"Column","entity":"Dim_Date","prop":"Year"}]},"title":null,"filters":0},{"name":"title","type":"textbox","x":24,"y":12,"w":640,"h":64,"wells":{},"title":"Meridian Medical Supply","filters":0}]},{"id":"SupplierPerformance","name":"Supplier Performance","w":1280,"h":720,"visuals":[{"name":"kpis","type":"cardVisual","x":24,"y":96,"w":1232,"h":112,"wells":{"Data":[{"kind":"Measure","entity":"_Measures","prop":"Supplier On-Time %"},{"kind":"Measure","entity":"_Measures","prop":"In-Full %"},{"kind":"Measure","entity":"_Measures","prop":"OTIF %"},{"kind":"Measure","entity":"_Measures","prop":"Open PO Lines"}]},"title":null,"filters":0},{"name":"otSupplier","type":"clusteredBarChart","x":24,"y":224,"w":600,"h":232,"wells":{"Category":[{"kind":"Column","entity":"Dim_Supplier","prop":"SupplierName"}],"Y":[{"kind":"Measure","entity":"_Measures","prop":"Supplier On-Time %"}]},"title":"Supplier on-time %, worst first","filters":0},{"name":"otTrend","type":"lineChart","x":640,"y":224,"w":616,"h":232,"wells":{"Category":[{"kind":"Column","entity":"Dim_Date","prop":"MonthYear"}],"Y":[{"kind":"Measure","entity":"_Measures","prop":"Supplier On-Time %"}]},"title":"Supplier on-time % by month","filters":0},{"name":"slTier","type":"slicer","x":1072,"y":8,"w":184,"h":80,"wells":{"Values":[{"kind":"Column","entity":"Dim_Supplier","prop":"SupplierTier"}]},"title":null,"filters":0},{"name":"slYear","type":"slicer","x":888,"y":8,"w":184,"h":80,"wells":{"Values":[{"kind":"Column","entity":"Dim_Date","prop":"Year"}]},"title":null,"filters":0},{"name":"supplierTable","type":"pivotTable","x":24,"y":472,"w":1232,"h":232,"wells":{"Rows":[{"kind":"Column","entity":"Dim_Supplier","prop":"SupplierName"}],"Values":[{"kind":"Measure","entity":"_Measures","prop":"PO Lines"},{"kind":"Measure","entity":"_Measures","prop":"Purchase Spend"},{"kind":"Measure","entity":"_Measures","prop":"Supplier On-Time %"},{"kind":"Measure","entity":"_Measures","prop":"In-Full %"},{"kind":"Measure","entity":"_Measures","prop":"Avg Lead Time (Days)"},{"kind":"Measure","entity":"_Measures","prop":"Avg Days Late"}]},"title":"Supplier scorecard","filters":0},{"name":"title","type":"textbox","x":24,"y":12,"w":640,"h":64,"wells":{},"title":"Supplier Performance","filters":0}]},{"id":"InventoryHealth","name":"Inventory Health","w":1280,"h":720,"visuals":[{"name":"kpis","type":"cardVisual","x":24,"y":96,"w":1232,"h":112,"wells":{"Data":[{"kind":"Measure","entity":"_Measures","prop":"On Hand Units"},{"kind":"Measure","entity":"_Measures","prop":"Inventory Value"},{"kind":"Measure","entity":"_Measures","prop":"Stockouts"},{"kind":"Measure","entity":"_Measures","prop":"Below Safety Stock"}]},"title":null,"filters":0},{"name":"productTable","type":"pivotTable","x":24,"y":472,"w":1232,"h":232,"wells":{"Rows":[{"kind":"Column","entity":"Dim_Product","prop":"Category"},{"kind":"Column","entity":"Dim_Product","prop":"ProductName"}],"Values":[{"kind":"Measure","entity":"_Measures","prop":"On Hand Units"},{"kind":"Measure","entity":"_Measures","prop":"Inventory Value"},{"kind":"Measure","entity":"_Measures","prop":"Stockouts"},{"kind":"Measure","entity":"_Measures","prop":"Below Safety Stock"},{"kind":"Measure","entity":"_Measures","prop":"Units Sold"}]},"title":"Stock by product","filters":0},{"name":"slCategory","type":"slicer","x":1072,"y":8,"w":184,"h":80,"wells":{"Values":[{"kind":"Column","entity":"Dim_Product","prop":"Category"}]},"title":null,"filters":0},{"name":"slRegion","type":"slicer","x":888,"y":8,"w":184,"h":80,"wells":{"Values":[{"kind":"Column","entity":"Dim_Warehouse","prop":"Region"}]},"title":null,"filters":0},{"name":"stockoutsWh","type":"clusteredBarChart","x":768,"y":224,"w":488,"h":232,"wells":{"Category":[{"kind":"Column","entity":"Dim_Warehouse","prop":"WarehouseName"}],"Y":[{"kind":"Measure","entity":"_Measures","prop":"Stockouts"}]},"title":"Stockouts by warehouse, latest month","filters":0},{"name":"title","type":"textbox","x":24,"y":12,"w":640,"h":64,"wells":{},"title":"Inventory Health","filters":0},{"name":"valueTrend","type":"lineChart","x":24,"y":224,"w":728,"h":232,"wells":{"Category":[{"kind":"Column","entity":"Dim_Date","prop":"MonthYear"}],"Y":[{"kind":"Measure","entity":"_Measures","prop":"Inventory Value"}]},"title":"Inventory value at month end","filters":0}]}],"measures":[{"table":"_Measures","name":"Revenue","dax":"SUM ( Fact_Sales[SalesAmount] )","format":"\\$#,##0","folder":"01 Sales"},{"table":"_Measures","name":"Cost","dax":"SUM ( Fact_Sales[CostAmount] )","format":"\\$#,##0","folder":"01 Sales"},{"table":"_Measures","name":"Gross Margin","dax":"[Revenue] - [Cost]","format":"\\$#,##0","folder":"01 Sales"},{"table":"_Measures","name":"Gross Margin %","dax":"DIVIDE ( [Gross Margin], [Revenue] )","format":"0.0%","folder":"01 Sales"},{"table":"_Measures","name":"Units Sold","dax":"SUM ( Fact_Sales[Quantity] )","format":"#,##0","folder":"01 Sales"},{"table":"_Measures","name":"Orders","dax":"DISTINCTCOUNT ( Fact_Sales[SalesOrderID] )","format":"#,##0","folder":"01 Sales"},{"table":"_Measures","name":"Avg Order Value","dax":"DIVIDE ( [Revenue], [Orders] )","format":"\\$#,##0","folder":"01 Sales"},{"table":"_Measures","name":"Gross Sales","dax":"SUMX ( Fact_Sales, Fact_Sales[Quantity] * Fact_Sales[UnitPrice] )","format":"\\$#,##0","folder":"01 Sales"},{"table":"_Measures","name":"Avg Discount %","dax":"DIVIDE ( [Gross Sales] - [Revenue], [Gross Sales] )","format":"0.0%","folder":"01 Sales"},{"table":"_Measures","name":"Revenue PY","dax":"CALCULATE ( [Revenue], SAMEPERIODLASTYEAR ( Dim_Date[Date] ) )","format":"\\$#,##0","folder":"02 Time Intelligence"},{"table":"_Measures","name":"Revenue YoY %","dax":"IF ( HASONEVALUE ( Dim_Date[Year] ), DIVIDE ( [Revenue] - [Revenue PY], [Revenue PY] ) )","format":"0.0%","folder":"02 Time Intelligence"},{"table":"_Measures","name":"Revenue YTD","dax":"TOTALYTD ( [Revenue], Dim_Date[Date] )","format":"\\$#,##0","folder":"02 Time Intelligence"},{"table":"_Measures","name":"Revenue FYTD","dax":"TOTALYTD ( [Revenue], Dim_Date[Date], \"6/30\" )","format":"\\$#,##0","folder":"02 Time Intelligence"},{"table":"_Measures","name":"Revenue by Ship Date","dax":"CALCULATE ( [Revenue], USERELATIONSHIP ( Fact_Sales[ShipDate], Dim_Date[Date] ) )","format":"\\$#,##0","folder":"02 Time Intelligence"},{"table":"_Measures","name":"Lines Delivered","dax":"CALCULATE ( COUNTROWS ( Fact_Sales ), NOT ISBLANK ( Fact_Sales[DeliveryDate] ) )","format":"#,##0","folder":"03 Delivery"},{"table":"_Measures","name":"On-Time Delivery %","dax":"VAR OnTime =\n    CALCULATE (\n        COUNTROWS ( Fact_Sales ),\n        FILTER ( Fact_Sales, NOT ISBLANK ( Fact_Sales[DeliveryDate] ) && Fact_Sales[DeliveryDate] <= Fact_Sales[RequestedDeliveryDate] )\n    )\nRETURN\n    DIVIDE ( OnTime, [Lines Delivered] )","format":"0.0%","folder":"03 Delivery"},{"table":"_Measures","name":"PO Lines","dax":"COUNTROWS ( Fact_Purchases )","format":"#,##0","folder":"04 Procurement"},{"table":"_Measures","name":"Purchase Spend","dax":"SUM ( Fact_Purchases[LineCost] )","format":"\\$#,##0","folder":"04 Procurement"},{"table":"_Measures","name":"Lines Received","dax":"CALCULATE ( COUNTROWS ( Fact_Purchases ), NOT ISBLANK ( Fact_Purchases[ReceivedDate] ) )","format":"#,##0","folder":"04 Procurement"},{"table":"_Measures","name":"Open PO Lines","dax":"CALCULATE ( COUNTROWS ( Fact_Purchases ), ISBLANK ( Fact_Purchases[ReceivedDate] ) )","format":"#,##0","folder":"04 Procurement"},{"table":"_Measures","name":"Supplier On-Time %","dax":"VAR OnTime =\n    CALCULATE (\n        COUNTROWS ( Fact_Purchases ),\n        FILTER ( Fact_Purchases, NOT ISBLANK ( Fact_Purchases[ReceivedDate] ) && Fact_Purchases[ReceivedDate] <= Fact_Purchases[PromisedDate] )\n    )\nRETURN\n    DIVIDE ( OnTime, [Lines Received] )","format":"0.0%","folder":"04 Procurement"},{"table":"_Measures","name":"In-Full %","dax":"VAR InFull =\n    CALCULATE (\n        COUNTROWS ( Fact_Purchases ),\n        FILTER ( Fact_Purchases, NOT ISBLANK ( Fact_Purchases[ReceivedDate] ) && Fact_Purchases[QtyReceived] >= Fact_Purchases[QtyOrdered] )\n    )\nRETURN\n    DIVIDE ( InFull, [Lines Received] )","format":"0.0%","folder":"04 Procurement"},{"table":"_Measures","name":"OTIF %","dax":"VAR Otif =\n    CALCULATE (\n        COUNTROWS ( Fact_Purchases ),\n        FILTER (\n            Fact_Purchases,\n            NOT ISBLANK ( Fact_Purchases[ReceivedDate] )\n                && Fact_Purchases[ReceivedDate] <= Fact_Purchases[PromisedDate]\n                && Fact_Purchases[QtyReceived] >= Fact_Purchases[QtyOrdered]\n        )\n    )\nRETURN\n    DIVIDE ( Otif, [Lines Received] )","format":"0.0%","folder":"04 Procurement"},{"table":"_Measures","name":"Avg Lead Time (Days)","dax":"AVERAGEX ( FILTER ( Fact_Purchases, NOT ISBLANK ( Fact_Purchases[ReceivedDate] ) ), DATEDIFF ( Fact_Purchases[OrderDate], Fact_Purchases[ReceivedDate], DAY ) )","format":"0.0","folder":"04 Procurement"},{"table":"_Measures","name":"Avg Days Late","dax":"AVERAGE ( Fact_Purchases[Days Late] )","format":"0.0","folder":"04 Procurement"},{"table":"_Measures","name":"Spend by Received Date","dax":"CALCULATE ( [Purchase Spend], USERELATIONSHIP ( Fact_Purchases[ReceivedDate], Dim_Date[Date] ) )","format":"\\$#,##0","folder":"04 Procurement"},{"table":"_Measures","name":"On Hand Units","dax":"CALCULATE ( SUM ( Fact_Inventory[OnHandQty] ), LASTNONBLANK ( Dim_Date[Date], CALCULATE ( COUNTROWS ( Fact_Inventory ) ) ) )","format":"#,##0","folder":"05 Inventory"},{"table":"_Measures","name":"Inventory Value","dax":"CALCULATE ( SUM ( Fact_Inventory[InventoryValue] ), LASTNONBLANK ( Dim_Date[Date], CALCULATE ( COUNTROWS ( Fact_Inventory ) ) ) )","format":"\\$#,##0","folder":"05 Inventory"},{"table":"_Measures","name":"Stockouts","dax":"CALCULATE ( COUNTROWS ( Fact_Inventory ), Fact_Inventory[OnHandQty] = 0, LASTNONBLANK ( Dim_Date[Date], CALCULATE ( COUNTROWS ( Fact_Inventory ) ) ) )","format":"#,##0","folder":"05 Inventory"},{"table":"_Measures","name":"Below Safety Stock","dax":"CALCULATE (\n    COUNTROWS ( Fact_Inventory ),\n    FILTER ( Fact_Inventory, Fact_Inventory[OnHandQty] < Fact_Inventory[SafetyStockQty] ),\n    LASTNONBLANK ( Dim_Date[Date], CALCULATE ( COUNTROWS ( Fact_Inventory ) ) )\n)","format":"#,##0","folder":"05 Inventory"}]};
 const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const NS = 'http://www.w3.org/2000/svg';
@@ -412,35 +412,35 @@ const badges = list => `<div class="badges">${list.map(([c, t]) => `<span class=
    00 OVERVIEW
    ====================================================================== */
 const OV = {
-  pbip:     { name: 'CoffeeSales.pbip', path: 'CoffeeSales.pbip', b: [['b-quiet', 'Project entry point'], ['b-ok', 'In Git']], body: '<p>The file you double-click. It points Desktop at the report folder; the report then points at its model.</p>' },
-  pbir:     { name: 'definition.pbir', path: 'CoffeeSales.Report/definition.pbir', b: [['b-report', 'Report'], ['b-warn', 'Edit with care']], body: '<p>The <b>one line</b> that connects report to model. <code>byPath</code> must be relative; <code>byConnection</code> would point at a Fabric workspace model instead, opened read-only.</p>', code: ['json', '{\n  "version": "4.0",\n  "datasetReference": {\n    "byPath": {\n      "path": "../CoffeeSales.SemanticModel"\n    }\n  }\n}'] },
-  reportjs: { name: 'report.json', path: 'CoffeeSales.Report/definition/report.json', b: [['b-report', 'Report'], ['b-warn', 'Schema-validated']], body: '<p>Report-level settings: the base theme <code>CY26SU05</code>, the custom theme <code>Nexus.json</code>, and report-level filters. No data, no DAX.</p>' },
-  page:     { name: 'page.json', path: 'CoffeeSales.Report/definition/pages/p1cmd000000000000001/page.json', b: [['b-report', 'Report'], ['b-warn', 'Edit with care']], body: '<p>One page: <b>Sales Command Center</b>, 1280 × 720, <code>FitToPage</code>. Page filters live in <code>filterConfig</code>; edited interactions in <code>visualInteractions</code>. Page order is in <code>pages.json</code>.</p>' },
-  visual:   { name: 'visual.json', path: '…/pages/p1cmd000000000000001/visuals/chProd/visual.json', b: [['b-report', 'Report'], ['b-warn', 'Schema-validated']], body: '<p>One visual: a clustered bar chart. It stores <b>names only</b>: the table (<code>Entity</code>) and the field (<code>Property</code>) for each well.</p>', code: ['json', '"Category": { … "Entity": "Dim_Product",\n              "Property": "ProductName" },\n"Y":        { "Measure": {\n              "Entity": "_Measures",\n              "Property": "Gross Margin %" } }'] },
-  modeltm:  { name: 'model.tmdl', path: 'CoffeeSales.SemanticModel/definition/model.tmdl', b: [['b-model', 'Model'], ['b-warn', 'Edit with care']], body: '<p>Model properties (<code>culture: en-US</code>) and one <code>ref table</code> line per table, which sets the table order.</p>' },
-  rel:      { name: 'relationships.tmdl', path: 'CoffeeSales.SemanticModel/definition/relationships.tmdl', b: [['b-model', 'Model'], ['b-ok', 'Edit freely']], body: '<p>Every relationship. The Product axis of the chart filters sales through <code>Fact_Sales.ProductID → Dim_Product.ProductID</code>.</p>', code: ['tmdl', 'relationship Rel_Sales_Product\n\tfromColumn: Fact_Sales.ProductID\n\ttoColumn: Dim_Product.ProductID'] },
-  measures: { name: '_Measures.tmdl', path: 'CoffeeSales.SemanticModel/definition/tables/_Measures.tmdl', b: [['b-model', 'Model'], ['b-ok', 'Edit freely']], body: '<p>Where the DAX actually lives. <code>Gross Margin %</code> is built from two other measures, which are built from columns.</p>', code: ['tmdl', "\tmeasure 'Gross Margin' = [Revenue] - [Cost]\n\t\tformatString: \\$#,##0\n\tmeasure 'Gross Margin %' = DIVIDE ( [Gross Margin], [Revenue] )\n\t\tformatString: 0.0%"] },
-  fact:     { name: 'Fact_Sales.tmdl', path: 'CoffeeSales.SemanticModel/definition/tables/Fact_Sales.tmdl', b: [['b-model', 'Model'], ['b-ok', 'Edit freely']], body: '<p>Seven imported columns (<code>sourceColumn:</code>) and a partition: the Power Query that loads the CSV, <code>mode: import</code>.</p>', code: ['tmdl', '\tmeasure Revenue = SUM ( Fact_Sales[Revenue] )   ← in _Measures\n\tcolumn Revenue\n\t\tdataType: double\n\t\tsourceColumn: Revenue\n\tpartition Fact_Sales = m\n\t\tmode: import'] },
-  csv:      { name: 'data/Fact_Sales.csv', path: 'E:/…/Demo_CoffeeSales/data/Fact_Sales.csv', b: [['b-quiet', 'Outside the project'], ['b-bad', 'Stale path']], body: '<p>The data source. The partition still reads <code>…/POWER BI/Demo_CoffeeSales/data/</code>, but the project moved under <code>…/Dasboards/</code>, so a refresh fails. A good first question for the class: <i>why would this project fail to refresh on my machine?</i></p><p class="hint">After a refresh, the imported data sits in <code>.pbi/cache.abf</code>, which Git ignores.</p>' }
+  pbip:     { name: 'MeridianSupplyChain.pbip', path: 'MeridianSupplyChain.pbip', b: [['b-quiet', 'Project entry point'], ['b-ok', 'In Git']], body: '<p>The file you double-click. It points Desktop at the report folder; the report then points at its model.</p>' },
+  pbir:     { name: 'definition.pbir', path: 'MeridianSupplyChain.Report/definition.pbir', b: [['b-report', 'Report'], ['b-warn', 'Edit with care']], body: '<p>The <b>one line</b> that connects report to model. <code>byPath</code> must be relative; <code>byConnection</code> would point at a Fabric workspace model instead, opened read-only.</p>', code: ['json', '{\n  "version": "4.0",\n  "datasetReference": {\n    "byPath": {\n      "path": "../MeridianSupplyChain.SemanticModel"\n    }\n  }\n}'] },
+  reportjs: { name: 'report.json', path: 'MeridianSupplyChain.Report/definition/report.json', b: [['b-report', 'Report'], ['b-warn', 'Schema-validated']], body: '<p>Report-level settings: the base theme <code>CY26SU10</code>, export and tooltip settings, report-level filters. No data, no DAX.</p>' },
+  page:     { name: 'page.json', path: 'MeridianSupplyChain.Report/definition/pages/ExecutiveOverview/page.json', b: [['b-report', 'Report'], ['b-warn', 'Edit with care']], body: '<p>One page: <b>Executive Overview</b>, 1280 × 720, <code>FitToPage</code>. Page filters live in <code>filterConfig</code>; edited interactions in <code>visualInteractions</code>. Page order is in <code>pages.json</code>.</p>' },
+  visual:   { name: 'visual.json', path: '…/pages/ExecutiveOverview/visuals/marginProduct/visual.json', b: [['b-report', 'Report'], ['b-warn', 'Schema-validated']], body: '<p>One visual: a clustered bar chart, sorted lowest first. It stores <b>names only</b>: the table (<code>Entity</code>) and the field (<code>Property</code>) for each well.</p>', code: ['json', '"Category": { … "Entity": "Dim_Product",\n              "Property": "ProductName" },\n"Y":        { "Measure": {\n              "Entity": "_Measures",\n              "Property": "Gross Margin %" } }'] },
+  modeltm:  { name: 'model.tmdl', path: 'MeridianSupplyChain.SemanticModel/definition/model.tmdl', b: [['b-model', 'Model'], ['b-warn', 'Edit with care']], body: '<p>Model properties (<code>culture: en-US</code>, <code>discourageImplicitMeasures</code>), one <code>ref table</code> line per table, and <code>ref role \'West Region\'</code> for row-level security.</p>' },
+  rel:      { name: 'relationships.tmdl', path: 'MeridianSupplyChain.SemanticModel/definition/relationships.tmdl', b: [['b-model', 'Model'], ['b-ok', 'Edit freely']], body: '<p>All 15 relationships. Each product bar filters sales through <code>Fact_Sales.ProductKey → Dim_Product.ProductKey</code>.</p>', code: ['tmdl', 'relationship Sales_Product\n\tfromColumn: Fact_Sales.ProductKey\n\ttoColumn: Dim_Product.ProductKey'] },
+  measures: { name: '_Measures.tmdl', path: 'MeridianSupplyChain.SemanticModel/definition/tables/_Measures.tmdl', b: [['b-model', 'Model'], ['b-ok', 'Edit freely']], body: '<p>Where the DAX actually lives: 30 measures in 5 display folders. <code>Gross Margin %</code> is built from two other measures, which are built from columns.</p>', code: ['tmdl', "\tmeasure 'Gross Margin' = [Revenue] - [Cost]\n\t\tformatString: \\$#,##0\n\t/// Gross margin as a share of revenue.\n\tmeasure 'Gross Margin %' = DIVIDE ( [Gross Margin], [Revenue] )\n\t\tformatString: 0.0%"] },
+  fact:     { name: 'Fact_Sales.tmdl', path: 'MeridianSupplyChain.SemanticModel/definition/tables/Fact_Sales.tmdl', b: [['b-model', 'Model'], ['b-ok', 'Edit freely']], body: '<p>Sixteen imported columns (<code>sourceColumn:</code>) and a partition: the Power Query that loads the CSV, <code>mode: import</code>.</p>', code: ['tmdl', '\tmeasure Revenue = SUM ( Fact_Sales[SalesAmount] )   ← in _Measures\n\tcolumn SalesAmount\n\t\tdataType: double\n\t\tisHidden\n\t\tsourceColumn: SalesAmount\n\tpartition Fact_Sales = m\n\t\tmode: import'] },
+  csv:      { name: 'data/Fact_Sales.csv', path: 'DataFolder & "Fact_Sales.csv"', b: [['b-quiet', 'Outside the project'], ['b-model', 'Parameter']], body: '<p>The data source. Every partition reads <code>DataFolder &amp; "Fact_Sales.csv"</code>, and <code>DataFolder</code> is a parameter in <code>expressions.tmdl</code>. Move the CSVs and you change one line, not nine.</p><p class="hint">After a refresh, the imported data sits in <code>.pbi/cache.abf</code>, which Git ignores.</p>' }
 };
 const OV_STEPS = [
-  { n: ['pbip'], e: [], t: 'Desktop opens <b>CoffeeSales.pbip</b>. It names the report folder; nothing here contains data or DAX.' },
-  { n: ['pbir'], e: ['e-open'], t: 'The report reads <b>definition.pbir</b>: <code>byPath: ../CoffeeSales.SemanticModel</code>. That relative path is the whole connection to the model.' },
-  { n: ['pbir', 'modeltm'], e: ['e-bypath'], t: 'Desktop loads the <b>semantic model</b> folder: <code>model.tmdl</code> lists the tables, one <code>.tmdl</code> file each.' },
-  { n: ['page'], e: ['e-page'], t: 'The page <b>Sales Command Center</b> (1280 × 720) lists its visuals as folders.' },
-  { n: ['visual'], e: ['e-visual'], t: 'The bar chart <b>chProd</b> asks for <code>_Measures</code> / <code>Gross Margin %</code> on the Y axis and <code>Dim_Product</code> / <code>ProductName</code> as categories. Names only.' },
+  { n: ['pbip'], e: [], t: 'Desktop opens <b>MeridianSupplyChain.pbip</b>. It names the report folder; nothing here contains data or DAX.' },
+  { n: ['pbir'], e: ['e-open'], t: 'The report reads <b>definition.pbir</b>: <code>byPath: ../MeridianSupplyChain.SemanticModel</code>. That relative path is the whole connection to the model.' },
+  { n: ['pbir', 'modeltm'], e: ['e-bypath'], t: 'Desktop loads the <b>semantic model</b> folder: <code>model.tmdl</code> lists the ten tables, one <code>.tmdl</code> file each.' },
+  { n: ['page'], e: ['e-page'], t: 'The page <b>Executive Overview</b> (1280 × 720) lists its visuals as folders.' },
+  { n: ['visual'], e: ['e-visual'], t: 'The bar chart <b>marginProduct</b> asks for <code>_Measures</code> / <code>Gross Margin %</code> on the X axis and <code>Dim_Product</code> / <code>ProductName</code> as categories. Names only.' },
   { n: ['measures'], e: ['e-name'], t: 'The name is resolved in <b>_Measures.tmdl</b>: <code>DIVIDE ( [Gross Margin], [Revenue] )</code>. Rename it here alone and the chart breaks.' },
-  { n: ['fact'], e: ['e-fact'], t: '<code>[Revenue]</code> and <code>[Cost]</code> are <code>SUM</code>s over <b>Fact_Sales</b> columns, imported with <code>sourceColumn:</code>.' },
-  { n: ['rel', 'fact'], e: ['e-rel'], t: 'Each product bar filters sales through <b>relationships.tmdl</b>: <code>Fact_Sales.ProductID → Dim_Product.ProductID</code>.' },
-  { n: ['csv'], e: ['e-csv'], t: 'The rows come from <b>Fact_Sales.csv</b> through the partition\'s Power Query. That path is stale in the sample, so a refresh fails.' }
+  { n: ['fact'], e: ['e-fact'], t: '<code>[Revenue]</code> and <code>[Cost]</code> are <code>SUM</code>s over <b>Fact_Sales</b> columns <code>SalesAmount</code> and <code>CostAmount</code>, imported with <code>sourceColumn:</code>.' },
+  { n: ['rel', 'fact'], e: ['e-rel'], t: 'Each product bar filters sales through <b>relationships.tmdl</b>: <code>Fact_Sales.ProductKey → Dim_Product.ProductKey</code>.' },
+  { n: ['csv'], e: ['e-csv'], t: 'The rows come from <b>Fact_Sales.csv</b> through the partition\'s Power Query, read from the <code>DataFolder</code> parameter. The Infusion Pump Tubing Set is the bar at the bottom: in 2025 it loses money.' }
 ];
 function buildOverview() {
   const svg = $('#ov-svg');
   svg.innerHTML = defs('ov') + `
-  <g class="grp-report"><rect class="box" x="16" y="96" width="340" height="372" rx="10" stroke-width="1.25"/><text class="t-group" x="32" y="122">CoffeeSales.Report · PBIR</text></g>
-  <g class="grp-model"><rect class="box" x="404" y="96" width="340" height="372" rx="10" stroke-width="1.25"/><text class="t-group" x="420" y="122">CoffeeSales.SemanticModel · TMDL</text></g>
-  ${edge('e-open', 'M380 64 V80 H186 V136', 'ov')}
-  ${edge('e-open2', 'M380 80 H574 V136', 'ov', 'dash')}
+  <g class="grp-report"><rect class="box" x="16" y="96" width="340" height="372" rx="10" stroke-width="1.25"/><text class="t-group" x="32" y="122">MeridianSupplyChain.Report</text></g>
+  <g class="grp-model"><rect class="box" x="404" y="96" width="340" height="372" rx="10" stroke-width="1.25"/><text class="t-group" x="420" y="122">MeridianSupplyChain.SemanticModel</text></g>
+  ${edge('e-open', 'M380 64 V80 H304 V136', 'ov')}
+  ${edge('e-open2', 'M380 80 H716 V136', 'ov', 'dash')}
   ${edge('e-bypath', 'M336 166 H420', 'ov')}
   ${edge('e-page', 'M186 284 V292', 'ov')}
   ${edge('e-visual', 'M186 356 V372', 'ov')}
@@ -450,15 +450,15 @@ function buildOverview() {
   ${edge('e-csv', 'M574 436 V496', 'ov')}
   <text class="edge-label" x="392" y="156" text-anchor="middle">byPath</text>
   <text class="edge-label" x="384" y="438" text-anchor="middle">by name</text>
-  ${node('pbip', 280, 16, 200, 48, 'CoffeeSales.pbip', '', '', true)}
-  ${node('pbir', 36, 136, 300, 60, 'definition.pbir', 'byPath → ../CoffeeSales.SemanticModel', 'report', true)}
+  ${node('pbip', 256, 16, 248, 48, 'MeridianSupplyChain.pbip', '', '', true)}
+  ${node('pbir', 36, 136, 300, 60, 'definition.pbir', 'byPath → ../…SemanticModel (relative)', 'report', true)}
   ${node('reportjs', 36, 212, 300, 60, 'report.json', 'theme and report settings', 'report', true)}
-  ${node('page', 36, 292, 300, 60, 'page.json', 'Sales Command Center · 1280 × 720', 'report', true)}
-  ${node('visual', 36, 372, 300, 64, 'visual.json  (chProd)', 'Entity + Property: names only', 'report', true)}
-  ${node('modeltm', 424, 136, 300, 60, 'model.tmdl', 'ref table … · culture: en-US', 'model', true)}
-  ${node('rel', 424, 212, 300, 60, 'relationships.tmdl', '3 relationships, all defaults', 'model', true)}
-  ${node('measures', 424, 292, 300, 60, 'tables/_Measures.tmdl', '10 measures · the DAX lives here', 'model', true)}
-  ${node('fact', 424, 372, 300, 64, 'tables/Fact_Sales.tmdl', '7 columns + an import partition', 'model', true)}
+  ${node('page', 36, 292, 300, 60, 'page.json', 'Executive Overview · 1280 × 720', 'report', true)}
+  ${node('visual', 36, 372, 300, 64, 'visual.json  (marginProduct)', 'Entity + Property: names only', 'report', true)}
+  ${node('modeltm', 424, 136, 300, 60, 'model.tmdl', 'ref table … · ref role · culture', 'model', true)}
+  ${node('rel', 424, 212, 300, 60, 'relationships.tmdl', '15 relationships, 4 inactive', 'model', true)}
+  ${node('measures', 424, 292, 300, 60, 'tables/_Measures.tmdl', '30 measures · the DAX lives here', 'model', true)}
+  ${node('fact', 424, 372, 300, 64, 'tables/Fact_Sales.tmdl', '16 columns + an import partition', 'model', true)}
   ${node('csv', 444, 496, 260, 48, 'data/Fact_Sales.csv', '', 'ext', true)}`;
   const csvRect = $('[data-id="csv"] rect', svg); csvRect.setAttribute('stroke-dasharray', '5 4');
   let step = -1;
@@ -537,23 +537,23 @@ function buildFormats() {
    02 FOLDER
    ====================================================================== */
 const FILES = [
-  { n: 'CoffeeSales.pbip', d: 0, e: 'careful', g: 1, what: 'Points Desktop at the report folder. Open this to open the project. You rarely edit it.' },
-  { n: '.gitignore', d: 0, e: 'free', g: 1, what: 'Created by Desktop. Excludes localSettings.json and cache.abf by default.' },
-  { n: 'CoffeeSales.Report/', d: 0, f: 'report' },
+  { n: 'MeridianSupplyChain.pbip', d: 0, e: 'careful', g: 1, what: 'Points Desktop at the report folder. Open this to open the project. You rarely edit it.' },
+  { n: '.gitignore', d: 0, e: 'free', g: 1, what: 'Excludes localSettings.json and cache.abf.' },
+  { n: 'MeridianSupplyChain.Report/', d: 0, f: 'report' },
   { n: '.pbi/localSettings.json', d: 1, e: 'never', g: 0, what: 'One person\'s machine-specific state. Committing it causes conflicts on every save.' },
   { n: '.platform', d: 1, e: 'careful', g: 1, what: 'Fabric Git metadata: item type, display name and logical ID. Never change the logical ID.' },
-  { n: 'definition.pbir', d: 1, e: 'careful', g: 1, what: 'The model this report uses. byPath (relative only) opens the model for editing; byConnection points at a Fabric workspace model and opens it read-only.', code: ['json', '"datasetReference": {\n  "byPath": { "path": "../CoffeeSales.SemanticModel" }\n}'] },
+  { n: 'definition.pbir', d: 1, e: 'careful', g: 1, what: 'The model this report uses. byPath (relative only) opens the model for editing; byConnection points at a Fabric workspace model and opens it read-only.', code: ['json', '"datasetReference": {\n  "byPath": { "path": "../MeridianSupplyChain.SemanticModel" }\n}'] },
   { n: 'definition/', d: 1, f: 'report' },
-  { n: 'report.json', d: 2, e: 'careful', g: 1, what: 'Theme, report settings and report-level filters. Schema-validated. In CoffeeSales: base theme CY26SU05, custom theme Nexus.json.' },
+  { n: 'report.json', d: 2, e: 'careful', g: 1, what: 'Theme, report settings and report-level filters. Schema-validated. Here: base theme CY26SU10.' },
   { n: 'version.json', d: 2, e: 'never', g: 1, what: 'The PBIR format version. Leave it.' },
   { n: 'pages/', d: 2, f: 'report' },
-  { n: 'pages.json', d: 3, e: 'careful', g: 1, what: 'Page order and the page that opens first.', code: ['json', '"pageOrder": [\n  "p1cmd000000000000001",\n  "cStore360000000000001",\n  "tTip0000000000000001"\n],\n"activePageName": "p1cmd000000000000001"'] },
-  { n: 'p1cmd000000000000001/', d: 3, f: 'report' },
-  { n: 'page.json', d: 4, e: 'careful', g: 1, what: 'One page: display name, size, page filters (filterConfig) and edited visual interactions (visualInteractions). Here: "Sales Command Center", 1280 × 720.' },
+  { n: 'pages.json', d: 3, e: 'careful', g: 1, what: 'Page order and the page that opens first.', code: ['json', '"pageOrder": [\n  "ExecutiveOverview",\n  "SupplierPerformance",\n  "InventoryHealth"\n],\n"activePageName": "ExecutiveOverview"'] },
+  { n: 'ExecutiveOverview/', d: 3, f: 'report' },
+  { n: 'page.json', d: 4, e: 'careful', g: 1, what: 'One page: display name, size, page filters (filterConfig) and edited visual interactions (visualInteractions). Here: "Executive Overview", 1280 × 720.' },
   { n: 'visuals/', d: 4, f: 'report' },
-  { n: 'chProd/visual.json', d: 5, e: 'careful', g: 1, what: 'One visual: type, position, fields, formatting and filters. Schema-validated. See Map 05 for every visual on this page.' },
+  { n: 'marginProduct/visual.json', d: 5, e: 'careful', g: 1, what: 'One visual: type, position, fields, sort and title. Schema-validated. Its folder name is the visual\'s name. See Map 05 for every visual.' },
   { n: 'StaticResources/', d: 1, e: 'free', g: 1, what: 'Theme JSON and images. Themes are made to be edited.' },
-  { n: 'CoffeeSales.SemanticModel/', d: 0, f: 'model' },
+  { n: 'MeridianSupplyChain.SemanticModel/', d: 0, f: 'model' },
   { n: '.pbi/cache.abf', d: 1, e: 'never', g: 0, what: 'Local copy of the imported data. Not required: delete it and the project opens with the full model definition and no data until you refresh.' },
   { n: '.pbi/editorSettings.json', d: 1, e: 'never', g: 1, what: 'Desktop\'s editor settings for this model. Leave it to Desktop.' },
   { n: '.pbi/localSettings.json', d: 1, e: 'never', g: 0, what: 'Machine-specific state for the model. Never committed.' },
@@ -561,15 +561,18 @@ const FILES = [
   { n: 'definition.pbism', d: 1, e: 'never', g: 1, what: 'Format version of the semantic model item. Leave it.' },
   { n: 'definition/', d: 1, f: 'model' },
   { n: 'database.tmdl', d: 2, e: 'never', g: 1, what: 'Compatibility level of the model. Do not edit.' },
-  { n: 'model.tmdl', d: 2, e: 'careful', g: 1, what: 'Model properties (culture, discourageImplicitMeasures) and one ref table line per table, which sets the table order.' },
-  { n: 'relationships.tmdl', d: 2, e: 'free', g: 1, what: 'Every relationship in the model. See Map 04.', code: ['tmdl', 'relationship Rel_Sales_Date\n\tfromColumn: Fact_Sales.Date\n\ttoColumn: Dim_Date.Date'] },
-  { n: 'cultures/en-US.tmdl', d: 2, e: 'never', g: 1, what: 'Generated Q&A linguistic metadata. Large; leave it.' },
+  { n: 'model.tmdl', d: 2, e: 'careful', g: 1, what: 'Model properties, one ref table line per table (sets the order), ref role and ref cultureInfo.' },
+  { n: 'expressions.tmdl', d: 2, e: 'careful', g: 1, what: 'Shared Power Query expressions and parameters. Here: the DataFolder parameter every partition reads. In client models this file often names servers and databases: check it before sharing.', code: ['tmdl', 'expression DataFolder = "C:\\…\\data\\" meta [IsParameterQuery = true, Type = "Text", …]'] },
+  { n: 'relationships.tmdl', d: 2, e: 'free', g: 1, what: 'All 15 relationships, 4 of them inactive. See Map 04.', code: ['tmdl', 'relationship Sales_ShipDate\n\tisActive: false\n\tfromColumn: Fact_Sales.ShipDate\n\ttoColumn: Dim_Date.Date'] },
+  { n: 'roles/West Region.tmdl', d: 2, e: 'free', g: 1, what: 'A static row-level security role: members see only the West warehouse and its sales, purchases and stock.', code: ['tmdl', "role 'West Region'\n\tmodelPermission: read\n\ttablePermission Dim_Warehouse = Dim_Warehouse[Region] = \"West\""] },
+  { n: 'cultures/en-US.tmdl', d: 2, e: 'never', g: 1, what: 'Linguistic metadata for Q&A. Leave it.' },
   { n: 'tables/', d: 2, f: 'model' },
-  { n: '_Measures.tmdl', d: 3, e: 'free', g: 1, what: 'A hidden table that only holds measures: all ten CoffeeSales measures live here. A convention, not a rule.' },
-  { n: 'Dim_Date.tmdl', d: 3, e: 'free', g: 1, what: 'The date table: Date, Year, Month, Quarter and their sort columns.' },
-  { n: 'Dim_Product.tmdl', d: 3, e: 'free', g: 1, what: 'Products: ProductID, ProductName, Category, UnitPrice, UnitCost.' },
-  { n: 'Dim_Store.tmdl', d: 3, e: 'free', g: 1, what: 'Stores: StoreID, StoreName, City, Region.' },
-  { n: 'Fact_Sales.tmdl', d: 3, e: 'free', g: 1, what: 'The sales rows: seven imported columns and the partition that loads Fact_Sales.csv. See Map 03.' }
+  { n: '_Measures.tmdl', d: 3, e: 'free', g: 1, what: 'A hidden table that only holds measures: all 30 live here, in 5 display folders. A convention, not a rule.' },
+  { n: 'Dim_Date.tmdl', d: 3, e: 'free', g: 1, what: 'The date table, marked with dataCategory: Time. Calendar and fiscal columns, sort-by columns, a Calendar hierarchy.' },
+  { n: 'Dim_Product.tmdl  …  Dim_Carrier.tmdl', d: 3, e: 'free', g: 1, what: 'Five more dimensions: Product, Supplier, Warehouse, Customer, Carrier.' },
+  { n: 'Fact_Sales.tmdl', d: 3, e: 'free', g: 1, what: 'Order lines: sixteen imported columns and the partition that loads Fact_Sales.csv. See Map 03.' },
+  { n: 'Fact_Purchases.tmdl', d: 3, e: 'free', g: 1, what: 'Purchase order lines, with a calculated column: Days Late.' },
+  { n: 'Fact_Inventory.tmdl', d: 3, e: 'free', g: 1, what: 'Month-end stock snapshots. Semi-additive: measures take the last snapshot, never a sum across dates.' }
 ];
 const EDIT = { free: ['b-ok', 'Edit freely'], careful: ['b-warn', 'Edit with care'], never: ['b-bad', 'Leave to Desktop'] };
 function buildFolder() {
@@ -598,39 +601,39 @@ function buildFolder() {
    03 TMDL
    ====================================================================== */
 const TM_TABLE = [
+  ['/// One row per sales order line. Blank ShipDate/DeliveryDate = not yet shipped/delivered.', 'A description: /// directly above the object. It shows as a tooltip in the Fields pane.'],
   ['table Fact_Sales', 'Declares the table. Everything indented under it belongs to it.'],
-  ['\tlineageTag: 53059dd1-c673-4a73-97d9-fb0f1c5c8117', 'A stable identity that survives renames. Never copy one onto a new object: two objects would share an identity.'],
+  ['\tlineageTag: 749f08a3-b64f-5985-bb44-db51f0326cb7', 'A stable identity that survives renames. Never copy one onto a new object: two objects would share an identity.'],
   ['', ''],
-  ['\tcolumn Date', 'A column of Fact_Sales: one tab in. Its properties sit one tab further in.'],
-  ['\t\tdataType: dateTime', 'Types seen in these projects: string, int64, double, dateTime.'],
-  ['\t\tisHidden', 'A boolean written as just its name means true. The column is hidden from report authors.'],
-  ['\t\tformatString: Long Date', 'Display format. ":" is used for every property that is not the object\'s expression.'],
+  ['\tcolumn OrderDate', 'A column of Fact_Sales: one tab in. Its properties sit one tab further in.'],
+  ['\t\tdataType: dateTime', 'Types in this model: string, int64, double, dateTime.'],
+  ['\t\tformatString: yyyy-mm-dd', 'Display format. ":" is used for every property that is not the object\'s expression.'],
   ['\t\tsummarizeBy: none', 'Stops Power BI auto-summing the column in visuals.'],
-  ['\t\tsourceColumn: Date', 'sourceColumn means imported: loaded from the query\'s Date column. A calculated column would use "=" and DAX instead.'],
+  ['\t\tsourceColumn: OrderDate', 'sourceColumn means imported: loaded from the query\'s OrderDate column. A calculated column would use "=" and DAX instead.'],
   ['', ''],
-  ['\t\tannotation UnderlyingDateTimeDataType = Date', 'Metadata Desktop keeps for itself. Leave annotations alone.'],
-  ['', ''],
-  ['\tcolumn Revenue', 'The column that [Revenue] sums. The measure itself lives in _Measures.tmdl.'],
+  ['\tcolumn SalesAmount', 'The column that [Revenue] sums. The measure itself lives in _Measures.tmdl.'],
   ['\t\tdataType: double', 'A decimal number.'],
-  ['\t\tisHidden', 'Hidden, so report authors use the measure instead of the raw column.'],
+  ['\t\tisHidden', 'A bare boolean means true. Hidden, so report authors use the measure instead of the raw column.'],
   ['\t\tsummarizeBy: none', 'No implicit SUM: the model forces people to use the measure.'],
-  ['\t\tsourceColumn: Revenue', 'Imported from the CSV\'s Revenue column.'],
+  ['\t\tsourceColumn: SalesAmount', 'Imported from the CSV\'s SalesAmount column.'],
   ['', ''],
   ['\tpartition Fact_Sales = m', 'Where the data comes from. "= m" means the source below is Power Query (M).'],
   ['\t\tmode: import', 'Import mode: data is loaded into memory (and the local cache.abf).'],
   ['\t\tsource =', 'A multi-line expression sits one level deeper than its property.'],
   ['\t\t\t\tlet', 'The Power Query script, exactly as in the Advanced Editor.'],
-  ['\t\t\t\t    Source = Csv.Document(File.Contents(".../data/Fact_Sales.csv"), …),', 'The stale path. The project moved, the partition did not: a refresh fails on this line.'],
-  ['\t\t\t\t    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),', 'First row becomes column names.'],
-  ['\t\t\t\t    Typed = Table.TransformColumnTypes(Promoted, …)', 'Column types are set in M as well as in TMDL dataType.'],
+  ['\t\t\t\t    Source = Csv.Document(File.Contents(DataFolder & "Fact_Sales.csv"), …),', 'DataFolder is a parameter defined in expressions.tmdl. Every table reads its file this way, so the path lives in one place.'],
+  ['\t\t\t\t    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),', 'First row becomes column names.'],
+  ['\t\t\t\t    BlanksToNull = Table.ReplaceValue(Promoted, "", null, …, {"ShipDate", "DeliveryDate"}),', 'Empty CSV cells become nulls before typing. Without it, "" cannot convert to a date and the row errors.'],
+  ['\t\t\t\t    Typed = Table.TransformColumnTypes(BlanksToNull, {…}, "en-US")', 'Column types are set in M as well as in TMDL dataType. The culture makes decimals and dates parse the same on every machine.'],
   ['\t\t\t\tin', ''],
   ['\t\t\t\t    Typed', 'The step the partition loads.']
 ];
 const TM_MEASURE = [
-  ["\tmeasure 'Revenue PY' = CALCULATE ( [Revenue], DATEADD ( Dim_Date[Date], -1, YEAR ) )", "<b>measure 'Revenue PY' =</b> the name, in single quotes because it has a space; the DAX follows the <code>=</code>.<br><br><b>CALCULATE ( [Revenue], … )</b> evaluates the existing [Revenue] measure under a changed filter.<br><br><b>DATEADD ( Dim_Date[Date], -1, YEAR )</b> replaces the dates in the current filter with the same dates one year earlier. It needs a proper date table related to the fact table."],
+  ['\t/// Revenue for the same period last year.', 'The description, shown when you hover the measure in the Fields pane.'],
+  ["\tmeasure 'Revenue PY' = CALCULATE ( [Revenue], SAMEPERIODLASTYEAR ( Dim_Date[Date] ) )", "<b>measure 'Revenue PY' =</b> the name, in single quotes because it has a space; the DAX follows the <code>=</code>.<br><br><b>CALCULATE ( [Revenue], … )</b> evaluates the existing [Revenue] measure under a changed filter.<br><br><b>SAMEPERIODLASTYEAR ( Dim_Date[Date] )</b> replaces the dates in the current filter with the same dates one year earlier. It needs a marked date table related to the facts."],
   ['\t\tformatString: \\$#,##0', 'The backslash escapes $, so it prints literally: $12,345.'],
   ['\t\tdisplayFolder: 02 Time Intelligence', 'Only organises the Fields pane. It changes no result.'],
-  ['\t\tlineageTag: 56606359-9f66-4cda-beba-6d6afccb2d62', 'Identity that survives renames inside Desktop. When you ask an AI for a new measure, ask it to leave this line out.']
+  ['\t\tlineageTag: 37df9497-5e08-5799-b4f0-ec94141eb630', 'Identity that survives renames inside Desktop. When you ask an AI for a new measure, ask it to leave this line out.']
 ];
 const TM_RULES = [
   ['Indentation is structure', 'One tab per level. Breaking it is a parse error.', 'table Fact_Sales\n\tcolumn Revenue'],
@@ -655,11 +658,11 @@ function bindLines(root, lines, panel, title) {
   return pick;
 }
 const LIN = {
-  cols: [['c-rev', 'Fact_Sales[Revenue]'], ['c-cost', 'Fact_Sales[Cost]'], ['c-qty', 'Fact_Sales[Qty]'], ['c-date', 'Dim_Date[Date]'], ['c-sid', 'Dim_Store[StoreID]'], ['c-sname', 'Dim_Store[StoreName]']],
-  m1: ['Revenue', 'Cost', 'Quantity', 'Selected Store Title'],
-  m2: ['Gross Margin', 'Revenue PY', 'Avg Revenue per Store', 'Store Rank'],
+  cols: [['c-rev', 'Fact_Sales[SalesAmount]'], ['c-cost', 'Fact_Sales[CostAmount]'], ['c-ord', 'Fact_Sales[SalesOrderID]'], ['c-qty', 'Fact_Sales[Quantity]'], ['c-price', 'Fact_Sales[UnitPrice]'], ['c-date', 'Dim_Date[Date]']],
+  m1: ['Revenue', 'Cost', 'Orders', 'Gross Sales'],
+  m2: ['Gross Margin', 'Revenue PY', 'Avg Order Value', 'Avg Discount %'],
   m3: ['Gross Margin %', 'Revenue YoY %'],
-  deps: { 'Revenue': ['c-rev'], 'Cost': ['c-cost'], 'Quantity': ['c-qty'], 'Selected Store Title': ['c-sname'], 'Gross Margin': ['Revenue', 'Cost'], 'Revenue PY': ['Revenue', 'c-date'], 'Avg Revenue per Store': ['Revenue', 'c-sid'], 'Store Rank': ['c-sname', 'Revenue'], 'Gross Margin %': ['Gross Margin', 'Revenue'], 'Revenue YoY %': ['Revenue', 'Revenue PY'] }
+  deps: { 'Revenue': ['c-rev'], 'Cost': ['c-cost'], 'Orders': ['c-ord'], 'Gross Sales': ['c-qty', 'c-price'], 'Gross Margin': ['Revenue', 'Cost'], 'Revenue PY': ['Revenue', 'c-date'], 'Avg Order Value': ['Revenue', 'Orders'], 'Avg Discount %': ['Gross Sales', 'Revenue'], 'Gross Margin %': ['Gross Margin', 'Revenue'], 'Revenue YoY %': ['Revenue', 'Revenue PY'] }
 };
 const mid = s => 'm-' + s.replace(/[^a-z0-9]/gi, '');
 function buildLineage(host) {
@@ -698,7 +701,7 @@ function buildTmdl() {
     $$('#v-tmdl .subtabs button').forEach(b => b.setAttribute('aria-pressed', b.dataset.t === t));
     const host = $('#tm-main');
     if (t === 'table') { host.innerHTML = codeLines(TM_TABLE); bindLines(host, TM_TABLE, '#tm-panel', 'Fact_Sales.tmdl · line')(8); }
-    if (t === 'measure') { host.innerHTML = codeLines(TM_MEASURE) + `<p class="hint" style="margin:14px 4px 0">From <code>_Measures.tmdl</code>. CoffeeSales keeps every measure in this hidden table, but a measure can belong to any table; its home only decides where it appears in the Fields pane.</p>`; bindLines(host, TM_MEASURE, '#tm-panel', "Revenue PY · line")(0); }
+    if (t === 'measure') { host.innerHTML = codeLines(TM_MEASURE) + `<p class="hint" style="margin:14px 4px 0">From <code>_Measures.tmdl</code>. Meridian keeps every measure in this hidden table, but a measure can belong to any table; its home only decides where it appears in the Fields pane.</p>`; bindLines(host, TM_MEASURE, '#tm-panel', "Revenue PY · line")(1); }
     if (t === 'lineage') buildLineage(host);
   };
   $$('#v-tmdl .subtabs button').forEach(b => b.onclick = () => show(b.dataset.t));
@@ -709,20 +712,30 @@ function buildTmdl() {
    04 RELATIONSHIPS
    ====================================================================== */
 const RL = {
-  tables: { Fact_Sales: { x: 290, y: 150, cols: ['SaleID', 'Date', 'StoreID', 'ProductID', 'Qty', 'Revenue', 'Cost'] }, Dim_Date: { x: 24, y: 40, cols: ['Date', 'Year', 'Month', 'Quarter', '…'] }, Dim_Product: { x: 556, y: 40, cols: ['ProductID', 'ProductName', 'Category', '…'] }, Dim_Store: { x: 556, y: 250, cols: ['StoreID', 'StoreName', 'City', 'Region'] } },
+  tables: {
+    Dim_Date: { x: 20, y: 20, cols: ['Date', 'Year', 'MonthYear'] }, Dim_Customer: { x: 20, y: 190, cols: ['CustomerKey', 'CustomerName', 'Region'] },
+    Dim_Carrier: { x: 20, y: 350, cols: ['CarrierKey', 'CarrierName', 'ServiceMode'] },
+    Fact_Sales: { x: 295, y: 110, cols: ['OrderDate', 'ShipDate', 'CustomerKey', 'ProductKey', 'WarehouseKey', 'CarrierKey', 'SalesAmount'] },
+    Dim_Product: { x: 560, y: 20, cols: ['ProductKey', 'ProductName', 'SupplierKey'] }, Dim_Supplier: { x: 560, y: 190, cols: ['SupplierKey', 'SupplierName', 'Country'] },
+    Dim_Warehouse: { x: 560, y: 350, cols: ['WarehouseKey', 'WarehouseName', 'Region'] }
+  },
   rels: [
-    { id: 'Rel_Sales_Date', from: 'Fact_Sales.Date', to: 'Dim_Date.Date', d: 'M290 196 H244 V100 H204', lx: 247, ly: 148 },
-    { id: 'Rel_Sales_Product', from: 'Fact_Sales.ProductID', to: 'Dim_Product.ProductID', d: 'M470 196 H516 V100 H556', lx: 474, ly: 148 },
-    { id: 'Rel_Sales_Store', from: 'Fact_Sales.StoreID', to: 'Dim_Store.StoreID', d: 'M470 260 H516 V310 H556', lx: 474, ly: 296 }
+    { id: 'Sales_OrderDate', from: 'Fact_Sales.OrderDate', to: 'Dim_Date.Date', d: 'M295 154 H255 V55 H200', lx: 206, ly: 49 },
+    { id: 'Sales_ShipDate', from: 'Fact_Sales.ShipDate', to: 'Dim_Date.Date', d: 'M295 174 H237 V85 H200', lx: 206, ly: 79, inactive: true },
+    { id: 'Sales_Customer', from: 'Fact_Sales.CustomerKey', to: 'Dim_Customer.CustomerKey', d: 'M295 194 H219 V240 H200', lx: 224, ly: 234 },
+    { id: 'Sales_Carrier', from: 'Fact_Sales.CarrierKey', to: 'Dim_Carrier.CarrierKey', d: 'M295 254 H273 V400 H200', lx: 206, ly: 394 },
+    { id: 'Sales_Product', from: 'Fact_Sales.ProductKey', to: 'Dim_Product.ProductKey', d: 'M475 214 H520 V70 H560', lx: 524, ly: 64 },
+    { id: 'Sales_Warehouse', from: 'Fact_Sales.WarehouseKey', to: 'Dim_Warehouse.WarehouseKey', d: 'M475 234 H540 V400 H560', lx: 506, ly: 394 },
+    { id: 'Product_Supplier', from: 'Dim_Product.SupplierKey', to: 'Dim_Supplier.SupplierKey', d: 'M650 120 V190', lx: 656, ly: 160 }
   ]
 };
-const relState = {}; RL.rels.forEach(r => relState[r.id] = { card: 'm1', dir: 'single', active: true });
+const relState = {}; RL.rels.forEach(r => relState[r.id] = { card: 'm1', dir: 'single', active: !r.inactive });
 function buildRel() {
   const svg = $('#rl-svg');
   const tbl = (name, t) => { const h = 40 + t.cols.length * 20; return `<g class="node model" data-id="t-${name}" tabindex="-1"><rect x="${t.x}" y="${t.y}" width="180" height="${h}" rx="8"/><text class="t-name t-mono" x="${t.x + 12}" y="${t.y + 24}">${name}</text>${t.cols.map((c, i) => `<text class="t-sub t-mono" x="${t.x + 12}" y="${t.y + 48 + i * 20}">${esc(c)}</text>`).join('')}</g>`; };
   svg.innerHTML = defs('rl') + RL.rels.map(r => `<g class="relg" data-r="${r.id}" style="cursor:pointer" tabindex="0" role="button" aria-label="${r.id}"><path d="${r.d}" fill="none" stroke="transparent" stroke-width="16"/><path class="edge" data-e="${r.id}" d="${r.d}"/><text class="edge-label" data-lbl="${r.id}" x="${r.lx}" y="${r.ly}"></text></g>`).join('') + Object.entries(RL.tables).map(([n, t]) => tbl(n, t)).join('') +
-    `<text class="t-sub" x="24" y="404">Click a line to select a relationship. The arrowhead shows which way filters flow.</text>`;
-  let cur = 'Rel_Sales_Product';
+    `<text class="t-sub" x="24" y="470">Click a line to select a relationship. The arrowhead shows which way filters flow.</text>`;
+  let cur = 'Sales_ShipDate';
   function lines(r) {
     const s = relState[r.id], add = [];
     if (!s.active) add.push('isActive: false');
@@ -752,13 +765,13 @@ function buildRel() {
         <label style="display:flex;align-items:center;gap:8px;color:var(--ink)"><input type="checkbox" id="rl-act" ${s.active ? 'checked' : ''}> Active relationship</label>
       </div>
       <pre class="code">${html}</pre>
-      <p class="hint" style="margin-top:10px">${add.length ? `${add.length} line${add.length > 1 ? 's' : ''} added. That is all <code>git diff</code> would show.` : 'All defaults: nothing beyond the two columns is written.'}${!s.active ? ' An inactive relationship is used inside a measure with <code>USERELATIONSHIP</code>.' : ''}</p>
+      <p class="hint" style="margin-top:10px">${add.length && !(r.inactive && add.length === 1 && !s.active) ? `${add.length} line${add.length > 1 ? 's' : ''} differ from the defaults. Change one and that line is all <code>git diff</code> would show.` : (r.inactive && !s.active ? 'This one is inactive in the real file, so isActive: false is written. ' : '') + (add.length ? '' : 'All defaults: nothing beyond the two columns is written.')}${!s.active ? ' An inactive relationship is used inside a measure with <code>USERELATIONSHIP</code>.' : ''}</p>
       <button id="rl-reset">Reset all to defaults</button>`;
     $('#rl-card').value = s.card; $('#rl-dir').value = s.dir;
     $('#rl-card').onchange = e => { s.card = e.target.value; draw(); };
     $('#rl-dir').onchange = e => { s.dir = e.target.value; draw(); };
     $('#rl-act').onchange = e => { s.active = e.target.checked; draw(); };
-    $('#rl-reset').onclick = () => { Object.values(relState).forEach(v => Object.assign(v, { card: 'm1', dir: 'single', active: true })); draw(); };
+    $('#rl-reset').onclick = () => { RL.rels.forEach(r => Object.assign(relState[r.id], { card: 'm1', dir: 'single', active: !r.inactive })); draw(); };
   }
   $$('.relg', svg).forEach(g => { g.onclick = () => { cur = g.dataset.r; draw(); }; g.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); cur = g.dataset.r; draw(); } }; });
   draw();
@@ -804,7 +817,7 @@ function buildReport() {
   }
   $$('#rp-pages button').forEach(b => b.onclick = () => { page = +b.dataset.p; sel = null; $$('#rp-pages button').forEach(x => x.setAttribute('aria-pressed', x === b)); draw(); });
   $('#rp-rename').onclick = e => { renamed = !renamed; e.currentTarget.setAttribute('aria-pressed', renamed); e.currentTarget.textContent = renamed ? 'Undo the rename (git checkout)' : "Rename 'Gross Margin %' to 'GM %' in TMDL only"; draw(); };
-  sel = 'chProd'; draw();
+  sel = 'marginProduct'; draw();
 }
 
 /* ======================================================================
@@ -813,11 +826,11 @@ function buildReport() {
 const AI_STEPS = [
   ['Commit', 'git commit', 'Commit the project first, so the change can be reviewed and undone.'],
   ['Copy context', 'measures + prompt', 'Choose which file to copy: the measures it needs, not the whole model. You decide what the AI sees.'],
-  ['Ask the AI', 'TMDL out, no lineageTag', "Ask for <code>Revenue YTD</code> as TMDL: one tab before <code>measure</code>, two before each property, straight quotes, no lineageTag."],
+  ['Ask the AI', 'TMDL out, no lineageTag', "Ask for <code>Revenue QTD</code> as TMDL: one tab before <code>measure</code>, two before each property, straight quotes, no lineageTag."],
   ['Check the names', '[Revenue], Dim_Date[Date]', 'Before pasting, confirm every table, column and measure it names exists in your TMDL.'],
   ['Paste into the file', 'tabs · UTF-8, no BOM', 'Paste below the existing measures in <code>_Measures.tmdl</code>. Tabs, not spaces. Save as UTF-8 without BOM.'],
   ['Apply in Desktop', 'Apply external changes', 'Apply external changes, or close and reopen. Desktop names the file and line of any error.'],
-  ['Validate and diff', 'December = full year', 'Put Revenue YTD in a table by month: December must equal the year\'s total. Then <code>git diff</code>, and commit or discard.']
+  ['Validate and diff', 'Mar = Q1 total', 'Put Revenue QTD in a table by month: March must equal the Q1 total of Revenue. Then <code>git diff</code>, and commit or discard.']
 ];
 function buildAi() {
   const svg = $('#ai-svg'), cx = 380, cy = 228, R = 172;
@@ -834,7 +847,7 @@ function buildAi() {
     $('#ai-count').textContent = `${step + 1} / ${AI_STEPS.length}`;
     const s = AI_STEPS[step];
     $('#ai-panel').innerHTML = `<div class="eyebrow">Exercise 4 · step ${step + 1} of 7</div><h2><span class="step-num">${step + 1}</span>${esc(s[0])}</h2><p>${s[2]}</p>` +
-      (step === 2 ? `<pre class="code">${hlTmdl("\tmeasure 'Revenue YTD' = TOTALYTD ( [Revenue], Dim_Date[Date] )\n\t\tformatString: \\$#,##0\n\t\tdisplayFolder: 02 Time Intelligence")}</pre><p class="hint" style="margin-top:8px">The expected answer.</p>` : '') +
+      (step === 2 ? `<pre class="code">${hlTmdl("\tmeasure 'Revenue QTD' = TOTALQTD ( [Revenue], Dim_Date[Date] )\n\t\tformatString: \\$#,##0\n\t\tdisplayFolder: 02 Time Intelligence")}</pre><p class="hint" style="margin-top:8px">The expected answer.</p>` : '') +
       `<p class="hint">In Module 7, steps 2, 4, 6 and 7 become tool calls.</p>`;
   }
   bindNodes(svg, id => { clearInterval(timer); go(+id); });
@@ -843,10 +856,10 @@ function buildAi() {
   $('#ai-prev').onclick = () => { clearInterval(timer); go(step - 1); };
   go(0);
   const EX = [
-    ['Exercise 1', 'Explain a measure', 'Turn DAX someone else wrote into business language, and catch its edge cases.', "These are Power BI measures in TMDL format. For `Revenue YoY %`: (1) explain in one sentence what a business user would read it as; (2) explain the DAX step by step, including how it depends on the other two measures; (3) list the situations where it returns blank or a misleading value; (4) say what the formatString line does. Do not assume any table or column that is not shown.", 'Card filtered to the first year: it should be blank.'],
+    ['Exercise 1', 'Explain a measure', 'Turn DAX someone else wrote into business language, and catch its edge cases.', "These are Power BI measures in TMDL format. For `Revenue YoY %`: (1) explain in one sentence what a business user would read it as; (2) explain the DAX step by step, including how it depends on the other two measures; (3) list the situations where it returns blank or a misleading value; (4) say what the formatString line does. Do not assume any table or column that is not shown.", 'Card with Year = 2024: blank, because there is no 2023 data.'],
     ['Exercise 2', 'Explain the model', 'Understand a model\'s design from relationships.tmdl alone.', "This is a Power BI `relationships.tmdl` file. `fromColumn` is the many side and `toColumn` the one side unless stated otherwise; properties left at their default are not written. (1) Identify the fact and dimension tables. (2) Draw the model as an indented text diagram. (3) Explain each `isActive: false` relationship and how a measure would use it. (4) Flag anything unusual a model reviewer should question.", 'Model view in Desktop, including the dotted inactive lines.'],
     ['Exercise 3', 'Read a visual', 'Know what a visual shows without opening the report.', "This is a Power BI PBIR `visual.json` file. Identify: the visual type; every field used, whether it is a column or a measure, its table, and which well it sits in; the sort; any formatting set; any filters. Then write a one-line description suitable for report documentation. Only report what is in the JSON; say \"not specified\" for anything that is not.", 'Compare with the page in Desktop. Watch for invented titles or colours.'],
-    ['Exercise 4', 'Generate and apply', 'Write a new measure with AI and add it safely.', "Write a Power BI measure called `Revenue YTD` that returns year-to-date revenue using the existing `[Revenue]` measure and the `Dim_Date[Date]` column. Return it as TMDL that I can paste into a table file: one tab before `measure`, two tabs before each property, `formatString: \\$#,##0`, `displayFolder: 02 Time Intelligence`. Do not include a lineageTag. Use straight quotes only.", 'December equals the full-year total; git diff shows only the new measure.']
+    ['Exercise 4', 'Generate and apply', 'Write a new measure with AI and add it safely.', "Write a Power BI measure called `Revenue QTD` that returns quarter-to-date revenue using the existing `[Revenue]` measure and the `Dim_Date[Date]` column. Return it as TMDL that I can paste into a table file: one tab before `measure`, two tabs before each property, `formatString: \\$#,##0`, `displayFolder: 02 Time Intelligence`. Do not include a lineageTag. Use straight quotes only.", 'March equals the Q1 total; git diff shows only the new measure.']
   ];
   $('#ai-ex').innerHTML = EX.map((e, i) => `<div class="card tile"><div class="eyebrow">${e[0]}</div><b>${esc(e[1])}</b><p>${esc(e[2])}</p><div class="prompt" id="pr-${i}">${esc(e[3])}</div><button class="copy" data-i="${i}">Copy prompt</button><p><b style="color:var(--ink)">Validate:</b> ${esc(e[4])}</p></div>`).join('');
   $$('#ai-ex .copy').forEach(b => b.onclick = async () => {
@@ -865,14 +878,14 @@ const LSUB = { you: 'the developer', host: 'Claude Code in VS Code', client: 'on
 const MSGS = [
   ['client', 'server', 'connect · initialize', 'The host starts the server as a local process (standard input/output) or connects over HTTP. They exchange JSON-RPC messages.'],
   ['server', 'client', 'here are my tools', 'The server lists its tools (actions), resources (data) and prompts. Different servers offer different tools.'],
-  ['you', 'host', '"Add Revenue YTD, check December"', 'You ask in plain language. No file copying.'],
+  ['you', 'host', '"Add Revenue QTD, check March"', 'You ask in plain language. No file copying.'],
   ['client', 'server', 'tool: list tables and measures', 'The model decides a tool would help. The host asks you to approve the call, then the client sends it.'],
   ['server', 'model', 'read metadata', 'The server reads the model as it is now, through the Analysis Services engine. No stale pasted copy.'],
   ['server', 'client', 'Revenue, Dim_Date[Date] exist', 'The result goes back into the conversation. Names are checked against the real model.'],
   ['client', 'server', 'tool: create measure', 'A write. The host asks for your approval first.', 'write'],
-  ['server', 'model', 'write Revenue YTD', 'The server changes the live model. Note for Session 2: write the change to the files, under Git, too.', 'write'],
-  ['client', 'server', 'tool: run DAX query', 'Validation: the server runs a DAX query for Revenue YTD by month.'],
-  ['server', 'host', 'December = full-year total', 'The actual number comes back, instead of you comparing a visual by eye.']
+  ['server', 'model', 'write Revenue QTD', 'The server changes the live model. Note for Session 2: write the change to the files, under Git, too.', 'write'],
+  ['client', 'server', 'tool: run DAX query', 'Validation: the server runs a DAX query for Revenue QTD by month.'],
+  ['server', 'host', 'March = Q1 total', 'The actual number comes back, instead of you comparing a visual by eye.']
 ];
 function buildMcp() {
   const svg = $('#mc-svg'), x = id => LANES.find(l => l[0] === id)[2], top = 96, gap = 46;
