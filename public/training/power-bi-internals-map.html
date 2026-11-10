@@ -456,7 +456,7 @@ function buildOverview() {
   ${node('page', 36, 292, 300, 60, 'page.json', 'Executive Overview · 1280 × 720', 'report', true)}
   ${node('visual', 36, 372, 300, 64, 'visual.json  (marginProduct)', 'Entity + Property: names only', 'report', true)}
   ${node('modeltm', 424, 136, 300, 60, 'model.tmdl', 'ref table … · ref role · culture', 'model', true)}
-  ${node('rel', 424, 212, 300, 60, 'relationships.tmdl', '15 relationships, 4 inactive', 'model', true)}
+  ${node('rel', 424, 212, 300, 60, 'relationships.tmdl', '15 relationships, 3 inactive', 'model', true)}
   ${node('measures', 424, 292, 300, 60, 'tables/_Measures.tmdl', '30 measures · the DAX lives here', 'model', true)}
   ${node('fact', 424, 372, 300, 64, 'tables/Fact_Sales.tmdl', '16 columns + an import partition', 'model', true)}
   ${node('csv', 444, 496, 260, 48, 'data/Fact_Sales.csv', '', 'ext', true)}`;
@@ -563,7 +563,7 @@ const FILES = [
   { n: 'database.tmdl', d: 2, e: 'never', g: 1, what: 'Compatibility level of the model. Do not edit.' },
   { n: 'model.tmdl', d: 2, e: 'careful', g: 1, what: 'Model properties, one ref table line per table (sets the order), ref role and ref cultureInfo.' },
   { n: 'expressions.tmdl', d: 2, e: 'careful', g: 1, what: 'Shared Power Query expressions and parameters. Here: the DataFolder parameter every partition reads. In client models this file often names servers and databases: check it before sharing.', code: ['tmdl', 'expression DataFolder = "C:\\…\\data\\" meta [IsParameterQuery = true, Type = "Text", …]'] },
-  { n: 'relationships.tmdl', d: 2, e: 'free', g: 1, what: 'All 15 relationships, 4 of them inactive. See Map 04.', code: ['tmdl', 'relationship Sales_ShipDate\n\tisActive: false\n\tfromColumn: Fact_Sales.ShipDate\n\ttoColumn: Dim_Date.Date'] },
+  { n: 'relationships.tmdl', d: 2, e: 'free', g: 1, what: 'All 15 relationships, 3 of them inactive. See Map 04.', code: ['tmdl', 'relationship Sales_ShipDate\n\tisActive: false\n\tfromColumn: Fact_Sales.ShipDate\n\ttoColumn: Dim_Date.Date'] },
   { n: 'roles/West Region.tmdl', d: 2, e: 'free', g: 1, what: 'A static row-level security role: members see only the West warehouse and its sales, purchases and stock.', code: ['tmdl', "role 'West Region'\n\tmodelPermission: read\n\ttablePermission Dim_Warehouse = Dim_Warehouse[Region] = \"West\""] },
   { n: 'cultures/en-US.tmdl', d: 2, e: 'never', g: 1, what: 'Linguistic metadata for Q&A. Leave it.' },
   { n: 'tables/', d: 2, f: 'model' },
